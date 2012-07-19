@@ -21,4 +21,5 @@ class Processor implements PaymentProcessorInterface
     {
         return array('success' => 'true');
     }
+    
 }
