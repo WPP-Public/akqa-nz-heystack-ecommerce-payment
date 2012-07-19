@@ -1,0 +1,13 @@
+parameters:
+  dps_handler.class: Heystack\Subsystem\Payment\DPS\DPSHandler
+  dps_processor.class: Heystack\Subsystem\Payment\DPS\Input\Processor
+  
+services:
+  dps_processor:
+    class: %dps_processor.class%
+    
+  dps_handler:
+    class: %dps_handler.class%
+    arguments: [ @event_dispatcher, @transaction, @currency_service, @dps_processor ]
+    
+  
