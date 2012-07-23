@@ -36,7 +36,7 @@ class PXPostHandler implements PaymentHandlerInterface
             EventDispatcherInterface $eventService, 
             TransactionInterface $transaction, 
             CurrencyServiceInterface $currencyService
-            )
+    )
     {
         $this->paymentClass = $paymentClass;
         $this->eventService = $eventService;
@@ -49,7 +49,8 @@ class PXPostHandler implements PaymentHandlerInterface
         return array(
             self::POST_USERNAME,
             self::POST_PASSWORD,
-            self::GATEWAY_URL
+            self::GATEWAY_URL,
+            self::MERCHANT_REFERENCE_PREFIX
         );
     }
     
