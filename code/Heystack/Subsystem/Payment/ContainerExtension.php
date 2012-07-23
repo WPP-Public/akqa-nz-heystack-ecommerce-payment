@@ -2,11 +2,11 @@
 /**
  * This file is part of the Ecommerce-Products package
  *
- * @package Ecommerce-Products
+ * @package Ecommerce-Payment
  */
 
 /**
- * Products namespace
+ * Payment namespace
  */
 namespace Heystack\Subsystem\Payment;
 
@@ -15,6 +15,8 @@ use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+
+use Heystack\Subsystem\Core\ContainerExtensionConfigProcessor;
 
 /**
  * Container extension for Heystack.
@@ -25,10 +27,11 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
  *
  * @copyright  Heyday
  * @author Cam Spiers <cameron@heyday.co.nz>
- * @package Ecommerce-Products
+ * @author Glenn Bautista <glenn@heyday.co.nz>
+ * @package Ecommerce-Payment
  *
  */
-class ContainerExtension implements ExtensionInterface
+class ContainerExtension extends ContainerExtensionConfigProcessor implements ExtensionInterface 
 {
 
     /**
@@ -48,7 +51,29 @@ class ContainerExtension implements ExtensionInterface
         );
 
         $loader->load('services.yml');
+        
+        $this->processConfig($config, $container);
+    }
+    
+    /**
+     * {@inheritdoc}
+     * 
+     * Adds the configuration for the payment handler.
+     * 
+     * @param array $config
+     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
+     */
+    protected function processConfig(array $config, ContainerBuilder $container)
+    {
+        parent::processConfig($config, $container);
+        
+        $config = array_pop($config);
+        
+        if (isset($config['config']) &&  $container->hasDefinition('payment_handler')) {
+            
+           $container->getDefinition('payment_handler')->addMethodCall('setConfig', array($config['config']));
 
+        }
     }
 
     /**

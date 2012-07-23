@@ -26,8 +26,6 @@ services:
   payment_handler:
     class: %payment_handler.class%
     arguments: [ %payment.class%, @event_dispatcher, @transaction, @currency_service ]
-    calls:
-      - [ setConfig, [{PostUsername:HeydayDev,PostPassword:post1234,GatewayURL:https://sec.paymentexpress.com/pxpost.aspx,MerchantReferencePrefix:Ecommerce}]]
     
   payment_subscriber:
     class: %payment_subscriber.class%
