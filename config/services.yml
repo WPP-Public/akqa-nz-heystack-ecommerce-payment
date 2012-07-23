@@ -1,13 +1,41 @@
 parameters:
-  dps_handler.class: Heystack\Subsystem\Payment\DPS\DPSHandler
-  dps_processor.class: Heystack\Subsystem\Payment\DPS\Input\Processor
+  payment_handler.class: Heystack\Subsystem\Payment\DPS\PXPostHandler
+  payment_input_processor.class: Heystack\Subsystem\Payment\DPS\Input\Processor
+  payment_output_processor.class: Heystack\Subsystem\Payment\DPS\Output\Processor
+  payment_subscriber.class: Heystack\Subsystem\Payment\Subscriber
+  payment.class: PXPostPayment
   
 services:
-  dps_processor:
-    class: %dps_processor.class%
+  payment_input_processor:
+    class: %payment_input_processor.class%
+    arguments: [ @payment_handler ]
     
-  dps_handler:
-    class: %dps_handler.class%
-    arguments: [ @event_dispatcher, @transaction, @currency_service, @dps_processor ]
+  payment_output_processor:
+    class: %payment_output_processor.class%
+    
+  input_processor_handler:
+    class: %input_processor_handler.class%
+    calls:
+      - [ addProcessor, [ @payment_input_processor ] ]
+      
+  output_processor_handler:
+    class: %output_processor_handler.class%
+    calls:
+      - [ addProcessor, [ @payment_output_processor ] ]
+    
+  payment_handler:
+    class: %payment_handler.class%
+    arguments: [ %payment.class%, @event_dispatcher, @transaction, @currency_service ]
+    calls:
+      - [ setConfig, [{PostUsername:HeydayDev,PostPassword:post1234,GatewayURL:https://sec.paymentexpress.com/pxpost.aspx,MerchantReferencePrefix:Ecommerce}]]
+    
+  payment_subscriber:
+    class: %payment_subscriber.class%
+    arguments: [ @event_dispatcher, @payment_handler ]
+    
+  event_dispatcher:
+    class: %event_dispatcher.class%
+    calls: 
+      - [ addSubscriber, [ @payment_subscriber ] ]
     
   

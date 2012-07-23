@@ -7,74 +7,70 @@ use Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface;
 use Heystack\Subsystem\Payment\Interfaces\PaymentHandlerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Heystack\Subsystem\Payment\Traits\PaymentConfigTrait;
-use Heystack\Subsystem\Payment\Interfaces\PaymentProcessorInterface;
+use Heystack\Subsystem\Ecommerce\Transaction\Events as TransactionEvents;
 
-class DPSHandler implements PaymentHandlerInterface
+class PXPayHandler implements PaymentHandlerInterface
 {
     use PaymentConfigTrait;
     
-    const STATE_KEY = 'dps_handler';
+    const STATE_KEY = 'payment_handler';
     const CONFIG_KEY = 'configkey';
+    const PAYMENT_DATA_KEY = 'paymentdatakey';
     
-    const PAYMENT_TYPE = 'PaymentType';
-    const PAYMENT_IDENTIFIER = 'PaymentIdentifier';
-    const PASSCODE = 'Passcode';
+    const PXPAY_USER_ID = 'PxPayUserId';
+    const PXPAY_KEY = 'PxPayKey';
     const TRANSACTION_TYPE = 'TransactionType';
     const GATEWAY_URL = 'GatewayURL';
+    const SUCCESS_URL = 'SuccessURL';
+    const FAILURE_URL = 'FailureURL';
     
+    protected $paymentClass;
     protected $eventService;
     protected $currencyService;
     protected $transaction;
-    protected $paymentProcessor;
     
     protected $data = array();
     
     public function __construct(
+            $paymentClass,
             EventDispatcherInterface $eventService, 
             TransactionInterface $transaction, 
-            CurrencyServiceInterface $currencyService,
-            PaymentProcessorInterface $paymentProcessor
+            CurrencyServiceInterface $currencyService
             )
     {
+        $this->paymentClass = $paymentClass;
         $this->eventService = $eventService;
         $this->transaction = $transaction;
         $this->currencyService = $currencyService;
-        $this->paymentProcessor = $paymentProcessor;
     }
     
     protected function getRequiredConfigParameters()
     {
         return array(
-            self::PAYMENT_TYPE,
-            self::PAYMENT_IDENTIFIER,
-            self::PASSCODE,
-            self::TRANSACTION_TYPE
+            self::PXPAY_USER_ID,
+            self::PXPAY_KEY,
+            self::TRANSACTION_TYPE,
+            self::GATEWAY_URL,
+            self::SUCCESS_URL,
+            self::FAILURE_URL,
         );
     }
     
-    public function executePayment()
+    public function savePaymentData(array $data)
     {
-        if( isset($this->data[self::CONFIG_KEY][self::PAYMENT_TYPE]) && in_array($this->data[self::CONFIG_KEY][self::PAYMENT_TYPE], array('PXPOST','PXPAY'))){
-            switch($this->data[self::CONFIG_KEY][self::PAYMENT_TYPE]){
-                case 'PXPOST':
-                    break;
-                case 'PXPAY':
-                    $this->executeDPSHostedPayment();
-                    break;
-            }
-        }else{
-            throw new \Exception('Payment Type not configured correctly');
-        }
+        $this->data[self::PAYMENT_DATA_KEY] = $data;
+        
+        $this->eventService->dispatch(TransactionEvents::STORE);
     }
     
-    protected function executeDPSHostedPayment()
+    protected function executePayment($transactionID)
     {
         $request = $this->preparePxPayRequest();
         
         $pxpay = new \PxPay(
                 $this->data[self::CONFIG_KEY][self::GATEWAY_URL],
-                $this->data[self::CONFIG_KEY][self::PAYMENT_IDENTIFIER], 
-                $this->data[self::CONFIG_KEY][self::PASSCODE]);
+                $this->data[self::CONFIG_KEY][self::PXPAY_USER_ID], 
+                $this->data[self::CONFIG_KEY][self::PXPAY_KEY]);
         
         $request_string = $pxpay->makeRequest($request);
         $response = new \MifMessage($request_string);
@@ -88,7 +84,7 @@ class DPSHandler implements PaymentHandlerInterface
             header("Location: ".$url);
             die;
             
-		}else{            
+		}else{
             throw new \Exception("Invalid Request String");
 		}
     }
@@ -100,11 +96,9 @@ class DPSHandler implements PaymentHandlerInterface
         $request->setInputCurrency($this->currencyService->getActiveCurrency()->getCurrencyCode());
         $request->setMerchantReference($this->transaction->getMerchantReference());
         $request->setTxnType($this->data[self::CONFIG_KEY][self::TRANSACTION_TYPE]);
-        $request->setUrlFail($this->paymentProcessor->getURL());
-        $request->setUrlSuccess($this->paymentProcessor->getURL());
+        $request->setUrlFail($this->data[self::CONFIG_KEY][self::FAILURE_URL]);
+        $request->setUrlSuccess($this->data[self::CONFIG_KEY][self::SUCCESS_URL]);
         
         return $request;
     }
-    
-    
 }

@@ -2,23 +2,29 @@
 
 namespace Heystack\Subsystem\Payment\DPS\Input;
 
-use Heystack\Subsystem\Payment\Interfaces\PaymentProcessorInterface;
+use Heystack\Subsystem\Core\Input\ProcessorInterface;
+use Heystack\Subsystem\Payment\Interfaces\PaymentHandlerInterface;
 
-class Processor implements PaymentProcessorInterface
+class Processor implements ProcessorInterface
 {
+    protected $paymentHandler;
+    
+    public function __construct(PaymentHandlerInterface $paymentHandler)
+    {
+        $this->paymentHandler = $paymentHandler;
+    }
     
     public function getIdentifier()
     {
         return 'dps';
     }
     
-    public function getURL()
-    {        
-        return 'http://' . $_SERVER['HTTP_HOST'] . '/' . \EcommerceInputController::$url_segment . '/process/' . $this->getIdentifier();
-    }
-    
     public function process(\SS_HTTPRequest $request)
     {
+        $data = $request->requestVars();
+        
+        $this->paymentHandler->savePaymentData($data);
+        
         return array('success' => 'true');
     }
     
