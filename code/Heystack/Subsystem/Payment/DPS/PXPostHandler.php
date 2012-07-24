@@ -1,38 +1,115 @@
 <?php
+/**
+ * This file is part of the Ecommerce-Payment package
+ *
+ * @package Ecommerce-Payment
+ */
 
+/**
+ * DPS namespace
+ */
 namespace Heystack\Subsystem\Payment\DPS;
 
-use Heystack\Subsystem\Payment\DPS\Interfaces\PXPostPaymentInterface;
-use Heystack\Subsystem\Ecommerce\Currency\Interfaces\CurrencyServiceInterface;
-use Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface;
-use Heystack\Subsystem\Payment\Interfaces\PaymentHandlerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+
+use Heystack\Subsystem\Payment\DPS\Interfaces\PXPostPaymentInterface;
+use Heystack\Subsystem\Payment\Interfaces\PaymentHandlerInterface;
 use Heystack\Subsystem\Payment\Traits\PaymentConfigTrait;
-use Heystack\Subsystem\Ecommerce\Transaction\Events as TransactionEvents;
 use Heystack\Subsystem\Payment\Events;
 
+use Heystack\Subsystem\Ecommerce\Currency\Interfaces\CurrencyServiceInterface;
+use Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface;
+use Heystack\Subsystem\Ecommerce\Transaction\Events as TransactionEvents;
+
+/**
+ * Contains the main logic for creating Payment objects as well as interfacing 
+ * with DPS's PXPost API
+ *
+ * @copyright  Heyday
+ * @author Glenn Bautista <glenn@heyday.co.nz>
+ * @package Ecommerce-Payment
+ */
 class PXPostHandler implements PaymentHandlerInterface
 {
     use PaymentConfigTrait;
     
+    /**
+     * @todo remove this after transitioning to the Services constants for identifying services
+     */
     const STATE_KEY = 'payment_handler';
+    
+    /**
+     * Holds the key for storing configuration settings on the data array
+     */    
     const CONFIG_KEY = 'configkey';
+    
+    /**
+     * Holds the key for storing payment data on the data array
+     */
     const PAYMENT_DATA_KEY = 'paymentdatakey';
     
+    /**
+     * Holds the key for storing Post Username on the config second level array on the data array
+     */
     const POST_USERNAME = 'PostUsername';
+    
+    /**
+     * Holds the key for storing Post Password on the config second level array on the data array
+     */
     const POST_PASSWORD = 'PostPassword';
+    
+    /**
+     * Holds the key for storing the Gateway URL on the config second level array on the data array
+     */
     const GATEWAY_URL = 'GatewayURL';
+    
+    /**
+     * Holds the key for storing the Merchant Reference Prefix on the config second level array on the data array
+     */
     const MERCHANT_REFERENCE_PREFIX = 'MerchantReferencePrefix';
     
+    /**
+     * Holds the default gateway url
+     */    
     const DEFAULT_GATEWAY_URL = 'https://sec.paymentexpress.com/pxpost.aspx';
     
+    /**
+     * Holds the payment class name to be used for creating Payment objects
+     * @var string
+     */
     protected $paymentClass;
+    
+    /**
+     * Holds the Event Dispatcher service
+     * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface 
+     */
     protected $eventService;
+    
+    /**
+     * Holds the Currency service
+     * @var \Heystack\Subsystem\Ecommerce\Currency\Interfaces\CurrencyServiceInterface 
+     */
     protected $currencyService;
+    
+    /**
+     * Holds the Transaction object
+     * @var \Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface 
+     */
     protected $transaction;
     
+    /**
+     * Holds the data array which contains all the data specific to the payment
+     * @var array
+     */
     protected $data = array();
     
+    /**
+     * Creates the PxPostHandler object
+     * @param type $paymentClass
+     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventService
+     * @param \Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface $transaction
+     * @param \Heystack\Subsystem\Ecommerce\Currency\Interfaces\CurrencyServiceInterface $currencyService
+     */
     public function __construct(
             $paymentClass,
             EventDispatcherInterface $eventService, 
@@ -46,6 +123,10 @@ class PXPostHandler implements PaymentHandlerInterface
         $this->currencyService = $currencyService;
     }
     
+    /**
+     * Defines an array of required parameters used in setConfig
+     * @return array
+     */
     protected function getRequiredConfigParameters()
     {
         return array(
@@ -55,6 +136,10 @@ class PXPostHandler implements PaymentHandlerInterface
         );
     }
     
+    /**
+     * Saves the data that comes from the payment form submission for later use
+     * @param array $data
+     */
     public function savePaymentData(array $data)
     {
         unset($data['url']);
@@ -63,6 +148,10 @@ class PXPostHandler implements PaymentHandlerInterface
         $this->eventService->dispatch(TransactionEvents::STORE);
     }
     
+    /**
+     * Prepare the payment form submission data for use when executing the payment
+     * @return array
+     */
     protected function prepareDataForPayment()
     {
         $data = $this->data[self::PAYMENT_DATA_KEY];
@@ -73,7 +162,14 @@ class PXPostHandler implements PaymentHandlerInterface
         return $this->checkPaymentData($data) ? $data : null;
     }
     
-    protected function checkPaymentData($data)
+    /**
+     * Check that the data is complete. Make sure that all the fields required
+     * for executing the payment is present.
+     * @param array $data
+     * @return boolean
+     * @throws \Exception
+     */
+    protected function checkPaymentData(array $data)
     {
         $required = array(
             'Amount',
@@ -97,6 +193,12 @@ class PXPostHandler implements PaymentHandlerInterface
         return false;
     }
     
+    /**
+     * Execute the payment by creating the Payment object and contacting DPS to 
+     * handle the payment.
+     * @param type $transactionID
+     * @throws \Exception
+     */
     public function executePayment($transactionID)
     {
         $data = $this->prepareDataForPayment();
