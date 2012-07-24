@@ -29,7 +29,7 @@ services:
     
   payment_subscriber:
     class: %payment_subscriber.class%
-    arguments: [ @event_dispatcher, @payment_handler ]
+    arguments: [ @event_dispatcher, @payment_handler, @state ]
     
   event_dispatcher:
     class: %event_dispatcher.class%
