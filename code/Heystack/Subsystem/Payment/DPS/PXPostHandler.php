@@ -24,6 +24,8 @@ class PXPostHandler implements PaymentHandlerInterface
     const GATEWAY_URL = 'GatewayURL';
     const MERCHANT_REFERENCE_PREFIX = 'MerchantReferencePrefix';
     
+    const DEFAULT_GATEWAY_URL = 'https://sec.paymentexpress.com/pxpost.aspx';
+    
     protected $paymentClass;
     protected $eventService;
     protected $currencyService;
@@ -49,7 +51,6 @@ class PXPostHandler implements PaymentHandlerInterface
         return array(
             self::POST_USERNAME,
             self::POST_PASSWORD,
-            self::GATEWAY_URL,
             self::MERCHANT_REFERENCE_PREFIX
         );
     }
@@ -123,8 +124,9 @@ class PXPostHandler implements PaymentHandlerInterface
 		$transaction .= "</Txn>";
                 
         // 2) CURL Creation
+        $gatewayURL = isset($this->data[self::CONFIG_KEY][self::GATEWAY_URL]) ? $this->data[self::CONFIG_KEY][self::GATEWAY_URL] : self::DEFAULT_GATEWAY_URL;
         $clientURL = curl_init(); 
-		curl_setopt($clientURL, CURLOPT_URL, $this->data[self::CONFIG_KEY][self::GATEWAY_URL]);
+		curl_setopt($clientURL, CURLOPT_URL, $gatewayURL);
 		curl_setopt($clientURL, CURLOPT_POST, 1);
 		curl_setopt($clientURL, CURLOPT_POSTFIELDS, $transaction);
 		curl_setopt($clientURL, CURLOPT_RETURNTRANSFER, 1);
@@ -182,7 +184,6 @@ class PXPostHandler implements PaymentHandlerInterface
 		if($responseText = $responseFields['RESPONSETEXT']) $payment->setMessage($responseText);
 		if($responseCode = $responseFields['RECO']) $payment->setResponseCode($responseCode);
         
-        error_log(print_r($responseFields,true));
 
 		$payment->write();
         
