@@ -22,28 +22,28 @@ trait PaymentConfigTrait
     /**
      * Defines an array of required parameters used in setConfig
      * @return array
-     */    
+     */
     abstract protected function getRequiredConfigParameters();
-    
+
     /**
-     * Sets an array of config parameters onto the data array. 
+     * Sets an array of config parameters onto the data array.
      * Checks to see if all the required parameters are present.
-     * @param array $config
+     * @param  array      $config
      * @throws \Exception
      */
     public function setConfig(array $config)
     {
         $missing = array_diff($this->getRequiredConfigParameters(), array_keys($config));
-        
-        if(!count($missing)){
-            foreach($config as $key => $value){
+
+        if (!count($missing)) {
+            foreach ($config as $key => $value) {
                 $this->data[self::CONFIG_KEY][$key] = $value;
             }
-        }else{
+        } else {
             throw new \Exception('The following settings are missing: ' . implode(', ', $missing));
         }
     }
-    
+
     /**
      * Retrieves the configuration array
      * @return array

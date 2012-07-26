@@ -27,7 +27,7 @@ trait DPSPaymentTrait
     {
         $this->setField('TransactionReference',$transactionReference);
     }
-    
+
     /**
      * Returns the Transaction Reference from the Payment object
      */
@@ -35,19 +35,19 @@ trait DPSPaymentTrait
     {
         return $this->record['TransactionReference'];
     }
-    
+
     /**
      * Sets the AuthCode on the Payment object
      * @param string $authCode
-     */   
+     */
     public function setAuthCode($authCode)
     {
         $this->setField('AuthCode',$authCode);
     }
-    
+
     /**
      * Returns the AuthCode from the Payment object
-     */    
+     */
     public function getAuthCode()
     {
         return $this->record['AuthCode'];

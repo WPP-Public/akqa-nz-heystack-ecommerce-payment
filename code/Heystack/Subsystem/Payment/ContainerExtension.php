@@ -31,7 +31,7 @@ use Heystack\Subsystem\Core\ContainerExtensionConfigProcessor;
  * @package Ecommerce-Payment
  *
  */
-class ContainerExtension extends ContainerExtensionConfigProcessor implements ExtensionInterface 
+class ContainerExtension extends ContainerExtensionConfigProcessor implements ExtensionInterface
 {
 
     /**
@@ -51,26 +51,26 @@ class ContainerExtension extends ContainerExtensionConfigProcessor implements Ex
         );
 
         $loader->load('services.yml');
-        
+
         $this->processConfig($config, $container);
     }
-    
+
     /**
      * {@inheritdoc}
-     * 
+     *
      * Adds the configuration for the payment handler.
-     * 
-     * @param array $config
+     *
+     * @param array                                                   $config
      * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
      */
     protected function processConfig(array $config, ContainerBuilder $container)
     {
         parent::processConfig($config, $container);
-        
+
         $config = array_pop($config);
-        
+
         if (isset($config['config']) &&  $container->hasDefinition('payment_handler')) {
-            
+
            $container->getDefinition('payment_handler')->addMethodCall('setConfig', array($config['config']));
 
         }

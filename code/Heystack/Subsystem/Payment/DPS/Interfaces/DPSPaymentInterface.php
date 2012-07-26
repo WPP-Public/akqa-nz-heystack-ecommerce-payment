@@ -26,21 +26,21 @@ interface DPSPaymentInterface extends PaymentInterface
      * @param string $transactionReference
      */
     public function setTransactionReference($transactionReference);
-    
+
     /**
      * Returns the Transaction Reference from the Payment object
      */
     public function getTransactionReference();
-    
+
     /**
      * Sets the AuthCode on the Payment object
      * @param string $authCode
      */
     public function setAuthCode($authCode);
-    
+
     /**
      * Returns the AuthCode from the Payment object
      */
     public function getAuthCode();
-    
+
 }

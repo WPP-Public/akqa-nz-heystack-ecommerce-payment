@@ -24,10 +24,10 @@ class Processor implements ProcessorInterface
 {
     /**
      * Holds the payment handler
-     * @var \Heystack\Subsystem\Payment\Interfaces\PaymentHandlerInterface 
+     * @var \Heystack\Subsystem\Payment\Interfaces\PaymentHandlerInterface
      */
     protected $paymentHandler;
-    
+
     /**
      * Creates the processor object
      * @param \Heystack\Subsystem\Payment\Interfaces\PaymentHandlerInterface $paymentHandler
@@ -36,7 +36,7 @@ class Processor implements ProcessorInterface
     {
         $this->paymentHandler = $paymentHandler;
     }
-    
+
     /**
      * Returns an identifier used for routing to this processor
      * @return string
@@ -45,19 +45,19 @@ class Processor implements ProcessorInterface
     {
         return 'dps';
     }
-    
+
     /**
      * Processes the request and tells the payment handler what to do
-     * @param \SS_HTTPRequest $request
+     * @param  \SS_HTTPRequest $request
      * @return array
      */
     public function process(\SS_HTTPRequest $request)
     {
         $data = $request->requestVars();
-        
+
         $this->paymentHandler->savePaymentData($data);
-        
+
         return array('success' => 'true');
     }
-    
+
 }

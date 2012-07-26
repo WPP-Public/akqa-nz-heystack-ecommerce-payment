@@ -11,8 +11,8 @@ class PXPostPayment extends DataObject implements PXPostPaymentInterface
     use PaymentTrait;
     use DPSPaymentTrait;
     use PXPostPaymentTrait;
-    
-    static $db = array(
+
+    public static $db = array(
         'Status' => "Enum('Incomplete,Success,Failure,Pending','Incomplete')",
         'CurrencyCode' => 'Varchar(255)',
         'Message' => 'Text',
@@ -28,8 +28,8 @@ class PXPostPayment extends DataObject implements PXPostPaymentInterface
         'ResponseCode' => 'Varchar(255)',
         'SettlementDate' => 'Date'
     );
-    
-    static $has_one = array(
+
+    public static $has_one = array(
         'Transaction' => 'StoredTransaction'
     );
 }
