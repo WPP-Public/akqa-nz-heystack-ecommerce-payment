@@ -25,6 +25,7 @@ use Heystack\Subsystem\Ecommerce\Transaction\Events as TransactionEvents;
  * Contains the main logic for creating Payment objects as well as interfacing
  * with DPS's PXPost API
  *
+ * 
  * @copyright  Heyday
  * @author Glenn Bautista <glenn@heyday.co.nz>
  * @package Ecommerce-Payment
