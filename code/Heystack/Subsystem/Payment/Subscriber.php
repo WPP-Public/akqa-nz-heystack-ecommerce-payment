@@ -6,13 +6,16 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 use Heystack\Subsystem\Ecommerce\Transaction\Events as TransactionEvents;
-use Heystack\Subsystem\Ecommerce\Transaction\Event\TransactionStoredEvent;
 
+use Heystack\Subsystem\Core\Storage\Event as StorageEvent;
 
 use Heystack\Subsystem\Payment\Interfaces\PaymentHandlerInterface;
 
+use Heystack\Subsystem\Core\Storage\Backends\SilverStripeOrm\Backend;
+
 class Subscriber implements EventSubscriberInterface
 {
+	
     protected $eventService;
     protected $paymentHandler;
 
@@ -24,14 +27,18 @@ class Subscriber implements EventSubscriberInterface
 
     public static function getSubscribedEvents()
     {
+		
         return array(
-            TransactionEvents::STORED  => array('onTransactionStored')
+            Backend::IDENTIFIER . '.' . TransactionEvents::STORED  => array('onTransactionStored')
         );
+		
     }
 
-    public function onTransactionStored(TransactionStoredEvent $event)
+    public function onTransactionStored(StorageEvent $event)
     {
-        $this->paymentHandler->executePayment($event->getTransactionID());
+		
+        $this->paymentHandler->executePayment($event->getParentReference());
+		
     }
 
 }
