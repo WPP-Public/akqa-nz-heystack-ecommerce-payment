@@ -81,7 +81,7 @@ class Subscriber implements EventSubscriberInterface
 
     /**
      * Called after the Transaction is stored, signals that the payment handler needs to execute the payment
-     * @param Heystack\Subsystem\Core\Storage\Event $event
+     * @param \Heystack\Subsystem\Core\Storage\Event $event
      */
     public function onTransactionStored(StorageEvent $event)
     {
