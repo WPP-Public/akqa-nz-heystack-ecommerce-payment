@@ -14,12 +14,14 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 use Heystack\Subsystem\Ecommerce\Transaction\Events as TransactionEvents;
-use Heystack\Subsystem\Ecommerce\Transaction\Event\TransactionStoredEvent;
 use Heystack\Subsystem\Ecommerce\Currency\CurrencyService;
 
+use Heystack\Subsystem\Core\Storage\Event as StorageEvent;
 use Heystack\Subsystem\Core\State\State;
 
 use Heystack\Subsystem\Payment\Interfaces\PaymentHandlerInterface;
+
+use Heystack\Subsystem\Core\Storage\Backends\SilverStripeOrm\Backend;
 
 /**
  * Transaction's Subscriber
@@ -69,19 +71,23 @@ class Subscriber implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
+		
         return array(
-            TransactionEvents::STORED  => array('onTransactionStored'),
+            Backend::IDENTIFIER . '.' . TransactionEvents::STORED  => array('onTransactionStored'),
             Events::SUCCESSFUL => array('onPaymentSuccessful')
         );
+		
     }
 
     /**
      * Called after the Transaction is stored, signals that the payment handler needs to execute the payment
-     * @param \Heystack\Subsystem\Ecommerce\Transaction\Event\TransactionStoredEvent $event
+     * @param Heystack\Subsystem\Core\Storage\Event $event
      */
-    public function onTransactionStored(TransactionStoredEvent $event)
+    public function onTransactionStored(StorageEvent $event)
     {
-        $this->paymentHandler->executePayment($event->getTransactionID());
+		
+        $this->paymentHandler->executePayment($event->getParentReference());
+		
     }
 
     /**
