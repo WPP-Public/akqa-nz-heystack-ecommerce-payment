@@ -17,7 +17,6 @@ use Heystack\Subsystem\Payment\Interfaces\PaymentHandlerInterface;
 use Heystack\Subsystem\Payment\Traits\PaymentConfigTrait;
 use Heystack\Subsystem\Payment\Events;
 
-use Heystack\Subsystem\Ecommerce\Currency\Interfaces\CurrencyServiceInterface;
 use Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface;
 use Heystack\Subsystem\Ecommerce\Transaction\Events as TransactionEvents;
 
@@ -87,12 +86,6 @@ class PXPostHandler implements PaymentHandlerInterface
     protected $eventService;
 
     /**
-     * Holds the Currency service
-     * @var \Heystack\Subsystem\Ecommerce\Currency\Interfaces\CurrencyServiceInterface
-     */
-    protected $currencyService;
-
-    /**
      * Holds the Transaction object
      * @var \Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface
      */
@@ -109,19 +102,16 @@ class PXPostHandler implements PaymentHandlerInterface
      * @param type                                                                       $paymentClass
      * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface                $eventService
      * @param \Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface  $transaction
-     * @param \Heystack\Subsystem\Ecommerce\Currency\Interfaces\CurrencyServiceInterface $currencyService
      */
     public function __construct(
             $paymentClass,
             EventDispatcherInterface $eventService,
-            TransactionInterface $transaction,
-            CurrencyServiceInterface $currencyService
+            TransactionInterface $transaction
     )
     {
         $this->paymentClass = $paymentClass;
         $this->eventService = $eventService;
         $this->transaction = $transaction;
-        $this->currencyService = $currencyService;
     }
 
     /**
@@ -159,6 +149,9 @@ class PXPostHandler implements PaymentHandlerInterface
 
         $data['PostUsername'] = $this->data[self::CONFIG_KEY][self::POST_USERNAME];
         $data['PostPassword'] = $this->data[self::CONFIG_KEY][self::POST_PASSWORD];
+        $data['Amount'] = $this->transaction->getTotal();
+        $data['InputCurrency'] = $this->transaction->getCurrencyCode();
+        $data['TxnType'] = 'Purchase';
 
         return $this->checkPaymentData($data) ? $data : null;
     }
@@ -173,11 +166,8 @@ class PXPostHandler implements PaymentHandlerInterface
     protected function checkPaymentData(array $data)
     {
         $required = array(
-            'Amount',
-            'InputCurrency',
             'PostUsername',
             'PostPassword',
-            'TxnType',
             'CardHolderName',
             'CardNumber',
             'Cvc2'

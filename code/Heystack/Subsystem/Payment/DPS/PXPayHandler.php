@@ -2,7 +2,6 @@
 
 namespace Heystack\Subsystem\Payment\DPS;
 
-use Heystack\Subsystem\Ecommerce\Currency\Interfaces\CurrencyServiceInterface;
 use Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface;
 use Heystack\Subsystem\Payment\Interfaces\PaymentHandlerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -26,7 +25,6 @@ class PXPayHandler implements PaymentHandlerInterface
 
     protected $paymentClass;
     protected $eventService;
-    protected $currencyService;
     protected $transaction;
 
     protected $data = array();
@@ -34,14 +32,12 @@ class PXPayHandler implements PaymentHandlerInterface
     public function __construct(
             $paymentClass,
             EventDispatcherInterface $eventService,
-            TransactionInterface $transaction,
-            CurrencyServiceInterface $currencyService
+            TransactionInterface $transaction
             )
     {
         $this->paymentClass = $paymentClass;
         $this->eventService = $eventService;
         $this->transaction = $transaction;
-        $this->currencyService = $currencyService;
     }
 
     protected function getRequiredConfigParameters()

@@ -53,7 +53,7 @@ class Processor implements ProcessorInterface
      */
     public function process(\SS_HTTPRequest $request)
     {
-        $data = $request->requestVars();
+        $data = \Convert::raw2sql($request->requestVars());
 
         $this->paymentHandler->savePaymentData($data);
 

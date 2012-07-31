@@ -25,7 +25,7 @@ services:
     
   payment_handler:
     class: %payment_handler.class%
-    arguments: [ %payment.class%, @event_dispatcher, @transaction, @currency_service ]
+    arguments: [ %payment.class%, @event_dispatcher, @transaction ]
     
   payment_subscriber:
     class: %payment_subscriber.class%
