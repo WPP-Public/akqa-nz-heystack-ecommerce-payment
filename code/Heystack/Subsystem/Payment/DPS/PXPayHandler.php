@@ -1,5 +1,13 @@
 <?php
+/**
+ * This file is part of the Heystack package
+ *
+ * @package Ecommerce-Payment
+ */
 
+/**
+ * Heystack\Subsystem\Payment\DPS namespace
+ */
 namespace Heystack\Subsystem\Payment\DPS;
 
 use Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface;
@@ -8,6 +16,17 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Heystack\Subsystem\Payment\Traits\PaymentConfigTrait;
 use Heystack\Subsystem\Ecommerce\Transaction\Events as TransactionEvents;
 
+/**
+ * PXPayHandler allows for payments to be handled through the PXPay interface
+ * for DPS payments. 
+ * 
+ * @todo Finish this, it is currently in a non-working state.
+ *
+ * @copyright  Heyday
+ * @author Glenn Bautista <glenn@heyday.co.nz>
+ * @package Heystack
+ *
+ */
 class PXPayHandler implements PaymentHandlerInterface
 {
     use PaymentConfigTrait;

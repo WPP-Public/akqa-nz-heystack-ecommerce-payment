@@ -1,5 +1,18 @@
 <?php
+/**
+ * This file is part of the Heystack package
+ *
+ * @package Ecommerce-Payment
+ */
 
+/**
+ * Payment ModelAdmin
+ *
+ * @copyright  Heyday
+ * @author Glenn Bautista <glenn@heyday.co.nz>
+ * @package Heystack
+ *
+ */
 class PaymentAdmin extends ModelAdmin
 {
 

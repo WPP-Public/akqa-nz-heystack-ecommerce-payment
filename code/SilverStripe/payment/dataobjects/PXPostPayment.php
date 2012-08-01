@@ -1,4 +1,9 @@
 <?php
+/**
+ * This file is part of the Heystack package
+ *
+ * @package Ecommerce-Payment
+ */
 
 use Heystack\Subsystem\Payment\DPS\Interfaces\PXPostPaymentInterface;
 
@@ -6,6 +11,14 @@ use Heystack\Subsystem\Payment\Traits\PaymentTrait;
 use Heystack\Subsystem\Payment\DPS\Traits\DPSPaymentTrait;
 use Heystack\Subsystem\Payment\DPS\Traits\PXPostPaymentTrait;
 
+/**
+ * PXPostPayment stores information about payments made with the PXPost method
+ *
+ * @copyright  Heyday
+ * @author Glenn Bautista <glenn@heyday.co.nz>
+ * @package Heystack
+ *
+ */
 class PXPostPayment extends DataObject implements PXPostPaymentInterface
 {
     use PaymentTrait;
