@@ -16,6 +16,7 @@ use Heystack\Subsystem\Payment\DPS\Interfaces\PXPostPaymentInterface;
 use Heystack\Subsystem\Payment\Interfaces\PaymentHandlerInterface;
 use Heystack\Subsystem\Payment\Traits\PaymentConfigTrait;
 use Heystack\Subsystem\Payment\Events;
+use Heystack\Subsystem\Payment\Events\PaymentEvent;
 
 use Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface;
 use Heystack\Subsystem\Ecommerce\Transaction\Events as TransactionEvents;
@@ -279,10 +280,10 @@ class PXPostHandler implements PaymentHandlerInterface
 
         switch ($payment->getStatus()) {
             case 'Failure':
-                $this->eventService->dispatch(Events::FAILED);
+                $this->eventService->dispatch(Events::FAILED, new PaymentEvent($payment));
                 break;
             case 'Success':
-                $this->eventService->dispatch(Events::SUCCESSFUL);
+                $this->eventService->dispatch(Events::SUCCESSFUL, new PaymentEvent($payment));
                 break;
         }
     }

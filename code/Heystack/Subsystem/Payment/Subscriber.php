@@ -19,6 +19,8 @@ use Heystack\Subsystem\Ecommerce\Currency\CurrencyService;
 use Heystack\Subsystem\Core\Storage\Event as StorageEvent;
 use Heystack\Subsystem\Core\State\State;
 
+use Heystack\Subsystem\Payment\Events\PaymentEvent;
+
 use Heystack\Subsystem\Payment\Interfaces\PaymentHandlerInterface;
 
 use Heystack\Subsystem\Core\Storage\Backends\SilverStripeOrm\Backend;
@@ -74,7 +76,8 @@ class Subscriber implements EventSubscriberInterface
 		
         return array(
             Backend::IDENTIFIER . '.' . TransactionEvents::STORED  => array('onTransactionStored'),
-            Events::SUCCESSFUL => array('onPaymentSuccessful')
+            Events::SUCCESSFUL => array('onPaymentSuccessful'),
+            Events::FAILED => array('onPaymentFailed')
         );
 		
     }
@@ -94,9 +97,32 @@ class Subscriber implements EventSubscriberInterface
      * Called after the payment is successfully completed.
      * Clears everything in state except the active currency.
      */
-    public function onPaymentSuccessful()
+    public function onPaymentSuccessful(PaymentEvent $event)
     {
+        
+        $this->setStoredTransactionStatus($event, 'Successful');
+        
         $this->state->removeAll(array(CurrencyService::STATE_KEY));
+        
+    }
+    
+    public function onPaymentFailed(PaymentEvent $event)
+    {
+        
+        $this->setStoredTransactionStatus($event, 'Failed');
+        
+    }
+    
+    protected function setStoredTransactionStatus(PaymentEvent $event, $status)
+    {
+        
+        $transaction =  \DataObject::get_by_id('StoredTransaction', $event->getPayment()->getTransactionID());
+        
+        if($transaction instanceof \StoredTransaction){
+            $transaction->Status = $status;
+            $transaction->write();
+        }
+        
     }
 
 }
