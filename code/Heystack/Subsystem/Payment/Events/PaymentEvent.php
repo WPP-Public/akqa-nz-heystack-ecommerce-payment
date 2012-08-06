@@ -25,7 +25,7 @@ use Heystack\Subsystem\Payment\Interfaces\PaymentInterface;
  */
 class PaymentEvent extends Event
 {
-    
+
     protected $payment;
 
     public function __construct(PaymentInterface $payment)
@@ -37,5 +37,5 @@ class PaymentEvent extends Event
     {
         return $this->payment;
     }
-    
+
 }

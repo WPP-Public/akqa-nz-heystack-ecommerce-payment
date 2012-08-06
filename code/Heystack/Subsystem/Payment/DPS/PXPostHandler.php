@@ -25,7 +25,7 @@ use Heystack\Subsystem\Ecommerce\Transaction\Events as TransactionEvents;
  * Contains the main logic for creating Payment objects as well as interfacing
  * with DPS's PXPost API
  *
- * 
+ *
  * @copyright  Heyday
  * @author Glenn Bautista <glenn@heyday.co.nz>
  * @package Ecommerce-Payment
@@ -100,9 +100,9 @@ class PXPostHandler implements PaymentHandlerInterface
 
     /**
      * Creates the PxPostHandler object
-     * @param type                                                                       $paymentClass
-     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface                $eventService
-     * @param \Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface  $transaction
+     * @param type                                                                      $paymentClass
+     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface               $eventService
+     * @param \Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface $transaction
      */
     public function __construct(
             $paymentClass,

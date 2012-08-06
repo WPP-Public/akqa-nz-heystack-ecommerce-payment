@@ -18,8 +18,8 @@ use Heystack\Subsystem\Ecommerce\Transaction\Events as TransactionEvents;
 
 /**
  * PXPayHandler allows for payments to be handled through the PXPay interface
- * for DPS payments. 
- * 
+ * for DPS payments.
+ *
  * @todo Finish this, it is currently in a non-working state.
  *
  * @copyright  Heyday

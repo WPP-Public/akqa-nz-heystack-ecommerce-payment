@@ -73,13 +73,13 @@ class Subscriber implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-		
+
         return array(
             Backend::IDENTIFIER . '.' . TransactionEvents::STORED  => array('onTransactionStored'),
             Events::SUCCESSFUL => array('onPaymentSuccessful'),
             Events::FAILED => array('onPaymentFailed')
         );
-		
+
     }
 
     /**
@@ -88,9 +88,9 @@ class Subscriber implements EventSubscriberInterface
      */
     public function onTransactionStored(StorageEvent $event)
     {
-		
+
         $this->paymentHandler->executePayment($event->getParentReference());
-		
+
     }
 
     /**
@@ -99,30 +99,30 @@ class Subscriber implements EventSubscriberInterface
      */
     public function onPaymentSuccessful(PaymentEvent $event)
     {
-        
+
         $this->setStoredTransactionStatus($event, 'Successful');
-        
+
         $this->state->removeAll(array(CurrencyService::STATE_KEY));
-        
+
     }
-    
+
     public function onPaymentFailed(PaymentEvent $event)
     {
-        
+
         $this->setStoredTransactionStatus($event, 'Failed');
-        
+
     }
-    
+
     protected function setStoredTransactionStatus(PaymentEvent $event, $status)
     {
-        
+
         $transaction =  \DataObject::get_by_id('StoredTransaction', $event->getPayment()->getTransactionID());
-        
-        if($transaction instanceof \StoredTransaction){
+
+        if ($transaction instanceof \StoredTransaction) {
             $transaction->Status = $status;
             $transaction->write();
         }
-        
+
     }
 
 }
