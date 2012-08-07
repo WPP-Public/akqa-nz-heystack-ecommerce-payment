@@ -3,7 +3,7 @@ parameters:
   payment_input_processor.class: Heystack\Subsystem\Payment\DPS\Input\Processor
   payment_output_processor.class: Heystack\Subsystem\Payment\DPS\Output\Processor
   payment_subscriber.class: Heystack\Subsystem\Payment\Subscriber
-  payment.class: PXPostPayment
+  payment.class: $$$
   
 services:
   payment_input_processor:
