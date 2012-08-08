@@ -1,5 +1,5 @@
 {
-    "hash": "e2a4750308df8c56e30298a8cd145b5e",
+    "hash": "f23a02ef1aca7ef2c0bf7abfbb31e48e",
     "packages": [
 
     ],
@@ -7,7 +7,7 @@
     "aliases": [
 
     ],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "stability-flags": [
 
     ]
