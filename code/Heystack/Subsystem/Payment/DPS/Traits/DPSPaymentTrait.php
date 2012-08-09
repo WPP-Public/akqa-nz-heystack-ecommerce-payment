@@ -15,6 +15,7 @@ namespace Heystack\Subsystem\Payment\DPS\Traits;
  *
  * @copyright  Heyday
  * @author Glenn Bautista <glenn@heyday.co.nz>
+ * @author Stevie Mayhew <stevie@heyday.co.nz>
  * @package Ecommerce-Payment
  */
 trait DPSPaymentTrait
@@ -25,7 +26,7 @@ trait DPSPaymentTrait
      */
     public function setTransactionReference($transactionReference)
     {
-        $this->setField('TransactionReference',$transactionReference);
+        $this->TransactionReference = $transactionReference;
     }
 
     /**
@@ -33,7 +34,7 @@ trait DPSPaymentTrait
      */
     public function getTransactionReference()
     {
-        return $this->record['TransactionReference'];
+        return $this->TransactionReference;
     }
 
     /**
@@ -42,7 +43,7 @@ trait DPSPaymentTrait
      */
     public function setAuthCode($authCode)
     {
-        $this->setField('AuthCode',$authCode);
+        $this->AuthCode = $authCode;
     }
 
     /**
@@ -50,6 +51,6 @@ trait DPSPaymentTrait
      */
     public function getAuthCode()
     {
-        return $this->record['AuthCode'];
+        return $this->AuthCode;
     }
 }

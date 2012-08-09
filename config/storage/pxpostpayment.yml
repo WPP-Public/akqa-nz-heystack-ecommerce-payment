@@ -1,0 +1,20 @@
+data_provider_id: pxpostpayment
+id: PXPostPayment
+flat:
+  Status: "Enum('Incomplete,Success,Failure,Pending','Incomplete')"
+  CurrencyCode: Varchar(255)
+  Message: Text
+  Amount: Decimal(10,2)
+  IP: Varchar(255)
+  TransactionType: "Enum('Purchase,Auth,Complete,Refund,Validate', 'Purchase')"
+  MerchantReference: Varchar(255)
+  TransactionReference: Varchar(255)
+  AuthCode: Varchar(255)
+  XMLResponse: Text
+  BillingID: Varchar(255)
+  HelpText: Varchar(255)
+  ResponseCode: Varchar(255)
+  SettlementDate: Date
+related:
+parent:
+  Parent: +Transaction

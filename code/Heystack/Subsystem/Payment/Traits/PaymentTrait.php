@@ -15,6 +15,7 @@ namespace Heystack\Subsystem\Payment\Traits;
  *
  * @copyright  Heyday
  * @author Glenn Bautista <glenn@heyday.co.nz>
+ * @author Stevie Mayhew <stevie@heyday.co.nz>
  * @package Ecommerce-Payment
  */
 trait PaymentTrait
@@ -25,7 +26,7 @@ trait PaymentTrait
      */
     public function setTransactionID($transactionID)
     {
-        $this->setField('TransactionID',$transactionID);
+        $this->TransactionID = $transactionID;
     }
 
     /**
@@ -33,7 +34,7 @@ trait PaymentTrait
      */
     public function getTransactionID()
     {
-        return $this->record['TransactionID'];
+        return $this->TransactionID;
     }
 
     /**
@@ -42,7 +43,7 @@ trait PaymentTrait
      */
     public function setStatus($status)
     {
-        $this->setField('Status',$status);
+        $this->Status = $status;
     }
 
     /**
@@ -50,7 +51,7 @@ trait PaymentTrait
      */
     public function getStatus()
     {
-        return $this->record['Status'];
+        return $this->Status;
     }
 
     /**
@@ -59,7 +60,7 @@ trait PaymentTrait
      */
     public function setCurrencyCode($currencyCode)
     {
-        $this->setField('CurrencyCode',$currencyCode);
+        $this->CurrencyCode = $currencyCode;
     }
 
     /**
@@ -67,7 +68,7 @@ trait PaymentTrait
      */
     public function getCurrencyCode()
     {
-        return $this->record['CurrencyCode'];
+        return $this->CurrencyCode;
     }
 
     /**
@@ -76,7 +77,7 @@ trait PaymentTrait
      */
     public function setMessage($message)
     {
-        $this->setField('Message',$message);
+        $this->Message = $message;
     }
 
     /**
@@ -84,7 +85,7 @@ trait PaymentTrait
      */
     public function getMessage()
     {
-        return $this->record['Message'];
+        return $this->Message;
     }
 
     /**
@@ -93,7 +94,7 @@ trait PaymentTrait
      */
     public function setAmount(\float $amount)
     {
-        $this->setField('Amount',$amount);
+        $this->Amount = $amount;
     }
 
     /**
@@ -101,7 +102,7 @@ trait PaymentTrait
      */
     public function getAmount()
     {
-        return $this->record['Amount'];
+        return $this->Amount;
     }
 
     /**
@@ -110,7 +111,7 @@ trait PaymentTrait
      */
     public function setIP($ip)
     {
-        $this->setField('IP',$ip);
+        $this->IP = $ip;
     }
 
     /**
@@ -118,7 +119,7 @@ trait PaymentTrait
      */
     public function getIP()
     {
-        return $this->record['IP'];
+        return $this->IP;
     }
 
     /**
@@ -127,7 +128,7 @@ trait PaymentTrait
      */
     public function setTransactionType($transactionType)
     {
-        $this->setField('TransactionType',$transactionType);
+        $this->TransactionType = $transactionType;
     }
 
     /**
@@ -135,7 +136,7 @@ trait PaymentTrait
      */
     public function getTransactionType()
     {
-        return $this->record['TransactionType'];
+        return $this->TransactionType;
     }
 
     /**
@@ -144,7 +145,7 @@ trait PaymentTrait
      */
     public function setMerchantReference($merchantReference)
     {
-        $this->setField('MerchantReference',$merchantReference);
+        $this->MerchantReference = $merchantReference;
     }
 
     /**
@@ -152,6 +153,6 @@ trait PaymentTrait
      */
     public function getMerchantReference()
     {
-        return $this->record['MerchantReference'];
+        return $this->MerchantReference;
     }
 }

@@ -6,6 +6,10 @@ parameters:
   payment.class: $$$
   
 services:
+  
+  payment:
+    class: %payment.class%
+  
   payment_input_processor:
     class: %payment_input_processor.class%
     arguments: [ @payment_handler ]
@@ -29,11 +33,20 @@ services:
     
   payment_subscriber:
     class: %payment_subscriber.class%
-    arguments: [ @event_dispatcher, @payment_handler, @state ]
+    arguments: [ @event_dispatcher, @payment_handler, @state, @storage ]
     
   event_dispatcher:
     class: %event_dispatcher.class%
     calls: 
       - [ addSubscriber, [ @payment_subscriber ] ]
     
-  
+  dataobject_generator:
+    class: %dataobject_generator.class%
+    calls:
+      - [ addYamlSchema, [ ecommerce-payment/config/storage/pxpostpayment.yml ] ]
+      - [ addYamlSchema, [ ecommerce-payment/config/storage/transaction_pxpostpayment.yml ] ]
+      
+  ss_orm_backend:
+    class: %ss_orm_backend.class%
+    calls:
+      - [ addDataProvider, [ @payment ] ]

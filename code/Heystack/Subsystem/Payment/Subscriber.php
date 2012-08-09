@@ -16,6 +16,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Heystack\Subsystem\Ecommerce\Transaction\Events as TransactionEvents;
 use Heystack\Subsystem\Ecommerce\Currency\CurrencyService;
 
+use Heystack\Subsystem\Core\Storage\Storage;
 use Heystack\Subsystem\Core\Storage\Event as StorageEvent;
 use Heystack\Subsystem\Core\State\State;
 
@@ -32,6 +33,7 @@ use Heystack\Subsystem\Core\Storage\Backends\SilverStripeOrm\Backend;
  *
  * @copyright  Heyday
  * @author Glenn Bautista <glenn@heyday.co.nz>
+ * @author Stevie Mayhew <stevie@heyday.co.nz>
  * @package Ecommerce-Core
  */
 class Subscriber implements EventSubscriberInterface
@@ -53,6 +55,12 @@ class Subscriber implements EventSubscriberInterface
      * @var \Heystack\Subsystem\Core\State\State
      */
     protected $state;
+    
+    /**
+     * The storage service which will be used in cases where storage is needed.
+     * @var object
+     */
+    protected $storageService;
 
     /**
      * Creates the Subscriber object
@@ -60,11 +68,12 @@ class Subscriber implements EventSubscriberInterface
      * @param \Heystack\Subsystem\Payment\Interfaces\PaymentHandlerInterface $paymentHandler
      * @param \Heystack\Subsystem\Core\State\State                           $state
      */
-    public function __construct(EventDispatcherInterface $eventService, PaymentHandlerInterface $paymentHandler, State $state)
+    public function __construct(EventDispatcherInterface $eventService, PaymentHandlerInterface $paymentHandler, State $state, Storage $storageService)
     {
         $this->eventService = $eventService;
         $this->paymentHandler = $paymentHandler;
         $this->state = $state;
+        $this->storageService = $storageService;
     }
 
     /**
@@ -77,7 +86,7 @@ class Subscriber implements EventSubscriberInterface
         return array(
             Backend::IDENTIFIER . '.' . TransactionEvents::STORED  => array('onTransactionStored'),
             Events::SUCCESSFUL => array('onPaymentSuccessful'),
-            Events::FAILED => array('onPaymentFailed')
+            Events::FAILED => array('onPaymentFailed'),
         );
 
     }
@@ -88,8 +97,11 @@ class Subscriber implements EventSubscriberInterface
      */
     public function onTransactionStored(StorageEvent $event)
     {
-
-        $this->paymentHandler->executePayment($event->getParentReference());
+        $payment = $this->paymentHandler->executePayment($event->getParentReference());
+        
+        $payment->setParentReference($event->getParentReference());
+        
+        $this->storageService->process($payment);
 
     }
 

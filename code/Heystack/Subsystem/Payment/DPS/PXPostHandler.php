@@ -28,6 +28,7 @@ use Heystack\Subsystem\Ecommerce\Transaction\Events as TransactionEvents;
  *
  * @copyright  Heyday
  * @author Glenn Bautista <glenn@heyday.co.nz>
+ * @author Stevie Mayhew <stevie@heyday.co.nz>
  * @package Ecommerce-Payment
  */
 class PXPostHandler implements PaymentHandlerInterface
@@ -194,7 +195,7 @@ class PXPostHandler implements PaymentHandlerInterface
     public function executePayment($transactionID)
     {
         $data = $this->prepareDataForPayment();
-
+        
         $payment = new $this->paymentClass();
         if (! $payment instanceof PXPostPaymentInterface) {
             throw new \Exception($this->paymentClass . ' must implement PXPostPaymentInterface');
@@ -263,8 +264,8 @@ class PXPostHandler implements PaymentHandlerInterface
         // 7) DPS Response Management
         if ($responseFields['SUCCESS']) {
             $payment->setStatus('Success');
-            if($authcode = $responseFields['1']['AUTHCODE']) $payment->setAuthCode ($authcode);
-            if($dpsBillingID = $responseFields['1']['DPSBILLINGID']) $payment->setBillingID ($dpsBillingID);
+            if($authcode = $responseFields['1']['AUTHCODE']) $payment->setAuthCode($authcode);
+            if($dpsBillingID = $responseFields['1']['DPSBILLINGID']) $payment->setBillingID($dpsBillingID);
 
             $dateSettlement = $responseFields['1']['DATESETTLEMENT'];
             $payment->setSettlementDate(substr($dateSettlement, 0, 4) ."-".substr($dateSettlement, 4, 2)."-".substr($dateSettlement, 6, 2));
@@ -276,16 +277,21 @@ class PXPostHandler implements PaymentHandlerInterface
         if($responseText = $responseFields['RESPONSETEXT']) $payment->setMessage($responseText);
         if($responseCode = $responseFields['RECO']) $payment->setResponseCode($responseCode);
 
-        $payment->write();
-
-        switch ($payment->getStatus()) {
-            case 'Failure':
-                $this->eventService->dispatch(Events::FAILED, new PaymentEvent($payment));
-                break;
-            case 'Success':
-                $this->eventService->dispatch(Events::SUCCESSFUL, new PaymentEvent($payment));
-                break;
+        // add the transaction ID to the payment for later events
+        $payment->setTransactionID($transactionID);
+        
+        if ($responseFields['SUCCESS']) {
+           
+            $this->eventService->dispatch(Events::SUCCESSFUL, new PaymentEvent($payment));     
+                
+        } else {
+            
+            $this->eventService->dispatch(Events::FAILED, new PaymentEvent($payment));
+          
+            
         }
+        
+        return $payment;
     }
 
 }

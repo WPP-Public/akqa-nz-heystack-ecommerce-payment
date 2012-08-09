@@ -15,6 +15,7 @@ namespace Heystack\Subsystem\Payment\DPS\Traits;
  *
  * @copyright  Heyday
  * @author Glenn Bautista <glenn@heyday.co.nz>
+ * @author Stevie Mayhew <stevie@heyday.co.nz>
  * @package Ecommerce-Payment
  */
 trait PXPostPaymentTrait
@@ -25,7 +26,7 @@ trait PXPostPaymentTrait
      */
     public function setXMLResponse($xmlResponse)
     {
-        $this->setField('XMLResponse',$xmlResponse);
+        $this->XMLResponse = $xmlResponse;
     }
 
     /**
@@ -33,7 +34,7 @@ trait PXPostPaymentTrait
      */
     public function getXMLResponse()
     {
-        return $this->record['XMLResponse'];
+        return $this->XMLResponse;
     }
 
     /**
@@ -42,7 +43,7 @@ trait PXPostPaymentTrait
      */
     public function setBillingID($billingID)
     {
-        $this->setField('BillingID',$billingID);
+        $this->BillingID = $billingID;
     }
 
     /**
@@ -50,7 +51,7 @@ trait PXPostPaymentTrait
      */
     public function getBillingID()
     {
-        return $this->record['BillingID'];
+        return $this->BillingID;
     }
 
     /**
@@ -59,7 +60,7 @@ trait PXPostPaymentTrait
      */
     public function setHelpText($helpText)
     {
-        $this->setField('HelpText',$helpText);
+        $this->HelpText = $helpText;
     }
 
     /**
@@ -67,7 +68,7 @@ trait PXPostPaymentTrait
      */
     public function getHelpText()
     {
-        return $this->record['HelpText'];
+        return $this->HelpText;
     }
 
     /**
@@ -76,7 +77,7 @@ trait PXPostPaymentTrait
      */
     public function setResponseCode($responseCode)
     {
-        $this->setField('ResponseCode',$responseCode);
+        $this->ResponseCode = $responseCode;
     }
 
     /**
@@ -84,7 +85,7 @@ trait PXPostPaymentTrait
      */
     public function getResponseCode()
     {
-        return $this->record['ResponseCode'];
+        return $this->ResponseCode;
     }
 
     /**
@@ -93,7 +94,7 @@ trait PXPostPaymentTrait
      */
     public function setSettlementDate($settlementDate)
     {
-        $this->setField('SettlementDate',$settlementDate);
+        $this->SettlementDate = $settlementDate;
     }
 
     /**
@@ -101,6 +102,6 @@ trait PXPostPaymentTrait
      */
     public function getSettlementDate()
     {
-        return $this->record['SettlementDate'];
+        return $this->SettlementDate;
     }
 }
