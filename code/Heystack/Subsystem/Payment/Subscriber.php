@@ -102,7 +102,7 @@ class Subscriber implements EventSubscriberInterface
 
         $this->setStoredTransactionStatus($event, 'Successful');
 
-        $this->state->removeAll(array(CurrencyService::STATE_KEY));
+        $this->state->removeAll(array(CurrencyService::IDENTIFIER));
 
     }
 
