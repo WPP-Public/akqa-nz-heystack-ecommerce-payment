@@ -6,7 +6,7 @@
  */
 
 /**
- * Interfaces namespace
+ * Traits namespace
  */
 namespace Heystack\Subsystem\Payment\Traits;
 
