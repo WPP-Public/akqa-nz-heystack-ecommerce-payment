@@ -45,6 +45,17 @@ class PXPostPayment implements PXPostPaymentInterface, StorableInterface
 
     }
     
+    /**
+     * Get the name of the schema this system relates to
+     * @return string
+     */
+    public function getSchemaName()
+    {
+        
+        return 'PXPostPayment';
+        
+    }
+    
     public function getStorableData() {
         
         $data = array();
