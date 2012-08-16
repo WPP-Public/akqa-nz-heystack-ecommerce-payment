@@ -55,7 +55,7 @@ class Subscriber implements EventSubscriberInterface
      * @var \Heystack\Subsystem\Core\State\State
      */
     protected $state;
-    
+
     /**
      * The storage service which will be used in cases where storage is needed.
      * @var object
@@ -98,9 +98,9 @@ class Subscriber implements EventSubscriberInterface
     public function onTransactionStored(StorageEvent $event)
     {
         $payment = $this->paymentHandler->executePayment($event->getParentReference());
-        
+
         $payment->setParentReference($event->getParentReference());
-        
+
         $this->storageService->process($payment);
 
     }

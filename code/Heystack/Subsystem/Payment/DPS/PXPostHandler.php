@@ -195,7 +195,7 @@ class PXPostHandler implements PaymentHandlerInterface
     public function executePayment($transactionID)
     {
         $data = $this->prepareDataForPayment();
-        
+
         $payment = new $this->paymentClass();
         if (! $payment instanceof PXPostPaymentInterface) {
             throw new \Exception($this->paymentClass . ' must implement PXPostPaymentInterface');
@@ -279,18 +279,17 @@ class PXPostHandler implements PaymentHandlerInterface
 
         // add the transaction ID to the payment for later events
         $payment->setTransactionID($transactionID);
-        
+
         if ($responseFields['SUCCESS']) {
-           
-            $this->eventService->dispatch(Events::SUCCESSFUL, new PaymentEvent($payment));     
-                
+
+            $this->eventService->dispatch(Events::SUCCESSFUL, new PaymentEvent($payment));
+
         } else {
-            
+
             $this->eventService->dispatch(Events::FAILED, new PaymentEvent($payment));
-          
-            
+
         }
-        
+
         return $payment;
     }
 

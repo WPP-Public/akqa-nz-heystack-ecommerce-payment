@@ -35,33 +35,33 @@ class PXPostPayment implements PXPostPaymentInterface, StorableInterface
     use DPSPaymentTrait;
     use PXPostPaymentTrait;
     use ParentReferenceTrait;
-    
+
     const IDENTIFIER = 'pxpostpayment';
-    
+
     public function getStorableIdentifier()
     {
 
         return self::IDENTIFIER;
 
     }
-    
+
     /**
      * Get the name of the schema this system relates to
      * @return string
      */
     public function getSchemaName()
     {
-        
+
         return 'PXPostPayment';
-        
+
     }
-    
-    public function getStorableData() {
-        
+
+    public function getStorableData()
+    {
         $data = array();
-        
+
         $data['id'] = "PXPostPayment";
-        
+
         $data['flat'] = array(
             'Status' => $this->getStatus(),
             'CurrencyCode' => $this->getCurrencyCode(),
@@ -77,17 +77,17 @@ class PXPostPayment implements PXPostPaymentInterface, StorableInterface
             'HelpText' => $this->getHelpText(),
             'ResponseCode' => $this->getResponseCode(),
             'SettlementDate' => $this->getSettlementDate(),
-			'ParentID' => $this->parentReference
+            'ParentID' => $this->parentReference
         );
-        
+
         $data['parent'] = true;
-        
+
         $data['related'] = false;
 
         return $data;
-        
+
     }
-    
+
     /**
      * @todo document this
      * @return string

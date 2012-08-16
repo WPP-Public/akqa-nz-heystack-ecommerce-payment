@@ -73,7 +73,7 @@ class ContainerExtension extends ContainerExtensionConfigProcessor implements Ex
 
            $container->getDefinition(Services::PAYMENT_HANDLER)->addMethodCall('setConfig', array($config['config']));
 
-        }else{
+        } else {
             throw new \Exception('Please configure the payment subsystem on your /mysite/config/services.yml file');
         }
     }
