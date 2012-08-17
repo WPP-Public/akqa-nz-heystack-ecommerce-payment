@@ -15,7 +15,7 @@ class OutputProcessor implements ProcessorInterface
      */
     protected $paymentService;
 
-    function __construct(PaymentServiceInterface $paymentService)
+    public function __construct(PaymentServiceInterface $paymentService)
     {
         $this->paymentService = $paymentService;
     }
@@ -27,7 +27,7 @@ class OutputProcessor implements ProcessorInterface
 
     public function process(\Controller $controller, $result = null)
     {
-        
+
     }
 
 }

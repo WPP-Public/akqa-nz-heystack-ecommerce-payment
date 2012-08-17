@@ -51,7 +51,7 @@ class Service implements PaymentServiceInterface
      * @var array
      */
     protected $data = array();
-    
+
     /**
      * Hold the soap client used for connections with DPS
      * @var \SoapClient
@@ -88,94 +88,94 @@ class Service implements PaymentServiceInterface
             'Wsdl'
         );
     }
-    
+
     protected function validateConfig($config)
     {
-        
+
         if (!in_array($config['Type'], array(
             'Auth-Complete',
             'Purchase'
         ))) {
-            
+
             throw new ConfigurationException("{$config['Type']} is not a valid Type for this payment handler");
-            
+
         }
-        
+
         if (!\Director::is_absolute_url($config['Wsdl'])) {
-            
+
             throw new ConfigurationException("Wsdl needs to be an absolute url");
-            
+
         }
-        
+
     }
-    
+
     public function getType()
     {
-        
+
         return isset($this->data[self::CONFIG_KEY]['Type']) ? $this->data[self::CONFIG_KEY]['Type'] : false;
-        
+
     }
-    
+
     public function setType($type)
     {
-        
+
         $this->data[self::CONFIG_KEY]['Type'] = $type;
-        
+
         $this->validateConfig($this->data[self::CONFIG_KEY]);
-        
+
     }
-    
+
     public function getReturnUrl()
     {
-        
+
         switch ($this->data[self::CONFIG_KEY]['Type']) {
-            
+
             case 'Auth-Complete':
                 return \Director::absoluteURL(\EcommerceInputController::$url_segment . '/process/' . InputProcessor::IDENTIFIER . '/auth');
             case 'Purchase':
                 return \Director::absoluteURL(\EcommerceInputController::$url_segment . '/process/' . InputProcessor::IDENTIFIER . '/purchase');
-            
+
         }
-        
+
     }
-    
+
     protected function getTxnType()
     {
-        
+
         switch ($this->data[self::CONFIG_KEY]['Type']) {
-            
+
             case 'Auth-Complete':
                 return 'Auth';
             case 'Purchase':
                 return 'Purchase';
-            
+
         }
-        
+
     }
-    
+
     public function getSoapClient()
     {
-        
+
         if (!$this->soapClient) {
-            
+
             $this->soapClient = new \SoapClient(
                 $this->data[self::CONFIG_KEY]['Wsdl'],
                 array(
                     'soap_version' => SOAP_1_1
                 )
             );
-            
+
         }
-        
+
         return $this->soapClient;
-        
+
     }
-    
+
     public function getTransactionId()
     {
-        
+
         $soapClient = $this->getSoapClient();
-        
+
         $response = $soapClient->GetTransactionId(array(
                 'username' => $this->data[self::CONFIG_KEY]['Username'],
                 'password' => $this->data[self::CONFIG_KEY]['Password'],
@@ -188,15 +188,15 @@ class Service implements PaymentServiceInterface
                     //TODO add txnRef
                 )
         ));
-        
+
         if (is_object($response) && $response->GetTransactionIdResult && $response->GetTransactionIdResult->success) {
-            
+
             return $response->GetTransactionIdResult->sessionId;
-            
+
         }
-        
+
         return false;
-        
+
     }
 
     /**

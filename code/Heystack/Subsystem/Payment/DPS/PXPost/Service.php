@@ -131,12 +131,12 @@ class Service implements PaymentServiceInterface
             self::MERCHANT_REFERENCE_PREFIX
         );
     }
-    
+
     public function validateConfig()
     {
-        
+
         //TODO: Do some validation
-        
+
     }
 
     /**
@@ -207,7 +207,7 @@ class Service implements PaymentServiceInterface
         $data = $this->prepareDataForPayment();
 
         $payment = new $this->paymentClass();
-        
+
         if (!$payment instanceof PaymentInterface) {
             throw new ConfigurationException($this->paymentClass . ' must implement PaymentInterface');
         }

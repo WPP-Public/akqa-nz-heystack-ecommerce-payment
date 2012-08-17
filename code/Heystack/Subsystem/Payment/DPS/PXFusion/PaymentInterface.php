@@ -20,5 +20,5 @@ use Heystack\Subsystem\Payment\DPS\PaymentInterface as DPSPaymentInterface;
  */
 interface PaymentInterface extends DPSPaymentInterface
 {
-    
+
 }

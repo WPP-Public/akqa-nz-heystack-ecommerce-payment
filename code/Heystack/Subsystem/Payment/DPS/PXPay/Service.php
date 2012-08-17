@@ -24,14 +24,14 @@ use Heystack\Subsystem\Payment\Interfaces\PaymentServiceInterface;
  * @package Heystack
  *
  */
-class PXPayHandler implements PaymentServiceInterface
+class Service implements PaymentServiceInterface
 {
 
-    function __construct()
+    public function __construct()
     {
-        
+
         throw new \Exception('PXPay is not yet implemented');
-        
+
     }
 
 }

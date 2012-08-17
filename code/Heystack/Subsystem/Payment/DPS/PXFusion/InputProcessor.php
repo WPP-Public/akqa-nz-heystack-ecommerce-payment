@@ -6,7 +6,7 @@ use Heystack\Subsystem\Core\Input\ProcessorInterface;
 
 class InputProcessor implements ProcessorInterface
 {
-    
+
     const IDENTIFIER = 'dps_fusion';
 
     /**
@@ -15,7 +15,7 @@ class InputProcessor implements ProcessorInterface
      */
     protected $paymentService;
 
-    function __construct(PaymentServiceInterface $paymentService)
+    public function __construct(PaymentServiceInterface $paymentService)
     {
         $this->paymentService = $paymentService;
     }
@@ -27,20 +27,20 @@ class InputProcessor implements ProcessorInterface
 
     public function process(\SS_HTTPRequest $request)
     {
-        
+
         $httpMethod = $request->httpMethod();
-        
+
         if ($httpMethod == 'POST' && $request->param('ID') == 'complete') {
-            
+
             //Complete the transaction
             $this->paymentService->completeTransaction();
-            
+
         } elseif ($httpMethod == 'GET' && $request->param('ID') == 'return') {
-            
+
             $this->paymentService->checkTransaction();
-            
+
         }
-        
+
     }
 
 }

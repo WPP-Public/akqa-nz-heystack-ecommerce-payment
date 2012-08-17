@@ -6,5 +6,5 @@ use Heystack\Subsystem\Payment\Interfaces\PaymentServiceInterface as DefaultPaym
 
 interface PaymentServiceInterface extends DefaultPaymentServiceInterface
 {
-    
+
 }
