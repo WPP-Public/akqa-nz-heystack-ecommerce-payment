@@ -144,4 +144,18 @@ class PXFusionTest extends \PHPUnit_Framework_TestCase
         
     }
     
+    public function testGetTransactionId()
+    {
+        
+        $this->paymentService->setConfig(array(
+            'Type' => 'Purchase',
+            'Username' => 'HeydayPXFDev',
+            'Password' => 'test1234',
+            'Wsdl' => 'https://sec2.paymentexpress.com/pxf/pxf.svc?wsdl'
+        ));
+        
+        $this->assertInternalType('string', $this->paymentService->getTransactionId());
+        
+    }
+    
 }

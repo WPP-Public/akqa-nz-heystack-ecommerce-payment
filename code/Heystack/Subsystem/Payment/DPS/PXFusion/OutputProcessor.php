@@ -11,13 +11,13 @@ class OutputProcessor implements ProcessorInterface
 
     /**
      * Holds the payment handler
-     * @var \Heystack\Subsystem\Payment\DPS\PXFusion\PaymentHandlerInterface
+     * @var \Heystack\Subsystem\Payment\DPS\PXFusion\PaymentServiceInterface
      */
-    protected $paymentHandler;
+    protected $paymentService;
 
-    function __construct(PaymentHandlerInterface $paymentHandler)
+    function __construct(PaymentServiceInterface $paymentService)
     {
-        $this->paymentHandler = $paymentHandler;
+        $this->paymentService = $paymentService;
     }
 
     public function getIdentifier()

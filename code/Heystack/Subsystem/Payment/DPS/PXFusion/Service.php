@@ -12,7 +12,6 @@ namespace Heystack\Subsystem\Payment\DPS\PXFusion;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-use Heystack\Subsystem\Payment\Interfaces\PaymentHandlerInterface;
 use Heystack\Subsystem\Payment\Traits\PaymentConfigTrait;
 
 use Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface;
@@ -25,7 +24,7 @@ use Heystack\Subsystem\Core\Exception\ConfigurationException;
  * @copyright  Heyday
  * @package Ecommerce-Payment
  */
-class Service implements PaymentHandlerInterface
+class Service implements PaymentServiceInterface
 {
 
     use PaymentConfigTrait;
@@ -52,6 +51,12 @@ class Service implements PaymentHandlerInterface
      * @var array
      */
     protected $data = array();
+    
+    /**
+     * Hold the soap client used for connections with DPS
+     * @var \SoapClient
+     */
+    protected $soapClient;
 
     /**
      * Creates the PxFusionHandler object
@@ -147,6 +152,52 @@ class Service implements PaymentHandlerInterface
         }
         
     }
+    
+    public function getSoapClient()
+    {
+        
+        if (!$this->soapClient) {
+            
+            $this->soapClient = new \SoapClient(
+                $this->data[self::CONFIG_KEY]['Wsdl'],
+                array(
+                    'soap_version' => SOAP_1_1
+                )
+            );
+            
+        }
+        
+        return $this->soapClient;
+        
+    }
+    
+    public function getTransactionId()
+    {
+        
+        $soapClient = $this->getSoapClient();
+        
+        $response = $soapClient->GetTransactionId(array(
+                'username' => $this->data[self::CONFIG_KEY]['Username'],
+                'password' => $this->data[self::CONFIG_KEY]['Password'],
+                'tranDetail' => array(
+                    'txnType' => $this->getTxnType(),
+                    'currency' => 'NZD', //TODO
+                    'amount' => '1.00', //TODO
+                    'returnUrl' => $this->getReturnUrl()
+                    //TODO add merchant ref is exists
+                    //TODO add txnRef
+                )
+        ));
+        
+        if (is_object($response) && $response->GetTransactionIdResult && $response->GetTransactionIdResult->success) {
+            
+            return $response->GetTransactionIdResult->sessionId;
+            
+        }
+        
+        return false;
+        
+    }
 
     /**
      * Saves the data that comes from the payment form submission for later use
@@ -183,8 +234,6 @@ class Service implements PaymentHandlerInterface
      */
     public function executePayment($transactionID)
     {
-        
-        $soapClient = new \SoapClient($this->wsdl, array('soap_version' => SOAP_1_1));
 
     }
 

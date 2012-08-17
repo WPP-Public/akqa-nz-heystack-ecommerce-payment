@@ -22,7 +22,7 @@ use Heystack\Subsystem\Core\State\State;
 
 use Heystack\Subsystem\Payment\Events\PaymentEvent;
 
-use Heystack\Subsystem\Payment\Interfaces\PaymentHandlerInterface;
+use Heystack\Subsystem\Payment\Interfaces\PaymentServiceInterface;
 
 use Heystack\Subsystem\Core\Storage\Backends\SilverStripeOrm\Backend;
 
@@ -46,7 +46,7 @@ class Subscriber implements EventSubscriberInterface
 
     /**
      * Holds the PaymentHandler service
-     * @var \Heystack\Subsystem\Payment\Interfaces\PaymentHandlerInterface
+     * @var \Heystack\Subsystem\Payment\Interfaces\PaymentServiceInterface
      */
     protected $paymentHandler;
 
@@ -65,10 +65,10 @@ class Subscriber implements EventSubscriberInterface
     /**
      * Creates the Subscriber object
      * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface    $eventService
-     * @param \Heystack\Subsystem\Payment\Interfaces\PaymentHandlerInterface $paymentHandler
+     * @param \Heystack\Subsystem\Payment\Interfaces\PaymentServiceInterface $paymentHandler
      * @param \Heystack\Subsystem\Core\State\State                           $state
      */
-    public function __construct(EventDispatcherInterface $eventService, PaymentHandlerInterface $paymentHandler, State $state, Storage $storageService)
+    public function __construct(EventDispatcherInterface $eventService, PaymentServiceInterface $paymentHandler, State $state, Storage $storageService)
     {
         $this->eventService = $eventService;
         $this->paymentHandler = $paymentHandler;

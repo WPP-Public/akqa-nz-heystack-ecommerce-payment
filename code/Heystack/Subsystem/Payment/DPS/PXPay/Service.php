@@ -11,7 +11,7 @@
 
 namespace Heystack\Subsystem\Payment\DPS\PXPay;
 
-use Heystack\Subsystem\Payment\Interfaces\PaymentHandlerInterface;
+use Heystack\Subsystem\Payment\Interfaces\PaymentServiceInterface;
 
 /**
  * PXPayHandler allows for payments to be handled through the PXPay interface
@@ -24,7 +24,7 @@ use Heystack\Subsystem\Payment\Interfaces\PaymentHandlerInterface;
  * @package Heystack
  *
  */
-class PXPayHandler implements PaymentHandlerInterface
+class PXPayHandler implements PaymentServiceInterface
 {
 
     function __construct()

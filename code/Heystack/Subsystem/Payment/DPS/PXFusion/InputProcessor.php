@@ -11,13 +11,13 @@ class InputProcessor implements ProcessorInterface
 
     /**
      * Holds the payment handler
-     * @var \Heystack\Subsystem\Payment\Interfaces\PaymentHandlerInterface
+     * @var \Heystack\Subsystem\Payment\Interfaces\PaymentServiceInterface
      */
-    protected $paymentHandler;
+    protected $paymentService;
 
-    function __construct(PaymentHandlerInterface $paymentHandler)
+    function __construct(PaymentServiceInterface $paymentService)
     {
-        $this->paymentHandler = $paymentHandler;
+        $this->paymentService = $paymentService;
     }
 
     public function getIdentifier()
@@ -32,11 +32,12 @@ class InputProcessor implements ProcessorInterface
         
         if ($httpMethod == 'POST' && $request->param('ID') == 'complete') {
             
-            
+            //Complete the transaction
+            $this->paymentService->completeTransaction();
             
         } elseif ($httpMethod == 'GET' && $request->param('ID') == 'return') {
             
-//            $this->paymentHandler->
+            $this->paymentService->checkTransaction();
             
         }
         

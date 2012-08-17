@@ -17,7 +17,7 @@ namespace Heystack\Subsystem\Payment\Interfaces;
  * @author Glenn Bautista <glenn@heyday.co.nz>
  * @package Ecommerce-Payment
  */
-interface PaymentHandlerInterface
+interface PaymentServiceInterface
 {
     /**
      * Sets the configuration on the PaymentHandler

@@ -13,7 +13,7 @@ namespace Heystack\Subsystem\Payment\DPS\PXPost;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 use Heystack\Subsystem\Payment\DPS\PXPost\PaymentInterface;
-use Heystack\Subsystem\Payment\Interfaces\PaymentHandlerInterface;
+use Heystack\Subsystem\Payment\Interfaces\PaymentServiceInterface;
 use Heystack\Subsystem\Payment\Traits\PaymentConfigTrait;
 use Heystack\Subsystem\Payment\Events;
 use Heystack\Subsystem\Payment\Events\PaymentEvent;
@@ -34,7 +34,7 @@ use Heystack\Subsystem\Core\Exception\ConfigurationException;
  * @author Cam Spiers <cameron@heyday.co.nz>
  * @package Ecommerce-Payment
  */
-class Service implements PaymentHandlerInterface
+class Service implements PaymentServiceInterface
 {
     use PaymentConfigTrait;
 
