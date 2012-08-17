@@ -10,6 +10,8 @@
  */
 namespace Heystack\Subsystem\Payment\Traits;
 
+use Heystack\Subsystem\Core\Exception\ConfigurationException;
+
 /**
  * Provides an implementation of setting and getting the configuration for use on a PaymentHandler class
  *
@@ -26,6 +28,11 @@ trait PaymentConfigTrait
     abstract protected function getRequiredConfigParameters();
 
     /**
+     * Validates config
+     */
+    abstract protected function validateConfig($config);
+
+    /**
      * Sets an array of config parameters onto the data array.
      * Checks to see if all the required parameters are present.
      * @param  array      $config
@@ -39,8 +46,9 @@ trait PaymentConfigTrait
             foreach ($config as $key => $value) {
                 $this->data[self::CONFIG_KEY][$key] = $value;
             }
+            $this->validateConfig($config);
         } else {
-            throw new \Exception('The following settings are missing: ' . implode(', ', $missing));
+            throw new ConfigurationException('The following settings are missing: ' . implode(', ', $missing));
         }
     }
 

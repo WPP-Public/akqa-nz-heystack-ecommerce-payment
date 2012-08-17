@@ -18,6 +18,8 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 use Heystack\Subsystem\Core\ContainerExtensionConfigProcessor;
 
+use Heystack\Subsystem\Core\ConfigurationException;
+
 /**
  * Container extension for Heystack.
  *
@@ -74,7 +76,7 @@ class ContainerExtension extends ContainerExtensionConfigProcessor implements Ex
            $container->getDefinition(Services::PAYMENT_HANDLER)->addMethodCall('setConfig', array($config['config']));
 
         } else {
-            throw new \Exception('Please configure the payment subsystem on your /mysite/config/services.yml file');
+            throw new ConfigurationException('Please configure the payment subsystem on your /mysite/config/services.yml file');
         }
     }
 

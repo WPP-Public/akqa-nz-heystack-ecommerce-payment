@@ -8,7 +8,7 @@
 /**
  * Output namespace
  */
-namespace Heystack\Subsystem\Payment\DPS\Output;
+namespace Heystack\Subsystem\Payment\DPS\PXPost;
 
 use Heystack\Subsystem\Core\Output\ProcessorInterface;
 
@@ -22,7 +22,7 @@ use Heystack\Subsystem\Core\Output\ProcessorInterface;
  * @package Ecommerce-Payment
  *
  */
-class Processor implements ProcessorInterface
+class OutputProcessor implements ProcessorInterface
 {
     /**
      * Returns the identifier for this object
@@ -30,7 +30,7 @@ class Processor implements ProcessorInterface
      */
     public function getIdentifier()
     {
-        return 'dps';
+        return 'dps_post';
     }
 
     /**

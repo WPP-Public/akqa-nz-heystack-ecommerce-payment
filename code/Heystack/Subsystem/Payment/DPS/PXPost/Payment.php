@@ -8,20 +8,20 @@
 /**
  * DPS namespace
  */
-namespace Heystack\Subsystem\Payment\DPS\Storage;
+namespace Heystack\Subsystem\Payment\DPS\PXPost;
 
-use Heystack\Subsystem\Payment\DPS\Interfaces\PXPostPaymentInterface;
+use Heystack\Subsystem\Payment\DPS\PXPost\PaymentInterface;
 
 use Heystack\Subsystem\Payment\Traits\PaymentTrait;
-use Heystack\Subsystem\Payment\DPS\Traits\DPSPaymentTrait;
-use Heystack\Subsystem\Payment\DPS\Traits\PXPostPaymentTrait;
+use Heystack\Subsystem\Payment\DPS\PaymentTrait as DPSPaymentTrait;
+use Heystack\Subsystem\Payment\DPS\PXPost\PaymentTrait as PXPostPaymentTrait;
 
 use Heystack\Subsystem\Core\Storage\StorableInterface;
 use Heystack\Subsystem\Core\Storage\Backends\SilverStripeOrm\Backend;
 use Heystack\Subsystem\Core\Storage\Traits\ParentReferenceTrait;
 
 /**
- * PXPostPayment stores information about payments made with the PXPost method
+ * Payment stores information about payments made with the PXPost method
  *
  * @copyright  Heyday
  * @author Glenn Bautista <glenn@heyday.co.nz>
@@ -29,7 +29,7 @@ use Heystack\Subsystem\Core\Storage\Traits\ParentReferenceTrait;
  * @package Heystack
  *
  */
-class PXPostPayment implements PXPostPaymentInterface, StorableInterface
+class Payment implements PaymentInterface, StorableInterface
 {
     use PaymentTrait;
     use DPSPaymentTrait;

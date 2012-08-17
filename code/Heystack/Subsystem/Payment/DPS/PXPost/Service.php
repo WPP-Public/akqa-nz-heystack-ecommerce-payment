@@ -8,11 +8,11 @@
 /**
  * DPS namespace
  */
-namespace Heystack\Subsystem\Payment\DPS;
+namespace Heystack\Subsystem\Payment\DPS\PXPost;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-use Heystack\Subsystem\Payment\DPS\Interfaces\PXPostPaymentInterface;
+use Heystack\Subsystem\Payment\DPS\PXPost\PaymentInterface;
 use Heystack\Subsystem\Payment\Interfaces\PaymentHandlerInterface;
 use Heystack\Subsystem\Payment\Traits\PaymentConfigTrait;
 use Heystack\Subsystem\Payment\Events;
@@ -20,6 +20,8 @@ use Heystack\Subsystem\Payment\Events\PaymentEvent;
 
 use Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface;
 use Heystack\Subsystem\Ecommerce\Transaction\Events as TransactionEvents;
+
+use Heystack\Subsystem\Core\Exception\ConfigurationException;
 
 /**
  * Contains the main logic for creating Payment objects as well as interfacing
@@ -29,9 +31,10 @@ use Heystack\Subsystem\Ecommerce\Transaction\Events as TransactionEvents;
  * @copyright  Heyday
  * @author Glenn Bautista <glenn@heyday.co.nz>
  * @author Stevie Mayhew <stevie@heyday.co.nz>
+ * @author Cam Spiers <cameron@heyday.co.nz>
  * @package Ecommerce-Payment
  */
-class PXPostHandler implements PaymentHandlerInterface
+class Service implements PaymentHandlerInterface
 {
     use PaymentConfigTrait;
 
@@ -128,6 +131,13 @@ class PXPostHandler implements PaymentHandlerInterface
             self::MERCHANT_REFERENCE_PREFIX
         );
     }
+    
+    public function validateConfig()
+    {
+        
+        //TODO: Do some validation
+        
+    }
 
     /**
      * Saves the data that comes from the payment form submission for later use
@@ -180,7 +190,7 @@ class PXPostHandler implements PaymentHandlerInterface
         if (!count($missing)) {
             return true;
         } else {
-            throw new \Exception('The following required fields are missing: ' . implode(', ', $missing));
+            throw new ConfigurationException('The following required fields are missing: ' . implode(', ', $missing));
         }
 
         return false;
@@ -197,8 +207,9 @@ class PXPostHandler implements PaymentHandlerInterface
         $data = $this->prepareDataForPayment();
 
         $payment = new $this->paymentClass();
-        if (! $payment instanceof PXPostPaymentInterface) {
-            throw new \Exception($this->paymentClass . ' must implement PXPostPaymentInterface');
+        
+        if (!$payment instanceof PaymentInterface) {
+            throw new ConfigurationException($this->paymentClass . ' must implement PaymentInterface');
         }
 
         $payment->setAmount($data['Amount']);

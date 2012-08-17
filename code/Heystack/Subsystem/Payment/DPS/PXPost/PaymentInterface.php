@@ -8,7 +8,9 @@
 /**
  * Interfaces namespace
  */
-namespace Heystack\Subsystem\Payment\DPS\Interfaces;
+namespace Heystack\Subsystem\Payment\DPS\PXPost;
+
+use Heystack\Subsystem\Payment\DPS\PaymentInterface as DPSPaymentInterface;
 
 /**
  * Defines methods that need to be implemented by PXPostPayments
@@ -17,7 +19,7 @@ namespace Heystack\Subsystem\Payment\DPS\Interfaces;
  * @author Glenn Bautista <glenn@heyday.co.nz>
  * @package Ecommerce-Payment
  */
-interface PXPostPaymentInterface extends DPSPaymentInterface
+interface PaymentInterface extends DPSPaymentInterface
 {
     /**
      * Sets the XMLResponse on the Payment object

@@ -8,17 +8,17 @@
 /**
  * Traits namespace
  */
-namespace Heystack\Subsystem\Payment\DPS\Traits;
+namespace Heystack\Subsystem\Payment\DPS;
 
 /**
- * Provides an implementation for the DPSPaymentInterface for use on a Payment object
+ * Provides an implementation for the Heystack\Subsystem\Payment\DPS\PaymentInterface for use on a Payment object
  *
  * @copyright  Heyday
  * @author Glenn Bautista <glenn@heyday.co.nz>
  * @author Stevie Mayhew <stevie@heyday.co.nz>
  * @package Ecommerce-Payment
  */
-trait DPSPaymentTrait
+trait PaymentTrait
 {
     /**
      * Sets the TransactionReference on the Payment object

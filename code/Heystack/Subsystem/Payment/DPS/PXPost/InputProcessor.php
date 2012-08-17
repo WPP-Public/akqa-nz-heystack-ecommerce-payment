@@ -8,7 +8,7 @@
 /**
  * Input namespace
  */
-namespace Heystack\Subsystem\Payment\DPS\Input;
+namespace Heystack\Subsystem\Payment\DPS\PXPost;
 
 use Heystack\Subsystem\Core\Input\ProcessorInterface;
 use Heystack\Subsystem\Payment\Interfaces\PaymentHandlerInterface;
@@ -20,7 +20,7 @@ use Heystack\Subsystem\Payment\Interfaces\PaymentHandlerInterface;
  * @author Glenn Bautista <glenn@heyday.co.nz>
  * @package Ecommerce-Core
  */
-class Processor implements ProcessorInterface
+class InputProcessor implements ProcessorInterface
 {
     /**
      * Holds the payment handler
@@ -43,7 +43,7 @@ class Processor implements ProcessorInterface
      */
     public function getIdentifier()
     {
-        return 'dps';
+        return 'dps_post';
     }
 
     /**

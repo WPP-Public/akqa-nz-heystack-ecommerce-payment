@@ -8,7 +8,7 @@
 /**
  * Traits namespace
  */
-namespace Heystack\Subsystem\Payment\DPS\Traits;
+namespace Heystack\Subsystem\Payment\DPS\PXPost;
 
 /**
  * Provides an implementation for the PXPostPaymentInterface for use on a Payment object
@@ -18,7 +18,7 @@ namespace Heystack\Subsystem\Payment\DPS\Traits;
  * @author Stevie Mayhew <stevie@heyday.co.nz>
  * @package Ecommerce-Payment
  */
-trait PXPostPaymentTrait
+trait PaymentTrait
 {
     /**
      * Sets the XMLResponse on the Payment object

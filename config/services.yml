@@ -1,7 +1,7 @@
 parameters:
-  payment_handler.class: Heystack\Subsystem\Payment\DPS\PXPostHandler
-  payment_input_processor.class: Heystack\Subsystem\Payment\DPS\Input\Processor
-  payment_output_processor.class: Heystack\Subsystem\Payment\DPS\Output\Processor
+  payment_handler.class: Heystack\Subsystem\Payment\DPS\PXPost\Service
+  payment_input_processor.class: Heystack\Subsystem\Payment\DPS\PXPost\InputProcessor
+  payment_output_processor.class: Heystack\Subsystem\Payment\DPS\PXPost\OutputProcessor
   payment_subscriber.class: Heystack\Subsystem\Payment\Subscriber
   payment.class: $$$
   

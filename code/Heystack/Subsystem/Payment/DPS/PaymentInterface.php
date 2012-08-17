@@ -8,9 +8,9 @@
 /**
  * Interfaces namespace
  */
-namespace Heystack\Subsystem\Payment\DPS\Interfaces;
+namespace Heystack\Subsystem\Payment\DPS;
 
-use \Heystack\Subsystem\Payment\Interfaces\PaymentInterface;
+use \Heystack\Subsystem\Payment\Interfaces\PaymentInterface as DefaultPaymentInterface;
 
 /**
  * Defines methods that need to be implemented by DPSPayments
@@ -19,7 +19,7 @@ use \Heystack\Subsystem\Payment\Interfaces\PaymentInterface;
  * @author Glenn Bautista <glenn@heyday.co.nz>
  * @package Ecommerce-Payment
  */
-interface DPSPaymentInterface extends PaymentInterface
+interface PaymentInterface extends DefaultPaymentInterface
 {
     /**
      * Sets the TransactionReference on the Payment object
