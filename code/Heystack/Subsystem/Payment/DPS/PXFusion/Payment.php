@@ -10,9 +10,7 @@
  */
 namespace Heystack\Subsystem\Payment\DPS\PXFusion;
 
-use Heystack\Subsystem\Core\Storage\StorableInterface;
-
-class Payment implements PaymentInterface, StorableInterface
+class Payment
 {
 
 }
