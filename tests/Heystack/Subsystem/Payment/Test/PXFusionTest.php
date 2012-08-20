@@ -16,7 +16,7 @@ class PXFusionTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
 
-        $this->paymentService = new Service('TestPXFusionPayment', new TestTransaction(), new EventDispatcher());
+        $this->paymentService = new Service('TestPXFusionPayment', new EventDispatcher(), new TestTransaction());
 
     }
 

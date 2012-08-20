@@ -1,10 +1,6 @@
 <?php
 
-chdir(dirname(dirname(__DIR__)) . '/sapphire');
-
-$_SERVER['SCRIPT_FILENAME'] = getcwd() . '/main.php';
-
-require_once 'core/Core.php';
+define('HEYSTACK_BASE_PATH', dirname(__DIR__));
 
 if (file_exists(HEYSTACK_BASE_PATH . '/vendor/autoload.php')) {
 
@@ -19,3 +15,6 @@ if (file_exists(HEYSTACK_BASE_PATH . '/vendor/autoload.php')) {
 $loader->add('Heystack\Subsystem\Payment\Test', __DIR__);
 
 define('UNIT_TESTING', true);
+
+\Director::setBaseURL('http://localhost/');
+

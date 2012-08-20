@@ -1,0 +1,59 @@
+{
+    "hash": "24c0337fd896b29e7ddcf44e6c64e45c",
+    "packages": [
+        {
+            "package": "composer/installers",
+            "version": "dev-master",
+            "source-reference": "2cc9ad106e2a617adba8fd0f948e8873297efd3b",
+            "commit-date": "1344721334"
+        }
+    ],
+    "packages-dev": [
+        {
+            "package": "heystack/ecommerce-core",
+            "version": "dev-develop",
+            "source-reference": "d5b79713d35621dda912b5ed3241ba3ab3dda4c6",
+            "commit-date": "1345437196"
+        },
+        {
+            "package": "heystack/heystack",
+            "version": "dev-develop",
+            "source-reference": "67e4391275e39e741ac22261cae3d11e8c62710f",
+            "commit-date": "1345436566"
+        },
+        {
+            "package": "monolog/monolog",
+            "version": "dev-multi-line-formatter",
+            "source-reference": "264b7f7199e6eda9e54614e305083f846a371d58",
+            "commit-date": "1344469397"
+        },
+        {
+            "package": "silverstripe/sapphire",
+            "version": "2.4.7"
+        },
+        {
+            "package": "symfony/config",
+            "version": "v2.0.16"
+        },
+        {
+            "package": "symfony/dependency-injection",
+            "version": "v2.0.16"
+        },
+        {
+            "package": "symfony/event-dispatcher",
+            "version": "v2.0.16"
+        },
+        {
+            "package": "symfony/yaml",
+            "version": "v2.0.16"
+        }
+    ],
+    "aliases": [
+
+    ],
+    "minimum-stability": "dev",
+    "stability-flags": {
+        "heystack/heystack": 20,
+        "heystack/ecommerce-core": 20
+    }
+}
