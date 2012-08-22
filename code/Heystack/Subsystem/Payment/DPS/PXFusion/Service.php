@@ -30,9 +30,35 @@ class Service implements PaymentServiceInterface
     use PaymentConfigTrait;
 
     /**
-     * Holds the key for storing configuration settings on the data array
+     * Auth-Complete type. This should be used when you want to authorise an amount (or just $1) to either verify a card
+     * or alternatively avoid holding credit card data on the server for a later transaction
      */
-    const CONFIG_KEY = 'configkey';
+    const TYPE_AUTH_COMPLETE = 'Auth-Complete';
+
+    /**
+     * Purchase type. This type should be used when you want to immediately take money from the credit card.
+     */
+    const TYPE_PURCHASE = 'Purchase';
+
+    /**
+     * Txn type auth. This is txnType used in the soap call when using Auth-Complete
+     */
+    const TXN_TYPE_AUTH = 'Auth';
+
+    /**
+     * Txn type purchase. This is the txnType used in the soap call when using Purchase
+     */
+    const TXN_TYPE_PURCHASE = 'Purchase';
+
+    /**
+     * Auth stage for the Auth-Complete payment cycle
+     */
+    const STAGE_AUTH = 'Auth';
+
+    /**
+     * Complete stage for the Auth-Complete payment cycle
+     */
+    const STAGE_COMPLETE = 'Complete';
 
     /**
      * Holds the Event Dispatcher service
@@ -61,17 +87,51 @@ class Service implements PaymentServiceInterface
     /**
      * @var string
      */
-    protected $stage = 'Auth';
+    protected $stage = self::STAGE_AUTH;
 
     /**
+     * This is the amount of money authorised in the Auth-Complete payment type
      * @var int
      */
     protected $authAmount = 1;
 
     /**
+     * If testing last request data is needed form soap calls thi should be set to true
      * @var bool
      */
     protected $testing = false;
+
+    /**
+     * Any additional information to be passed to dps in the soap request
+     * @var array
+     */
+    protected $additionalConfig = array();
+
+    /**
+     * Stores a list of allowed additional config params
+     * @var array
+     */
+    protected $allowedAdditionalConfig = array(
+        'enableAddBillCard',
+        'avsAction',
+        'avsPostCode',
+        'avsStreetAddress',
+        'billingId',
+        'token billing',
+        'dateStart',
+        'enableAvsData',
+        'enablePaxInfo',
+        'merchantReference',
+        'paxDateDepart',
+        'paxName',
+        'paxOrigin',
+        'paxTicketNumber',
+        'paxTravelAgentInfo',
+        'timeout',
+        'txnData1',
+        'txnData2',
+        'txnData3'
+    );
 
     /**
      * Creates the PxFusionHandler object
@@ -97,7 +157,7 @@ class Service implements PaymentServiceInterface
     protected function getRequiredConfigParameters()
     {
         return array(
-            'Type', //Auth-Complete, Purchase
+            'Type',
             'Username',
             'Password',
             'Wsdl'
@@ -108,8 +168,8 @@ class Service implements PaymentServiceInterface
     {
 
         if (!in_array($config['Type'], array(
-            'Auth-Complete',
-            'Purchase'
+            self::TYPE_AUTH_COMPLETE,
+            self::TYPE_PURCHASE
         ))) {
 
             throw new ConfigurationException("{$config['Type']} is not a valid Type for this payment handler");
@@ -127,44 +187,41 @@ class Service implements PaymentServiceInterface
     public function getType()
     {
 
-        return isset($this->data[self::CONFIG_KEY]['Type']) ? $this->data[self::CONFIG_KEY]['Type'] : false;
+        return isset($this->config['Type']) ? $this->config['Type'] : false;
 
     }
 
     public function setType($type)
     {
 
-        $this->data[self::CONFIG_KEY]['Type'] = $type;
+        $this->config['Type'] = $type;
 
-        $this->validateConfig($this->data[self::CONFIG_KEY]);
+        $this->validateConfig($this->config);
 
     }
 
     public function getReturnUrl()
     {
 
-        switch ($this->data[self::CONFIG_KEY]['Type']) {
+        switch ($this->config['Type']) {
 
-            case 'Auth-Complete':
+            case self::TYPE_AUTH_COMPLETE:
                 return \Director::absoluteURL(\EcommerceInputController::$url_segment . '/process/' . InputProcessor::IDENTIFIER . '/auth');
-            case 'Purchase':
+            case self::TYPE_PURCHASE:
                 return \Director::absoluteURL(\EcommerceInputController::$url_segment . '/process/' . InputProcessor::IDENTIFIER . '/purchase');
 
         }
 
     }
 
-    protected function getTxnType()
+    public function getTxnType()
     {
 
-        switch ($this->getType()) {
-
-            case 'Auth-Complete':
-                return $this->getStage() == 'Auth' ? 'Auth' : 'Purchase';
-            case 'Purchase':
-                return 'Purchase';
-
+        if ($this->getType() == self::TYPE_AUTH_COMPLETE && $this->getStage() == self::STAGE_AUTH) {
+            return self::TXN_TYPE_AUTH;
         }
+
+        return self::TXN_TYPE_PURCHASE;
 
     }
 
@@ -174,7 +231,7 @@ class Service implements PaymentServiceInterface
         if (!$this->soapClient) {
 
             $this->soapClient = new \SoapClient(
-                $this->data[self::CONFIG_KEY]['Wsdl'],
+                $this->config['Wsdl'],
                 array(
                     'soap_version' => SOAP_1_1,
                     'trace' => $this->getTesting()
@@ -193,16 +250,16 @@ class Service implements PaymentServiceInterface
         $soapClient = $this->getSoapClient();
 
         $configuration = array(
-            'username' => $this->data[self::CONFIG_KEY]['Username'],
-            'password' => $this->data[self::CONFIG_KEY]['Password'],
-            'tranDetail' => array(
+            'username' => $this->config['Username'],
+            'password' => $this->config['Password'],
+            'tranDetail' => array_merge(array(
                 'txnType' => $this->getTxnType(),
                 'currency' => $this->transaction->getCurrencyCode(),
                 'amount' => $this->getAmount(),
                 'returnUrl' => $this->getReturnUrl()
                 //TODO add merchant ref is exists
                 //TODO add txnRef
-            )
+            ), $this->getAdditionalConfig())
         );
 
         $response = $soapClient->GetTransactionId($configuration);
@@ -262,9 +319,9 @@ class Service implements PaymentServiceInterface
      */
     public function setStage($stage)
     {
-        if (in_array($stage, array(
-            'Auth',
-            'Complete'
+        if ($this->getType() == self::TYPE_AUTH_COMPLETE && in_array($stage, array(
+            self::STAGE_AUTH,
+            self::STAGE_COMPLETE
         ))) {
             $this->stage = $stage;
         } else {
@@ -329,6 +386,40 @@ class Service implements PaymentServiceInterface
     public function getTesting()
     {
         return $this->testing;
+    }
+
+    /**
+     * @param array $additionalConfig
+     */
+    public function setAdditionalConfig(array $additionalConfig)
+    {
+
+        $this->additionalConfig = array_flip(array_intersect(array_flip($additionalConfig), $this->allowedAdditionalConfig));
+
+    }
+
+    /**
+     * @return array
+     */
+    public function getAdditionalConfig()
+    {
+        return $this->additionalConfig;
+    }
+
+    /**
+     * @param array $allowedAdditionalConfig
+     */
+    public function setAllowedAdditionalConfig($allowedAdditionalConfig)
+    {
+        $this->allowedAdditionalConfig = $allowedAdditionalConfig;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllowedAdditionalConfig()
+    {
+        return $this->allowedAdditionalConfig;
     }
 
 }

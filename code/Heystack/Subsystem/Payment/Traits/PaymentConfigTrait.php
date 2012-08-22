@@ -21,6 +21,13 @@ use Heystack\Subsystem\Core\Exception\ConfigurationException;
  */
 trait PaymentConfigTrait
 {
+
+    /**
+     * Stores config for payment services
+     * @var array
+     */
+    protected $config = array();
+
     /**
      * Defines an array of required parameters used in setConfig
      * @return array
@@ -36,7 +43,7 @@ trait PaymentConfigTrait
      * Sets an array of config parameters onto the data array.
      * Checks to see if all the required parameters are present.
      * @param  array      $config
-     * @throws \Exception
+     * @throws ConfigurationException
      */
     public function setConfig(array $config)
     {
@@ -44,7 +51,7 @@ trait PaymentConfigTrait
 
         if (!count($missing)) {
             foreach ($config as $key => $value) {
-                $this->data[self::CONFIG_KEY][$key] = $value;
+                $this->config[$key] = $value;
             }
             $this->validateConfig($config);
         } else {
@@ -58,6 +65,6 @@ trait PaymentConfigTrait
      */
     public function getConfig()
     {
-        return isset($this->data[self::CONFIG_KEY]) ? $this->data[self::CONFIG_KEY] : null;
+        return $this->config;
     }
 }

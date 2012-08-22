@@ -131,7 +131,7 @@ class PXFusionTest extends \PHPUnit_Framework_TestCase
     {
 
         $this->paymentService->setConfig(array(
-            'Type' => 'Purchase',
+            'Type' => Service::TYPE_PURCHASE,
             'Username' => 'Test',
             'Password' => 'Test',
             'Wsdl' => 'http://test.com'
@@ -139,9 +139,50 @@ class PXFusionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('Purchase', $this->paymentService->getType());
 
-        $this->paymentService->setType('Auth-Complete');
+        $this->paymentService->setType(Service::TYPE_AUTH_COMPLETE);
 
         $this->assertEquals('Auth-Complete', $this->paymentService->getType());
+
+    }
+
+    public function testTxnType()
+    {
+
+        $this->paymentService->setConfig(array(
+            'Type' => 'Purchase',
+            'Username' => 'Test',
+            'Password' => 'Test',
+            'Wsdl' => 'http://test.com'
+        ));
+
+        $this->assertEquals('Purchase', $this->paymentService->getTxnType());
+
+        $test = null;
+
+        try {
+
+            $this->paymentService->setStage('Complete');
+
+        } catch (\Heystack\Subsystem\Core\Exception\ConfigurationException $e) {
+
+            $test = $e->getMessage();
+
+        }
+
+        $this->assertNotNull($test);
+
+        $this->paymentService->setConfig(array(
+            'Type' => 'Auth-Complete',
+            'Username' => 'Test',
+            'Password' => 'Test',
+            'Wsdl' => 'http://test.com'
+        ));
+
+        $this->assertEquals('Auth', $this->paymentService->getTxnType());
+
+        $this->paymentService->setStage('Complete');
+
+        $this->assertEquals('Purchase', $this->paymentService->getTxnType());
 
     }
 
@@ -165,6 +206,47 @@ class PXFusionTest extends \PHPUnit_Framework_TestCase
         ));
 
         $this->assertInternalType('string', $this->paymentService->getTransactionId());
+
+    }
+
+    public function testSetAdditionalConfig()
+    {
+
+        $this->paymentService->setAdditionalConfig(array(
+            'txnData1' => 'Hello',
+            'badKey' => 'bad'
+        ));
+
+        $this->assertEquals(array(
+            'txnData1' => 'Hello'
+        ), $this->paymentService->getAdditionalConfig());
+
+        $allowedKeys = array_flip($this->paymentService->getAllowedAdditionalConfig());
+
+        $this->paymentService->setAdditionalConfig($allowedKeys);
+
+        $this->assertEquals($allowedKeys, $this->paymentService->getAdditionalConfig());
+
+        $this->paymentService->setAllowedAdditionalConfig(array(
+            'badKey'
+        ));
+
+        $this->paymentService->setAllowedAdditionalConfig(array(
+            'badKey'
+        ));
+
+        $this->paymentService->setAdditionalConfig(array(
+            'txnData1' => 'Hello',
+            'badKey' => 'bad'
+        ));
+
+        $this->assertNotEquals(array(
+            'badKey' => 'Hello'
+        ), $this->paymentService->getAdditionalConfig());
+
+        $this->assertEquals(array(
+            'badKey' => 'bad'
+        ), $this->paymentService->getAdditionalConfig());
 
     }
 
