@@ -39,6 +39,10 @@ class InputProcessor implements ProcessorInterface
 
             $this->paymentService->checkTransaction();
 
+        } elseif ($httpMethod == 'GET' && $request->param('ID') == 'auth') {
+
+            $this->paymentService->checkTransaction();
+
         }
 
     }

@@ -59,6 +59,21 @@ class Service implements PaymentServiceInterface
     protected $soapClient;
 
     /**
+     * @var string
+     */
+    protected $stage = 'Auth';
+
+    /**
+     * @var int
+     */
+    protected $authAmount = 1;
+
+    /**
+     * @var bool
+     */
+    protected $testing = false;
+
+    /**
      * Creates the PxFusionHandler object
      * @param type                                                                      $paymentClass
      * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface               $eventService
@@ -142,10 +157,10 @@ class Service implements PaymentServiceInterface
     protected function getTxnType()
     {
 
-        switch ($this->data[self::CONFIG_KEY]['Type']) {
+        switch ($this->getType()) {
 
             case 'Auth-Complete':
-                return 'Auth';
+                return $this->getStage() == 'Auth' ? 'Auth' : 'Purchase';
             case 'Purchase':
                 return 'Purchase';
 
@@ -161,7 +176,8 @@ class Service implements PaymentServiceInterface
             $this->soapClient = new \SoapClient(
                 $this->data[self::CONFIG_KEY]['Wsdl'],
                 array(
-                    'soap_version' => SOAP_1_1
+                    'soap_version' => SOAP_1_1,
+                    'trace' => $this->getTesting()
                 )
             );
 
@@ -176,26 +192,30 @@ class Service implements PaymentServiceInterface
 
         $soapClient = $this->getSoapClient();
 
-        $response = $soapClient->GetTransactionId(array(
-                'username' => $this->data[self::CONFIG_KEY]['Username'],
-                'password' => $this->data[self::CONFIG_KEY]['Password'],
-                'tranDetail' => array(
-                    'txnType' => $this->getTxnType(),
-                    'currency' => 'NZD', //TODO
-                    'amount' => '1.00', //TODO
-                    'returnUrl' => $this->getReturnUrl()
-                    //TODO add merchant ref is exists
-                    //TODO add txnRef
-                )
-        ));
+        $configuration = array(
+            'username' => $this->data[self::CONFIG_KEY]['Username'],
+            'password' => $this->data[self::CONFIG_KEY]['Password'],
+            'tranDetail' => array(
+                'txnType' => $this->getTxnType(),
+                'currency' => $this->transaction->getCurrencyCode(),
+                'amount' => $this->getAmount(),
+                'returnUrl' => $this->getReturnUrl()
+                //TODO add merchant ref is exists
+                //TODO add txnRef
+            )
+        );
+
+        $response = $soapClient->GetTransactionId($configuration);
 
         if (is_object($response) && $response->GetTransactionIdResult && $response->GetTransactionIdResult->success) {
 
             return $response->GetTransactionIdResult->sessionId;
 
-        }
+        } else {
 
-        return false;
+            throw new Exception($soapClient->__getLastResponse(), $response, $configuration);
+
+        }
 
     }
 
@@ -235,6 +255,80 @@ class Service implements PaymentServiceInterface
     public function executePayment($transactionID)
     {
 
+    }
+
+    /**
+     * @param string $stage
+     */
+    public function setStage($stage)
+    {
+        if (in_array($stage, array(
+            'Auth',
+            'Complete'
+        ))) {
+            $this->stage = $stage;
+        } else {
+            throw new ConfigurationException('Auth and Complete are the only supported stages');
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getStage()
+    {
+        return $this->stage;
+    }
+
+    public function getAmount()
+    {
+
+        switch ($this->getTxnType()) {
+            case 'Auth':
+                return number_format($this->authAmount, 2);
+            default:
+                return number_format($this->transaction->getTotal(), 2);
+        }
+
+    }
+
+    public function completeTransaction()
+    {
+
+        $this->setStage('Complete');
+
+    }
+
+    /**
+     * @param int $authAmount
+     */
+    public function setAuthAmount($authAmount)
+    {
+        $this->authAmount = $authAmount;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAuthAmount()
+    {
+        return $this->authAmount;
+    }
+
+    /**
+     * @param boolean $testing
+     */
+    public function setTesting($testing)
+    {
+        $this->testing = $testing;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getTesting()
+    {
+        return $this->testing;
     }
 
 }

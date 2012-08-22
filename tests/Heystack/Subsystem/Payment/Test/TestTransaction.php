@@ -20,6 +20,8 @@ class TestTransaction implements TransactionInterface
     public function getCurrencyCode()
     {
 
+        return 'NZD';
+
     }
 
     public function getModifier($identifier)
@@ -39,6 +41,8 @@ class TestTransaction implements TransactionInterface
 
     public function getTotal()
     {
+
+        return 10;
 
     }
 

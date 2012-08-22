@@ -17,6 +17,7 @@ class PXFusionTest extends \PHPUnit_Framework_TestCase
     {
 
         $this->paymentService = new Service('TestPXFusionPayment', new EventDispatcher(), new TestTransaction());
+        $this->paymentService->setTesting(true);
 
     }
 
@@ -149,6 +150,15 @@ class PXFusionTest extends \PHPUnit_Framework_TestCase
 
         $this->paymentService->setConfig(array(
             'Type' => 'Purchase',
+            'Username' => 'HeydayPXFDev',
+            'Password' => 'test1234',
+            'Wsdl' => 'https://sec2.paymentexpress.com/pxf/pxf.svc?wsdl'
+        ));
+
+        $this->assertInternalType('string', $this->paymentService->getTransactionId());
+
+        $this->paymentService->setConfig(array(
+            'Type' => 'Auth-Complete',
             'Username' => 'HeydayPXFDev',
             'Password' => 'test1234',
             'Wsdl' => 'https://sec2.paymentexpress.com/pxf/pxf.svc?wsdl'
