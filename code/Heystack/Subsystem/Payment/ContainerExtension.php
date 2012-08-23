@@ -33,7 +33,7 @@ use Heystack\Subsystem\Core\ConfigurationException;
  * @package Ecommerce-Payment
  *
  */
-class ContainerExtension extends ContainerExtensionConfigProcessor implements ExtensionInterface
+class ContainerExtension implements ExtensionInterface
 {
 
     /**
@@ -55,29 +55,6 @@ class ContainerExtension extends ContainerExtensionConfigProcessor implements Ex
         $loader->load('services.yml');
 
         $this->processConfig($config, $container);
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * Adds the configuration for the payment handler.
-     *
-     * @param array                                                   $config
-     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
-     */
-    protected function processConfig(array $config, ContainerBuilder $container)
-    {
-        parent::processConfig($config, $container);
-
-        $config = array_pop($config);
-
-        if (isset($config['config']) &&  $container->hasDefinition(Services::PAYMENT_HANDLER)) {
-
-           $container->getDefinition(Services::PAYMENT_HANDLER)->addMethodCall('setConfig', array($config['config']));
-
-        } else {
-            throw new ConfigurationException('Please configure the payment subsystem on your /mysite/config/services.yml file');
-        }
     }
 
     /**

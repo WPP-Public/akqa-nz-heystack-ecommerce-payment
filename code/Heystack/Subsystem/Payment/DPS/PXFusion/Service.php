@@ -18,6 +18,8 @@ use Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface;
 
 use Heystack\Subsystem\Core\Exception\ConfigurationException;
 
+use Heystack\Subsystem\Payment\DPS\PXPost\Service as PXPostService;
+
 /**
  *
  *
@@ -134,20 +136,72 @@ class Service implements PaymentServiceInterface
     );
 
     /**
-     * Creates the PxFusionHandler object
+     * List of currencies supported by DPS
+     * @var array
+     */
+    protected $supportedCurrencies = array(
+        'CAD',
+        'CHF',
+        'DKK',
+        'EUR',
+        'FRF',
+        'GBP',
+        'HKD',
+        'JPY',
+        'NZD',
+        'SGD',
+        'THB',
+        'USD',
+        'ZAR',
+        'AUD',
+        'WST',
+        'VUV',
+        'TOP',
+        'SBD',
+        'PGK',
+        'MYR',
+        'KWD',
+        'FJD'
+    );
+
+    /**
+     * List of messages for each status code
+     * @var array
+     */
+    protected $statusMessages = array(
+        0 => 'Approved',
+        1 => 'Declined',
+        2 => 'Declined due to temporary error, please retry',
+        3 => 'There was an error with your transaction, please contact the site admin',
+        4 => 'Transaction result cannot be determined at this time (re-run GetTransaction)',
+        5 => 'Transaction did not proceed due to being attempted after timeout timestamp or having been cancelled by a CancelTransaction call',
+        6 => 'No transaction found (SessionId query failed to return a transaction record - transaction not yet attempted)'
+    );
+
+    protected $errorStatuses = array(
+        2, 3, 4, 5, 6
+    );
+
+    /**
+     * Creates the Service object
      * @param type                                                                      $paymentClass
      * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface               $eventService
      * @param \Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface $transaction
+     * @param \Heystack\Subsystem\Payment\DPS\PXPost\Service                            $pxPostService
      */
     public function __construct(
-            $paymentClass,
-            EventDispatcherInterface $eventService,
-            TransactionInterface $transaction
-    )
-    {
+        $paymentClass,
+        EventDispatcherInterface $eventService,
+        TransactionInterface $transaction,
+        PXPostService $pxPostService = null
+    ) {
         $this->paymentClass = $paymentClass;
         $this->eventService = $eventService;
         $this->transaction = $transaction;
+
+        if (!is_null($pxPostService)) {
+            $this->pxPostService = $pxPostService;
+        }
     }
 
     /**
@@ -254,11 +308,9 @@ class Service implements PaymentServiceInterface
             'password' => $this->config['Password'],
             'tranDetail' => array_merge(array(
                 'txnType' => $this->getTxnType(),
-                'currency' => $this->transaction->getCurrencyCode(),
+                'currency' => $this->getCurrencyCode(),
                 'amount' => $this->getAmount(),
                 'returnUrl' => $this->getReturnUrl()
-                //TODO add merchant ref is exists
-                //TODO add txnRef
             ), $this->getAdditionalConfig())
         );
 
@@ -273,6 +325,58 @@ class Service implements PaymentServiceInterface
             throw new Exception($soapClient->__getLastResponse(), $response, $configuration);
 
         }
+
+    }
+
+    public function checkTransaction($transactionID)
+    {
+
+        $soapClient = $this->getSoapClient();
+
+        $configuration = array(
+            'username' => $this->config['Username'],
+            'password' => $this->config['Password'],
+            'transactionId' => $transactionID
+        );
+
+        $response = $soapClient->GetTransaction($configuration);
+
+        if (is_object($response) && $response->GetTransactionResult) {
+
+            if (in_array($response->GetTransactionResult->Status, $this->errorStatuses)) {
+
+                //handle error
+
+            }
+
+
+
+        } else {
+
+        }
+
+        //Store dpsTxnRef
+
+    }
+
+    public function completeTransaction()
+    {
+
+        $soapClient = $this->getSoapClient();
+
+        $configuration = array(
+            'username' => $this->config['Username'],
+            'password' => $this->config['Password'],
+//            'tranasctionId' =>
+            'tranDetail' => array_merge(array(
+                'txnType' => $this->getTxnType(),
+                'amount' => $this->getAmount()
+            ))
+        );
+
+        $response = $soapClient->GetTransaction($configuration);
+
+        $this->setStage('Complete');
 
     }
 
@@ -315,7 +419,9 @@ class Service implements PaymentServiceInterface
     }
 
     /**
+     * Sets the stage of the Auth-Complete cycle
      * @param string $stage
+     * @throws ConfigurationException
      */
     public function setStage($stage)
     {
@@ -340,23 +446,18 @@ class Service implements PaymentServiceInterface
     public function getAmount()
     {
 
-        switch ($this->getTxnType()) {
-            case 'Auth':
-                return number_format($this->authAmount, 2);
-            default:
-                return number_format($this->transaction->getTotal(), 2);
+        if ($this->getTxnType() == self::TXN_TYPE_AUTH) {
+
+            return number_format($this->authAmount, 2);;
+
         }
 
-    }
-
-    public function completeTransaction()
-    {
-
-        $this->setStage('Complete');
+        return number_format($this->transaction->getTotal(), 2);
 
     }
 
     /**
+     * Set the amount to authorise when using Auth-Complete
      * @param int $authAmount
      */
     public function setAuthAmount($authAmount)
@@ -365,6 +466,7 @@ class Service implements PaymentServiceInterface
     }
 
     /**
+     * Get the amount that should be authorised when using Auth-Complete
      * @return int
      */
     public function getAuthAmount()
@@ -373,6 +475,7 @@ class Service implements PaymentServiceInterface
     }
 
     /**
+     * Set the testing mode
      * @param boolean $testing
      */
     public function setTesting($testing)
@@ -381,6 +484,7 @@ class Service implements PaymentServiceInterface
     }
 
     /**
+     * Get the testing mode
      * @return boolean
      */
     public function getTesting()
@@ -389,6 +493,7 @@ class Service implements PaymentServiceInterface
     }
 
     /**
+     * Set the additionality configuration
      * @param array $additionalConfig
      */
     public function setAdditionalConfig(array $additionalConfig)
@@ -399,6 +504,7 @@ class Service implements PaymentServiceInterface
     }
 
     /**
+     * Get the additional configuration information
      * @return array
      */
     public function getAdditionalConfig()
@@ -407,6 +513,7 @@ class Service implements PaymentServiceInterface
     }
 
     /**
+     * Sets the allowed options for the additional configuration
      * @param array $allowedAdditionalConfig
      */
     public function setAllowedAdditionalConfig($allowedAdditionalConfig)
@@ -415,11 +522,56 @@ class Service implements PaymentServiceInterface
     }
 
     /**
+     * Gets the allowed options for the additional configuration
      * @return array
      */
     public function getAllowedAdditionalConfig()
     {
         return $this->allowedAdditionalConfig;
+    }
+
+    /**
+     * Returns the currency code.
+     * @return mixed
+     * @throws \Heystack\Subsystem\Core\Exception\ConfigurationException
+     */
+    protected function getCurrencyCode()
+    {
+        $currencyCode = $this->transaction->getCurrencyCode();
+
+        if (!in_array($currencyCode, $this->supportedCurrencies)) {
+
+            throw new ConfigurationException("The currency $currencyCode is not supported by PXFusion");
+
+        }
+
+        return $currencyCode;
+    }
+
+    /**
+     * @param array $statusMessages
+     */
+    public function setStatusMessages($statusMessages)
+    {
+        $this->statusMessages = $statusMessages;
+    }
+
+    /**
+     * @return array
+     */
+    public function getStatusMessages()
+    {
+        return $this->statusMessages;
+    }
+
+    public function setStatusMessage($code, $message)
+    {
+        $this->statusMessages[$code] = $message;
+    }
+
+    public function getStatusMessage($code)
+    {
+        return isset($this->statusMessages[$code]) ? $this->statusMessages[$code] : false;
     }
 
 }

@@ -149,7 +149,7 @@ class PXFusionTest extends \PHPUnit_Framework_TestCase
     {
 
         $this->paymentService->setConfig(array(
-            'Type' => 'Purchase',
+            'Type' => Service::TYPE_PURCHASE,
             'Username' => 'Test',
             'Password' => 'Test',
             'Wsdl' => 'http://test.com'
@@ -172,7 +172,7 @@ class PXFusionTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($test);
 
         $this->paymentService->setConfig(array(
-            'Type' => 'Auth-Complete',
+            'Type' => Service::TYPE_AUTH_COMPLETE,
             'Username' => 'Test',
             'Password' => 'Test',
             'Wsdl' => 'http://test.com'
@@ -190,7 +190,7 @@ class PXFusionTest extends \PHPUnit_Framework_TestCase
     {
 
         $this->paymentService->setConfig(array(
-            'Type' => 'Purchase',
+            'Type' => Service::TYPE_PURCHASE,
             'Username' => 'HeydayPXFDev',
             'Password' => 'test1234',
             'Wsdl' => 'https://sec2.paymentexpress.com/pxf/pxf.svc?wsdl'
@@ -199,7 +199,7 @@ class PXFusionTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('string', $this->paymentService->getTransactionId());
 
         $this->paymentService->setConfig(array(
-            'Type' => 'Auth-Complete',
+            'Type' => Service::TYPE_AUTH_COMPLETE,
             'Username' => 'HeydayPXFDev',
             'Password' => 'test1234',
             'Wsdl' => 'https://sec2.paymentexpress.com/pxf/pxf.svc?wsdl'
@@ -247,6 +247,40 @@ class PXFusionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array(
             'badKey' => 'bad'
         ), $this->paymentService->getAdditionalConfig());
+
+    }
+
+    public function testSetGetAuthAmount()
+    {
+
+        $this->assertEquals(1, $this->paymentService->getAuthAmount());
+
+        $this->paymentService->setAuthAmount(10);
+
+        $this->assertEquals(10, $this->paymentService->getAuthAmount());
+
+    }
+
+    public function testGetAmount()
+    {
+
+        $this->paymentService->setConfig(array(
+            'Type' => Service::TYPE_PURCHASE,
+            'Username' => 'HeydayPXFDev',
+            'Password' => 'test1234',
+            'Wsdl' => 'https://sec2.paymentexpress.com/pxf/pxf.svc?wsdl'
+        ));
+
+        $this->assertEquals('10.00', $this->paymentService->getAmount());
+
+        $this->paymentService->setConfig(array(
+            'Type' => Service::TYPE_AUTH_COMPLETE,
+            'Username' => 'HeydayPXFDev',
+            'Password' => 'test1234',
+            'Wsdl' => 'https://sec2.paymentexpress.com/pxf/pxf.svc?wsdl'
+        ));
+
+        $this->assertEquals('1.00', $this->paymentService->getAmount());
 
     }
 

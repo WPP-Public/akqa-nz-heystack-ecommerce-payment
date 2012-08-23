@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the Ecommerce-Vouchers package
+ * This file is part of the Ecommerce-Payment package
  *
  * @package Ecommerce-Payment
  */
@@ -8,7 +8,7 @@
 /**
  * Payment namespace
  */
-namespace Heystack\Subsystem\Payment;
+namespace Heystack\Subsystem\Payment\DPS\PXFusion;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -21,8 +21,6 @@ use Heystack\Subsystem\Core\Storage\Event as StorageEvent;
 use Heystack\Subsystem\Core\State\State;
 
 use Heystack\Subsystem\Payment\Events\PaymentEvent;
-
-use Heystack\Subsystem\Payment\Interfaces\PaymentServiceInterface;
 
 use Heystack\Subsystem\Core\Storage\Backends\SilverStripeOrm\Backend;
 

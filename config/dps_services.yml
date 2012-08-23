@@ -1,0 +1,41 @@
+parameters:
+
+  pxfusion_service.class: Heystack\Subsystem\Payment\DPS\PXFusion\Service
+  pxfusion_input_processor.class: Heystack\Subsystem\Payment\DPS\PXFusion\InputProcessor
+  pxfusion_output_processor.class: Heystack\Subsystem\Payment\DPS\PXFusion\OutputProcessor
+  pxfusion_subscriber.class: Heystack\Subsystem\Payment\DPS\PXFusion\Subscriber
+
+  pxpost_service.class: Heystack\Subsystem\Payment\DPS\PXPost\Service
+  pxpost_input_processor.class: Heystack\Subsystem\Payment\DPS\PXPost\InputProcessor
+  pxpost_output_processor.class: Heystack\Subsystem\Payment\DPS\PXPost\OutputProcessor
+  pxpost_subscriber.class: Heystack\Subsystem\Payment\DPS\PXPost\Subscriber
+
+  payment.class: $$$
+
+services:
+
+  payment:
+    class: %payment.class%
+
+  pxfusion_service:
+    class: %pxfusion_service.class%
+    arguments: [ %payment.class%, @event_dispatcher, @transaction ]
+
+  pxfusion_input_processor:
+    class: %pxfusion_input_processor.class%
+    arguments: [ @pxfusion_service ]
+
+  pxfusion_output_processor:
+    class: %pxfusion_output_processor.class%
+
+
+  pxpost_service:
+    class: %pxpost_service.class%
+    arguments: [ %payment.class%, @event_dispatcher, @transaction ]
+
+  pxpost_input_processor:
+    class: %pxpost_input_processor.class%
+    arguments: [ @pxpost_service ]
+
+  pxpost_output_processor:
+    class: %pxpost_output_processor.class%

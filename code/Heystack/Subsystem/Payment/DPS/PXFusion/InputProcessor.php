@@ -33,15 +33,15 @@ class InputProcessor implements ProcessorInterface
         if ($httpMethod == 'POST' && $request->param('ID') == 'complete') {
 
             //Complete the transaction
-            $this->paymentService->completeTransaction();
+//            $this->paymentService->completeTransaction();
 
         } elseif ($httpMethod == 'GET' && $request->param('ID') == 'return') {
 
-            $this->paymentService->checkTransaction();
+            $this->paymentService->checkTransaction($request->getVar('sessionid'));
 
         } elseif ($httpMethod == 'GET' && $request->param('ID') == 'auth') {
 
-            $this->paymentService->checkTransaction();
+            $this->paymentService->checkTransaction($request->getVar('sessionid'));
 
         }
 
