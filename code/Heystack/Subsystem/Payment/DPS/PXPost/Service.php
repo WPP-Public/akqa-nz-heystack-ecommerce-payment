@@ -12,9 +12,8 @@ namespace Heystack\Subsystem\Payment\DPS\PXPost;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-use Heystack\Subsystem\Payment\DPS\PXPost\PaymentInterface;
-use Heystack\Subsystem\Payment\Interfaces\PaymentServiceInterface;
 use Heystack\Subsystem\Payment\Traits\PaymentConfigTrait;
+
 use Heystack\Subsystem\Payment\Events;
 use Heystack\Subsystem\Payment\Events\PaymentEvent;
 
@@ -36,17 +35,8 @@ use Heystack\Subsystem\Core\Exception\ConfigurationException;
  */
 class Service implements PaymentServiceInterface
 {
+
     use PaymentConfigTrait;
-
-    /**
-     * @todo remove this after transitioning to the Services constants for identifying services
-     */
-    const STATE_KEY = 'payment_handler';
-
-    /**
-     * Holds the key for storing configuration settings on the data array
-     */
-    const CONFIG_KEY = 'configkey';
 
     /**
      * Holds the key for storing payment data on the data array
@@ -56,33 +46,35 @@ class Service implements PaymentServiceInterface
     /**
      * Holds the key for storing Post Username on the config second level array on the data array
      */
-    const POST_USERNAME = 'PostUsername';
+    const CONFIG_USERNAME = 'Username';
 
     /**
      * Holds the key for storing Post Password on the config second level array on the data array
      */
-    const POST_PASSWORD = 'PostPassword';
+    const CONFIG_PASSWORD = 'Password';
+
+
+    const CONFIG_USER_DATA_CARD_NUMBER = 'CardNumber';
 
     /**
-     * Holds the key for storing the Gateway URL on the config second level array on the data array
+     *
      */
-    const GATEWAY_URL = 'GatewayURL';
+    const TXN_TYPE_PURCHASE = 'Purchase';
 
     /**
-     * Holds the key for storing the Merchant Reference Prefix on the config second level array on the data array
+     *
      */
-    const MERCHANT_REFERENCE_PREFIX = 'MerchantReferencePrefix';
+    const TXN_TYPE_AUTH = 'Auth';
 
     /**
-     * Holds the default gateway url
+     *
      */
-    const DEFAULT_GATEWAY_URL = 'https://sec.paymentexpress.com/pxpost.aspx';
+    const TXN_TYPE_COMPLETE = 'Complete';
 
     /**
-     * Holds the payment class name to be used for creating Payment objects
-     * @var string
+     *
      */
-    protected $paymentClass;
+    const TXN_TYPE_REFUND = 'Refund';
 
     /**
      * Holds the Event Dispatcher service
@@ -97,24 +89,66 @@ class Service implements PaymentServiceInterface
     protected $transaction;
 
     /**
-     * Holds the data array which contains all the data specific to the payment
+     *
      * @var array
      */
-    protected $data = array();
+    protected $userData = array();
+
+    /**
+     * If testing last request data is needed form soap calls thi should be set to true
+     * @var bool
+     */
+    protected $testing = false;
+
+    /**
+     * Holds the default gateway url
+     */
+    protected $gatewayUrl = 'https://sec.paymentexpress.com/pxpost.aspx';
+
+    /**
+     *
+     * @var string
+     */
+    protected $txnType = self::TXN_TYPE_PURCHASE;
+
+    /**
+     * List of currencies supported by DPS
+     * @var array
+     */
+    protected $supportedCurrencies = array(
+        'CAD',
+        'CHF',
+        'DKK',
+        'EUR',
+        'FRF',
+        'GBP',
+        'HKD',
+        'JPY',
+        'NZD',
+        'SGD',
+        'THB',
+        'USD',
+        'ZAR',
+        'AUD',
+        'WST',
+        'VUV',
+        'TOP',
+        'SBD',
+        'PGK',
+        'MYR',
+        'KWD',
+        'FJD'
+    );
 
     /**
      * Creates the PxPostHandler object
-     * @param type                                                                      $paymentClass
      * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface               $eventService
      * @param \Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface $transaction
      */
     public function __construct(
-            $paymentClass,
             EventDispatcherInterface $eventService,
             TransactionInterface $transaction
-    )
-    {
-        $this->paymentClass = $paymentClass;
+    ) {
         $this->eventService = $eventService;
         $this->transaction = $transaction;
     }
@@ -126,182 +160,292 @@ class Service implements PaymentServiceInterface
     protected function getRequiredConfigParameters()
     {
         return array(
-            self::POST_USERNAME,
-            self::POST_PASSWORD,
-            self::MERCHANT_REFERENCE_PREFIX
+            self::CONFIG_USERNAME,
+            self::CONFIG_PASSWORD
         );
+    }
+
+    protected function getRequiredUserData()
+    {
+
+        return array(
+            self::CONFIG_USER_DATA_CARD_NUMBER,
+            'CardHolderName',
+            'DateExpiry',
+            'Cvc2',
+        );
+
     }
 
     public function validateConfig()
     {
-
-        //TODO: Do some validation
-
+        return true;
     }
 
-    /**
-     * Saves the data that comes from the payment form submission for later use
-     * @param array $data
-     */
-    public function savePaymentData(array $data)
+//
+//    /**
+//     * Saves the data that comes from the payment form submission for later use
+//     * @param array $data
+//     */
+//    public function savePaymentData(array $data)
+//    {
+//        unset($data['url']);
+//        $this->data[self::PAYMENT_DATA_KEY] = $data;
+//
+//        $this->eventService->dispatch(TransactionEvents::STORE);
+//    }
+//
+//    /**
+//     * Prepare the payment form submission data for use when executing the payment
+//     * @return array
+//     */
+//    protected function prepareDataForPayment()
+//    {
+//        $data = $this->data[self::PAYMENT_DATA_KEY];
+//
+//        $data['PostUsername'] = $this->config[self::POST_USERNAME];
+//        $data['PostPassword'] = $this->config[self::POST_PASSWORD];
+//        $data['Amount'] = $this->transaction->getTotal();
+//        $data['InputCurrency'] = $this->transaction->getCurrencyCode();
+//        $data['TxnType'] = 'Purchase';
+//
+//        return $this->checkPaymentData($data) ? $data : null;
+//    }
+//
+//    /**
+//     * Check that the data is complete. Make sure that all the fields required
+//     * for executing the payment is present.
+//     * @param  array      $data
+//     * @return boolean
+//     * @throws ConfigurationException
+//     */
+//    protected function checkPaymentData(array $data)
+//    {
+//
+//        $required = array(
+//            'PostUsername',
+//            'PostPassword',
+//            'CardHolderName',
+//            'CardNumber',
+//            'Cvc2'
+//        );
+//
+//        $missing = array_diff($required, array_keys($data));
+//
+//        if (!count($missing)) {
+//            return true;
+//        } else {
+//            throw new ConfigurationException('The following required fields are missing: ' . implode(', ', $missing));
+//        }
+//
+//        return false;
+//    }
+
+    protected function config()
     {
-        unset($data['url']);
-        $this->data[self::PAYMENT_DATA_KEY] = $data;
 
-        $this->eventService->dispatch(TransactionEvents::STORE);
-    }
+        $txnType = $this->getTxnType();
 
-    /**
-     * Prepare the payment form submission data for use when executing the payment
-     * @return array
-     */
-    protected function prepareDataForPayment()
-    {
-        $data = $this->data[self::PAYMENT_DATA_KEY];
-
-        $data['PostUsername'] = $this->data[self::CONFIG_KEY][self::POST_USERNAME];
-        $data['PostPassword'] = $this->data[self::CONFIG_KEY][self::POST_PASSWORD];
-        $data['Amount'] = $this->transaction->getTotal();
-        $data['InputCurrency'] = $this->transaction->getCurrencyCode();
-        $data['TxnType'] = 'Purchase';
-
-        return $this->checkPaymentData($data) ? $data : null;
-    }
-
-    /**
-     * Check that the data is complete. Make sure that all the fields required
-     * for executing the payment is present.
-     * @param  array      $data
-     * @return boolean
-     * @throws \Exception
-     */
-    protected function checkPaymentData(array $data)
-    {
-        $required = array(
-            'PostUsername',
-            'PostPassword',
-            'CardHolderName',
-            'CardNumber',
-            'Cvc2'
+        $config = array(
+            'PostUsername' => $this->config[self::CONFIG_USERNAME],
+            'PostPassword' => $this->config[self::CONFIG_PASSWORD],
+            'TxnType' => $txnType,
+            'Amount' => $this->getAmount()
         );
 
-        $missing = array_diff($required, array_keys($data));
+        if ($txnType === self::TXN_TYPE_AUTH || $txnType === self::TXN_TYPE_PURCHASE) {
 
-        if (!count($missing)) {
-            return true;
-        } else {
-            throw new ConfigurationException('The following required fields are missing: ' . implode(', ', $missing));
+            if (!$this->hasUserData()) {
+
+                throw new ConfigurationException('User data has not be supplied for PXPost');
+
+            }
+
+            $config = array_merge($config, $this->getUserData(), array(
+                'InputCurrency' => $this->getCurrencyCode(),
+                'MerchantReference' => $this->getMerchantReference(),
+                'EnableAddBillCard' => $this->getEnableAddBillCard()
+            ));
+
         }
 
-        return false;
+        return $config;
+
+    }
+
+    private function buildXml($config)
+    {
+        $xml = new \SimpleXMLElement('<Txn></Txn>');
+
+        foreach ($config as $key => $value) {
+            $xml->$key = $value;
+        }
+
+        return $xml->asXML();
+    }
+
+
+    public function processAuthorize()
+    {
+        $this->setTxnType(self::TXN_TYPE_AUTH);
+        $this->process();
+    }
+
+    public function processComplete()
+    {
+        $this->setTxnType(self::TXN_TYPE_COMPLETE);
+        $this->process();
+    }
+
+    public function processPurchase()
+    {
+        $this->setTxnType(self::TXN_TYPE_PURCHASE);
+        $this->process();
+    }
+
+    public function processRefund()
+    {
+        $this->setTxnType(self::TXN_TYPE_REFUND);
+        $this->process();
+    }
+
+    public function process()
+    {
+
+        $curl = curl_init();
+
+        curl_setopt($curl, CURLOPT_URL, $this->getGatewayUrl());
+        curl_setopt($curl, CURLOPT_POST, 1);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $this->buildXml($this->config()));
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_SSLVERSION, 3);
+
+        $resultXml = curl_exec($curl);
+        curl_close($curl);
+
+        try {
+            $result = new \SimpleXMLElement($resultXml);
+        } catch (\Exception $e) {
+
+        }
+
+        var_dump($result);
     }
 
     /**
-     * Execute the payment by creating the Payment object and contacting DPS to
-     * handle the payment.
-     * @param  type       $transactionID
-     * @throws \Exception
+     *
+     * @return string
      */
-    public function executePayment($transactionID)
+    public function getAmount()
     {
-        $data = $this->prepareDataForPayment();
+        return number_format($this->transaction->getTotal(), 2);
+    }
 
-        $payment = new $this->paymentClass();
+    /**
+     * Returns the currency code.
+     * @return mixed
+     * @throws ConfigurationException
+     */
+    protected function getCurrencyCode()
+    {
+        $currencyCode = $this->transaction->getCurrencyCode();
 
-        if (!$payment instanceof PaymentInterface) {
-            throw new ConfigurationException($this->paymentClass . ' must implement PaymentInterface');
-        }
+        if (!in_array($currencyCode, $this->supportedCurrencies)) {
 
-        $payment->setAmount($data['Amount']);
-        $payment->setTransactionType($data['TxnType']);
-        $payment->setIP($_SERVER['REMOTE_ADDR']);
-        $payment->setTransactionID($transactionID);
-        $payment->setCurrencyCode($data['InputCurrency']);
-        $payment->setMerchantReference($this->data[self::CONFIG_KEY][self::MERCHANT_REFERENCE_PREFIX] . ' Transaction ID:' . $transactionID);
-
-        // 1) Transaction Creation
-        $transaction = "<Txn>";
-        foreach ($data as $name => $value) {
-            if ($name == "Amount") {
-                $value = number_format($value, 2, '.', '');
-            }
-            $transaction .= "<$name>$value</$name>";
-        }
-        $transaction .= "</Txn>";
-
-        // 2) CURL Creation
-        $gatewayURL = isset($this->data[self::CONFIG_KEY][self::GATEWAY_URL]) ? $this->data[self::CONFIG_KEY][self::GATEWAY_URL] : self::DEFAULT_GATEWAY_URL;
-        $clientURL = curl_init();
-        curl_setopt($clientURL, CURLOPT_URL, $gatewayURL);
-        curl_setopt($clientURL, CURLOPT_POST, 1);
-        curl_setopt($clientURL, CURLOPT_POSTFIELDS, $transaction);
-        curl_setopt($clientURL, CURLOPT_RETURNTRANSFER, 1);
-//		curl_setopt($clientURL, CURLOPT_SSL_VERIFYPEER, 0); //Needs to be included if no *.crt is available to verify SSL certificates
-        curl_setopt($clientURL, CURLOPT_SSLVERSION, 3);
-
-
-        // 3) CURL Execution
-
-        $resultXml = curl_exec($clientURL);
-        $payment->setXMLResponse($resultXml);
-        // 4) CURL Closing
-        curl_close ($clientURL);
-
-        // 5) XML Parser Creation
-        $xmlParser = xml_parser_create();
-        $values = null;
-        $indexes = null;
-        xml_parse_into_struct($xmlParser, $resultXml, $values, $indexes);
-        xml_parser_free($xmlParser);
-
-        // 6) XML Result Parsed In A PHP Array
-        $resultPhp = array();
-        $level = array();
-        foreach ($values as $xmlElement) {
-            if ($xmlElement['type'] == 'open') {
-                if(array_key_exists('attributes', $xmlElement)) list($level[$xmlElement['level']], $extra) = array_values($xmlElement['attributes']);
-                else $level[$xmlElement['level']] = $xmlElement['tag'];
-            } elseif ($xmlElement['type'] == 'complete') {
-                $startLevel = 1;
-                $phpArray = '$resultPhp';
-                while($startLevel < $xmlElement['level']) $phpArray .= '[$level['. $startLevel++ .']]';
-                $phpArray .= '[$xmlElement[\'tag\']] = array_key_exists(\'value\', $xmlElement)? $xmlElement[\'value\'] : null;';
-                eval($phpArray);
-            }
-        }
-
-        $responseFields = $resultPhp['TXN'];
-
-        // 7) DPS Response Management
-        if ($responseFields['SUCCESS']) {
-            $payment->setStatus('Success');
-            if($authcode = $responseFields['1']['AUTHCODE']) $payment->setAuthCode($authcode);
-            if($dpsBillingID = $responseFields['1']['DPSBILLINGID']) $payment->setBillingID($dpsBillingID);
-
-            $dateSettlement = $responseFields['1']['DATESETTLEMENT'];
-            $payment->setSettlementDate(substr($dateSettlement, 0, 4) ."-".substr($dateSettlement, 4, 2)."-".substr($dateSettlement, 6, 2));
-        } else {
-            $payment->setStatus('Failure');
-        }
-        if($transactionRef = $responseFields['DPSTXNREF']) $payment->setTransactionReference($transactionRef);
-        if($helpText = $responseFields['HELPTEXT']) $payment->setHelpText($helpText);
-        if($responseText = $responseFields['RESPONSETEXT']) $payment->setMessage($responseText);
-        if($responseCode = $responseFields['RECO']) $payment->setResponseCode($responseCode);
-
-        // add the transaction ID to the payment for later events
-        $payment->setTransactionID($transactionID);
-
-        if ($responseFields['SUCCESS']) {
-
-            $this->eventService->dispatch(Events::SUCCESSFUL, new PaymentEvent($payment));
-
-        } else {
-
-            $this->eventService->dispatch(Events::FAILED, new PaymentEvent($payment));
+            throw new ConfigurationException("The currency $currencyCode is not supported by PXPost");
 
         }
 
-        return $payment;
+        return $currencyCode;
+    }
+
+    /**
+     * Set the testing mode
+     * @param boolean $testing
+     */
+    public function setTesting($testing)
+    {
+        $this->testing = $testing;
+    }
+
+    /**
+     * Get the testing mode
+     * @return boolean
+     */
+    public function getTesting()
+    {
+        return $this->testing;
+    }
+
+    public function setGatewayUrl($gatewayUrl)
+    {
+        if (!\Director::is_absolute_url($gatewayUrl)) {
+
+            throw new ConfigurationException("Gateway url needs to be an absolute url");
+
+        }
+
+        $this->gatewayUrl = $gatewayUrl;
+    }
+
+    public function getGatewayUrl()
+    {
+        return $this->gatewayUrl;
+    }
+
+    /**
+     *
+     * @param string $txnType
+     * @throws \Heystack\Subsystem\Core\Exception\ConfigurationException
+     * @return void
+     */
+    public function setTxnType($txnType)
+    {
+        if (!inarray($txnType, array(
+            self::TXN_TYPE_PURCHASE,
+            self::TXN_TYPE_AUTH,
+            self::TXN_TYPE_COMPLETE,
+            self::TXN_TYPE_REFUND
+        ))) {
+
+            throw new ConfigurationException('PXPost only supports Purchase, Auth, Complete and Refund txn types');
+
+        }
+
+        $this->txnType = $txnType;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTxnType()
+    {
+        return $this->txnType;
+    }
+
+    /**
+     * @param array $userData
+     */
+    public function setUserData($userData)
+    {
+        if (count(array_diff($this->requiredUserData, array_keys($data))) !== 0) {
+            throw new ConfigurationException('There is a problem with your user data');
+        }
+
+        $this->userData = $userData;
+    }
+
+    /**
+     * @return array
+     */
+    public function getUserData()
+    {
+        return $this->userData;
+    }
+
+    public function hasUserData()
+    {
+        return count($this->userData) !== 0;
     }
 
 }

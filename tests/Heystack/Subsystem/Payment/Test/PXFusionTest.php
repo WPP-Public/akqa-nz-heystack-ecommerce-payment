@@ -16,7 +16,7 @@ class PXFusionTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
 
-        $this->paymentService = new Service('TestPXFusionPayment', new EventDispatcher(), new TestTransaction());
+        $this->paymentService = new Service(new EventDispatcher(), new TestTransaction());
         $this->paymentService->setTesting(true);
 
     }
@@ -64,44 +64,6 @@ class PXFusionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(null, $message);
 
-        $message = null;
-
-        try {
-
-            $this->paymentService->setConfig(array(
-                'Type' => 'Auth-Complete',
-                'Username' => 'Test',
-                'Password' => 'Test',
-                'Wsdl' => 'test.com'
-            ));
-
-        } catch (\Heystack\Subsystem\Core\Exception\ConfigurationException $e) {
-
-            $message = $e->getMessage();
-
-        }
-
-        $this->assertNotEquals(null, $message);
-
-        $message = null;
-
-        try {
-
-            $this->paymentService->setConfig(array(
-                'Type' => 'Bob',
-                'Username' => 'Test',
-                'Password' => 'Test',
-                'Wsdl' => 'test.com'
-            ));
-
-        } catch (\Heystack\Subsystem\Core\Exception\ConfigurationException $e) {
-
-            $message = $e->getMessage();
-
-        }
-
-        $this->assertNotEquals(null, $message);
-
     }
 
     public function testReturnUrl()
@@ -119,8 +81,7 @@ class PXFusionTest extends \PHPUnit_Framework_TestCase
         $this->paymentService->setConfig(array(
             'Type' => 'Purchase',
             'Username' => 'Test',
-            'Password' => 'Test',
-            'Wsdl' => 'http://test.com'
+            'Password' => 'Test'
         ));
 
         $this->assertEquals(\Director::absoluteURL(\EcommerceInputController::$url_segment . '/process/' . InputProcessor::IDENTIFIER . '/purchase'), $this->paymentService->getReturnUrl());
@@ -133,8 +94,7 @@ class PXFusionTest extends \PHPUnit_Framework_TestCase
         $this->paymentService->setConfig(array(
             'Type' => Service::TYPE_PURCHASE,
             'Username' => 'Test',
-            'Password' => 'Test',
-            'Wsdl' => 'http://test.com'
+            'Password' => 'Test'
         ));
 
         $this->assertEquals('Purchase', $this->paymentService->getType());
@@ -151,8 +111,7 @@ class PXFusionTest extends \PHPUnit_Framework_TestCase
         $this->paymentService->setConfig(array(
             'Type' => Service::TYPE_PURCHASE,
             'Username' => 'Test',
-            'Password' => 'Test',
-            'Wsdl' => 'http://test.com'
+            'Password' => 'Test'
         ));
 
         $this->assertEquals('Purchase', $this->paymentService->getTxnType());
@@ -174,8 +133,7 @@ class PXFusionTest extends \PHPUnit_Framework_TestCase
         $this->paymentService->setConfig(array(
             'Type' => Service::TYPE_AUTH_COMPLETE,
             'Username' => 'Test',
-            'Password' => 'Test',
-            'Wsdl' => 'http://test.com'
+            'Password' => 'Test'
         ));
 
         $this->assertEquals('Auth', $this->paymentService->getTxnType());
@@ -192,8 +150,7 @@ class PXFusionTest extends \PHPUnit_Framework_TestCase
         $this->paymentService->setConfig(array(
             'Type' => Service::TYPE_PURCHASE,
             'Username' => 'HeydayPXFDev',
-            'Password' => 'test1234',
-            'Wsdl' => 'https://sec2.paymentexpress.com/pxf/pxf.svc?wsdl'
+            'Password' => 'test1234'
         ));
 
         $this->assertInternalType('string', $this->paymentService->getTransactionId());
@@ -201,8 +158,7 @@ class PXFusionTest extends \PHPUnit_Framework_TestCase
         $this->paymentService->setConfig(array(
             'Type' => Service::TYPE_AUTH_COMPLETE,
             'Username' => 'HeydayPXFDev',
-            'Password' => 'test1234',
-            'Wsdl' => 'https://sec2.paymentexpress.com/pxf/pxf.svc?wsdl'
+            'Password' => 'test1234'
         ));
 
         $this->assertInternalType('string', $this->paymentService->getTransactionId());

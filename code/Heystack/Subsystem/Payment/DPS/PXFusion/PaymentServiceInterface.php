@@ -2,9 +2,9 @@
 
 namespace Heystack\Subsystem\Payment\DPS\PXFusion;
 
-use Heystack\Subsystem\Payment\Interfaces\PaymentServiceInterface as DefaultPaymentServiceInterface;
+use Heystack\Subsystem\Payment\Interfaces\PaymentServiceInterface as BasePaymentServiceInterface;
 
-interface PaymentServiceInterface extends DefaultPaymentServiceInterface
+interface PaymentServiceInterface extends BasePaymentServiceInterface
 {
 
 }

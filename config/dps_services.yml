@@ -19,7 +19,7 @@ services:
 
   pxfusion_service:
     class: %pxfusion_service.class%
-    arguments: [ %payment.class%, @event_dispatcher, @transaction ]
+    arguments: [ @event_dispatcher, @transaction ]
 
   pxfusion_input_processor:
     class: %pxfusion_input_processor.class%

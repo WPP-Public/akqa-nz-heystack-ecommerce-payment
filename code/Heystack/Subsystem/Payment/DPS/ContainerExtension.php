@@ -68,13 +68,13 @@ class ContainerExtension extends ContainerExtensionConfigProcessor implements Ex
 
         $config = array_pop($config);
 
-        if (isset($config['pxfusion']) && $container->hasDefinition(Services::PXFUSION_SERVICE)) {
+        if (isset($config['pxfusion']) && isset($config['pxfusion']['config']) && $container->hasDefinition(Services::PXFUSION_SERVICE)) {
 
             $definition = $container->getDefinition(Services::PXFUSION_SERVICE);
 
-            $definition->addMethodCall('setConfig', array($config['pxfusion']));
+            $definition->addMethodCall('setConfig', array($config['pxfusion']['config']));
 
-            if ($config['pxfusion']['Type'] == Service::TYPE_AUTH_COMPLETE) {
+            if ($config['pxfusion']['config']['Type'] == Service::TYPE_AUTH_COMPLETE) {
 
                 if ($container->hasDefinition(Services::PXPOST_SERVICE) && isset($config['pxpost'])) {
 
@@ -85,6 +85,12 @@ class ContainerExtension extends ContainerExtensionConfigProcessor implements Ex
                     throw new ConfigurationException('You have chosen PXFusion Auth-Complete but you haven\'t configured PXPost');
 
                 }
+
+            }
+
+            if (isset($config['pxfusion']['additional_config'])) {
+
+                $definition->addMethodCall('setAdditionalConfig', array($config['pxfusion']['additional_config']));
 
             }
 

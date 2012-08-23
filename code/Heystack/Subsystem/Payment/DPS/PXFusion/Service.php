@@ -15,6 +15,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Heystack\Subsystem\Payment\Traits\PaymentConfigTrait;
 
 use Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface;
+use Heystack\Subsystem\Ecommerce\Transaction\Events as TransactionEvents;
 
 use Heystack\Subsystem\Core\Exception\ConfigurationException;
 
@@ -30,6 +31,21 @@ class Service implements PaymentServiceInterface
 {
 
     use PaymentConfigTrait;
+
+    /**
+     * Config key for type
+     */
+    const CONFIG_TYPE = 'Type';
+
+    /**
+     * Config key for username
+     */
+    const CONFIG_USERNAME = 'Username';
+
+    /**
+     * Config key for password
+     */
+    const CONFIG_PASSWORD = 'Password';
 
     /**
      * Auth-Complete type. This should be used when you want to authorise an amount (or just $1) to either verify a card
@@ -110,6 +126,12 @@ class Service implements PaymentServiceInterface
     protected $additionalConfig = array();
 
     /**
+     * Default wsdl for Soap client
+     * @var string
+     */
+    protected $wsdl = 'https://sec2.paymentexpress.com/pxf/pxf.svc?wsdl';
+
+    /**
      * Stores a list of allowed additional config params
      * @var array
      */
@@ -184,18 +206,15 @@ class Service implements PaymentServiceInterface
 
     /**
      * Creates the Service object
-     * @param type                                                                      $paymentClass
      * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface               $eventService
      * @param \Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface $transaction
      * @param \Heystack\Subsystem\Payment\DPS\PXPost\Service                            $pxPostService
      */
     public function __construct(
-        $paymentClass,
         EventDispatcherInterface $eventService,
         TransactionInterface $transaction,
         PXPostService $pxPostService = null
     ) {
-        $this->paymentClass = $paymentClass;
         $this->eventService = $eventService;
         $this->transaction = $transaction;
 
@@ -211,28 +230,21 @@ class Service implements PaymentServiceInterface
     protected function getRequiredConfigParameters()
     {
         return array(
-            'Type',
-            'Username',
-            'Password',
-            'Wsdl'
+            self::CONFIG_TYPE,
+            self::CONFIG_USERNAME,
+            self::CONFIG_PASSWORD
         );
     }
 
     protected function validateConfig($config)
     {
 
-        if (!in_array($config['Type'], array(
+        if (!in_array($config[self::CONFIG_TYPE], array(
             self::TYPE_AUTH_COMPLETE,
             self::TYPE_PURCHASE
         ))) {
 
-            throw new ConfigurationException("{$config['Type']} is not a valid Type for this payment handler");
-
-        }
-
-        if (!\Director::is_absolute_url($config['Wsdl'])) {
-
-            throw new ConfigurationException("Wsdl needs to be an absolute url");
+            throw new ConfigurationException("{$config[self::CONFIG_TYPE]} is not a valid Type for this payment handler");
 
         }
 
@@ -241,14 +253,14 @@ class Service implements PaymentServiceInterface
     public function getType()
     {
 
-        return isset($this->config['Type']) ? $this->config['Type'] : false;
+        return isset($this->config[self::CONFIG_TYPE]) ? $this->config[self::CONFIG_TYPE] : false;
 
     }
 
     public function setType($type)
     {
 
-        $this->config['Type'] = $type;
+        $this->config[self::CONFIG_TYPE] = $type;
 
         $this->validateConfig($this->config);
 
@@ -257,7 +269,7 @@ class Service implements PaymentServiceInterface
     public function getReturnUrl()
     {
 
-        switch ($this->config['Type']) {
+        switch ($this->config[self::CONFIG_TYPE]) {
 
             case self::TYPE_AUTH_COMPLETE:
                 return \Director::absoluteURL(\EcommerceInputController::$url_segment . '/process/' . InputProcessor::IDENTIFIER . '/auth');
@@ -285,7 +297,7 @@ class Service implements PaymentServiceInterface
         if (!$this->soapClient) {
 
             $this->soapClient = new \SoapClient(
-                $this->config['Wsdl'],
+                $this->getWsdl(),
                 array(
                     'soap_version' => SOAP_1_1,
                     'trace' => $this->getTesting()
@@ -304,8 +316,8 @@ class Service implements PaymentServiceInterface
         $soapClient = $this->getSoapClient();
 
         $configuration = array(
-            'username' => $this->config['Username'],
-            'password' => $this->config['Password'],
+            'username' => $this->config[self::CONFIG_USERNAME],
+            'password' => $this->config[self::CONFIG_PASSWORD],
             'tranDetail' => array_merge(array(
                 'txnType' => $this->getTxnType(),
                 'currency' => $this->getCurrencyCode(),
@@ -334,8 +346,8 @@ class Service implements PaymentServiceInterface
         $soapClient = $this->getSoapClient();
 
         $configuration = array(
-            'username' => $this->config['Username'],
-            'password' => $this->config['Password'],
+            'username' => $this->config[self::CONFIG_USERNAME],
+            'password' => $this->config[self::CONFIG_PASSWORD],
             'transactionId' => $transactionID
         );
 
@@ -349,72 +361,28 @@ class Service implements PaymentServiceInterface
 
             }
 
-
+            if ($response->GetTransactionResult->Status === 0) {
+                //Accepted
+            } elseif ($response->GetTransactionResult->Status === 1) {
+                //Declined
+            }
 
         } else {
 
         }
-
-        //Store dpsTxnRef
 
     }
 
     public function completeTransaction()
     {
 
-        $soapClient = $this->getSoapClient();
+        $this->setStage(self::STAGE_COMPLETE);
 
-        $configuration = array(
-            'username' => $this->config['Username'],
-            'password' => $this->config['Password'],
-//            'tranasctionId' =>
-            'tranDetail' => array_merge(array(
-                'txnType' => $this->getTxnType(),
-                'amount' => $this->getAmount()
-            ))
-        );
+        if ($this->pxPostService instanceof PXPostService) {
 
-        $response = $soapClient->GetTransaction($configuration);
+            //set up px post complete transaction
 
-        $this->setStage('Complete');
-
-    }
-
-    /**
-     * Saves the data that comes from the payment form submission for later use
-     * @param array $data
-     */
-    public function savePaymentData(array $data)
-    {
-    }
-
-    /**
-     * Prepare the payment form submission data for use when executing the payment
-     * @return array
-     */
-    protected function prepareDataForPayment()
-    {
-    }
-
-    /**
-     * Check that the data is complete. Make sure that all the fields required
-     * for executing the payment is present.
-     * @param  array      $data
-     * @return boolean
-     * @throws \Exception
-     */
-    protected function checkPaymentData(array $data)
-    {
-    }
-
-    /**
-     * Execute the payment by creating the Payment object and contacting DPS to
-     * handle the payment.
-     * @param  type       $transactionID
-     * @throws \Exception
-     */
-    public function executePayment($transactionID)
-    {
+        }
 
     }
 
@@ -431,11 +399,12 @@ class Service implements PaymentServiceInterface
         ))) {
             $this->stage = $stage;
         } else {
-            throw new ConfigurationException('Auth and Complete are the only supported stages');
+            throw new ConfigurationException('Auth and Complete are the only supported stages for the Auth-Complete cycle');
         }
     }
 
     /**
+     *
      * @return string
      */
     public function getStage()
@@ -443,12 +412,16 @@ class Service implements PaymentServiceInterface
         return $this->stage;
     }
 
+    /**
+     *
+     * @return string
+     */
     public function getAmount()
     {
 
         if ($this->getTxnType() == self::TXN_TYPE_AUTH) {
 
-            return number_format($this->authAmount, 2);;
+            return number_format($this->authAmount, 2);
 
         }
 
@@ -493,14 +466,12 @@ class Service implements PaymentServiceInterface
     }
 
     /**
-     * Set the additionality configuration
+     * Set the additional configuration
      * @param array $additionalConfig
      */
     public function setAdditionalConfig(array $additionalConfig)
     {
-
         $this->additionalConfig = array_flip(array_intersect(array_flip($additionalConfig), $this->allowedAdditionalConfig));
-
     }
 
     /**
@@ -533,7 +504,7 @@ class Service implements PaymentServiceInterface
     /**
      * Returns the currency code.
      * @return mixed
-     * @throws \Heystack\Subsystem\Core\Exception\ConfigurationException
+     * @throws ConfigurationException
      */
     protected function getCurrencyCode()
     {
@@ -549,6 +520,7 @@ class Service implements PaymentServiceInterface
     }
 
     /**
+     * Set all status messages
      * @param array $statusMessages
      */
     public function setStatusMessages($statusMessages)
@@ -557,6 +529,7 @@ class Service implements PaymentServiceInterface
     }
 
     /**
+     * Get all status messages
      * @return array
      */
     public function getStatusMessages()
@@ -564,14 +537,50 @@ class Service implements PaymentServiceInterface
         return $this->statusMessages;
     }
 
+    /**
+     * Set a particular status message by code
+     * @param $code
+     * @param $message
+     */
     public function setStatusMessage($code, $message)
     {
         $this->statusMessages[$code] = $message;
     }
 
+    /**
+     * Get a particular status message by code
+     * @param $code
+     * @return bool
+     */
     public function getStatusMessage($code)
     {
         return isset($this->statusMessages[$code]) ? $this->statusMessages[$code] : false;
+    }
+
+    /**
+     * @param string $wsdl
+     * @throws ConfigurationException
+     * @return void
+     */
+    public function setWsdl($wsdl)
+    {
+
+        if (!\Director::is_absolute_url($wsdl)) {
+
+            throw new ConfigurationException("Wsdl needs to be an absolute url");
+
+        }
+
+        $this->wsdl = $wsdl;
+    }
+
+    /**
+     * Get the wsdl
+     * @return string
+     */
+    public function getWsdl()
+    {
+        return $this->wsdl;
     }
 
 }
