@@ -53,8 +53,25 @@ class Service implements PaymentServiceInterface
      */
     const CONFIG_PASSWORD = 'Password';
 
-
+    /**
+     *
+     */
     const CONFIG_USER_DATA_CARD_NUMBER = 'CardNumber';
+
+    /**
+     *
+     */
+    const CONFIG_USER_DATA_CARD_HOLDER_NAME = 'CardHolderName';
+
+    /**
+     *
+     */
+    const CONFIG_USER_DATA_CARD_DATE_EXPIRY = 'DateExpiry';
+
+    /**
+     *
+     */
+    const CONFIG_USER_DATA_CARD_CVC2 = 'Cvc2';
 
     /**
      *
@@ -167,14 +184,12 @@ class Service implements PaymentServiceInterface
 
     protected function getRequiredUserData()
     {
-
         return array(
             self::CONFIG_USER_DATA_CARD_NUMBER,
-            'CardHolderName',
-            'DateExpiry',
-            'Cvc2',
+            self::CONFIG_USER_DATA_CARD_HOLDER_NAME,
+            self::CONFIG_USER_DATA_CARD_DATE_EXPIRY,
+            self::CONFIG_USER_DATA_CARD_CVC2
         );
-
     }
 
     public function validateConfig()
@@ -284,7 +299,6 @@ class Service implements PaymentServiceInterface
         return $xml->asXML();
     }
 
-
     public function processAuthorize()
     {
         $this->setTxnType(self::TXN_TYPE_AUTH);
@@ -326,8 +340,10 @@ class Service implements PaymentServiceInterface
         try {
             $result = new \SimpleXMLElement($resultXml);
         } catch (\Exception $e) {
-
+            $result = null;
         }
+
+//        $this->eventService->dispatch();
 
         var_dump($result);
     }
@@ -401,7 +417,7 @@ class Service implements PaymentServiceInterface
      */
     public function setTxnType($txnType)
     {
-        if (!inarray($txnType, array(
+        if (!in_array($txnType, array(
             self::TXN_TYPE_PURCHASE,
             self::TXN_TYPE_AUTH,
             self::TXN_TYPE_COMPLETE,
@@ -424,11 +440,14 @@ class Service implements PaymentServiceInterface
     }
 
     /**
+     *
      * @param array $userData
+     * @throws \Heystack\Subsystem\Core\Exception\ConfigurationException
+     * @return void
      */
     public function setUserData($userData)
     {
-        if (count(array_diff($this->requiredUserData, array_keys($data))) !== 0) {
+        if (count(array_diff($this->getRequiredUserData(), array_keys($userData))) !== 0) {
             throw new ConfigurationException('There is a problem with your user data');
         }
 
@@ -446,6 +465,18 @@ class Service implements PaymentServiceInterface
     public function hasUserData()
     {
         return count($this->userData) !== 0;
+    }
+
+    public function getMerchantReference()
+    {
+        //TODO
+        return '';
+    }
+
+    public function getEnableAddBillCard()
+    {
+        //TODO
+        return false;
     }
 
 }

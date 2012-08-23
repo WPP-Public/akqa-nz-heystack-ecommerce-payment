@@ -55,7 +55,7 @@ class InputProcessor implements ProcessorInterface
     {
         $data = \Convert::raw2sql($request->requestVars());
 
-        $this->paymentHandler->savePaymentData($data);
+//        $this->paymentHandler->savePaymentData($data);
 
         return array('success' => 'true');
     }
