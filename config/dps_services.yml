@@ -12,9 +12,6 @@ parameters:
 
 services:
 
-  payment:
-    class: %payment.class%
-
   pxfusion_service:
     class: %pxfusion_service.class%
     arguments: [ @event_dispatcher, @transaction ]
