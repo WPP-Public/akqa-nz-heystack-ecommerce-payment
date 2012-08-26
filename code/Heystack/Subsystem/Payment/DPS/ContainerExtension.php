@@ -89,7 +89,7 @@ class ContainerExtension extends ContainerExtensionConfigProcessor implements Ex
 
             $pxfusionService->addMethodCall('setConfig', array($config['pxfusion']['config'], true));
 
-            if ($config['pxfusion']['config']['Type'] == PXFusionService::TYPE_AUTH_COMPLETE) {
+            if (isset($config['pxfusion']['config']['Type']) && $config['pxfusion']['config']['Type'] == PXFusionService::TYPE_AUTH_COMPLETE) {
 
                 if ($container->hasDefinition(Services::PXPOST_SERVICE) && isset($config['pxpost'])) {
 
