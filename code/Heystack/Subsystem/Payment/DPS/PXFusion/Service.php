@@ -112,12 +112,6 @@ class Service extends BaseService
     protected $authAmount = 1;
 
     /**
-     * Any additional information to be passed to dps in the soap request
-     * @var array
-     */
-    protected $additionalConfig = array();
-
-    /**
      * Default wsdl for Soap client
      * @var string
      */
@@ -291,10 +285,12 @@ class Service extends BaseService
         switch ($this->config[self::CONFIG_TYPE]) {
             case self::TYPE_AUTH_COMPLETE:
                 $returnUrl .= '/check/auth';
+                break;
             case self::TYPE_PURCHASE:
                 $returnUrl .= '/check/purchase';
+                break;
         }
-        return $returnUrl;
+        return \Director::absoluteURL($returnUrl);
     }
 
     public function getTxnType()
@@ -329,7 +325,6 @@ class Service extends BaseService
 
     public function getTransactionId()
     {
-
         $soapClient = $this->getSoapClient();
 
         $configuration = array(
@@ -354,7 +349,6 @@ class Service extends BaseService
             throw new Exception($soapClient->__getLastResponse(), $response, $configuration);
 
         }
-
     }
 
     public function checkTransaction($transactionID)

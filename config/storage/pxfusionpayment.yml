@@ -1,8 +1,7 @@
 data_provider_id: pxfusionpayment
 id: PXFusionPayment
 flat:
-  TransactionReference: Varchar(255)
-  Amount: Decimal(10,2)
+  Amount: "Decimal(10,2)"
   AuthCode: Varchar(22)
   BillingID: Varchar(32)
   CardHolderName: Varchar(64)
@@ -29,7 +28,6 @@ flat:
   TxnMac: Varchar(255)
   TxnRef: Varchar(255)
   TransactionType: "Enum('Purchase,Auth', 'Purchase')"
-
 related:
 parent:
   Parent: +Transaction

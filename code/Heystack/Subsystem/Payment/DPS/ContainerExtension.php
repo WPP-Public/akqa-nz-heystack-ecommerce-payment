@@ -79,6 +79,11 @@ class ContainerExtension extends ContainerExtensionConfigProcessor implements Ex
                 ? $container->getDefinition(CoreServices::INPUT_PROCESSOR_HANDLER)
                 : false;
 
+        $ssOrm =
+            $container->hasDefinition(CoreServices::SS_ORM_BACKEND)
+                ? $container->getDefinition(CoreServices::SS_ORM_BACKEND)
+                : false;
+
         if (
             isset($config['pxfusion'])
             && isset($config['pxfusion']['config'])
@@ -141,7 +146,16 @@ class ContainerExtension extends ContainerExtensionConfigProcessor implements Ex
                 $dataObjectGenerator->addMethodCall(
                     'addYamlSchema',
                     array(
-                        'ecommerce-payment/config/storage/transaction_pxfusionpayment.yml'
+                        'ecommerce-payment/config/storage/transaction_pxfusionpayment.yml',
+                    )
+                );
+            }
+
+            if ($ssOrm) {
+                $ssOrm->addMethodCall(
+                    'addDataProvider',
+                    array(
+                        new Reference(Services::PXFUSION_PAYMENT_RESPONSE)
                     )
                 );
             }

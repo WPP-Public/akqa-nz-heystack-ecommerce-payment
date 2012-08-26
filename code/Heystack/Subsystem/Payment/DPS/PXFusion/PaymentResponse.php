@@ -24,7 +24,6 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
 
     protected $mapping = array(
         'merchantReference' => 'MerchantReference',
-        'txnRef' => 'TransactionReference',
         'amount' => 'Amount',
         'authCode' => 'AuthCode',
         'billingId' => 'BillingID',
@@ -55,9 +54,9 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
 
     function __construct($data)
     {
-        foreach ($this->mapping as $find => $key) {
-            if (array_key_exists($find, $data)) {
-                $this->data[$key] = $data[$find];
+        foreach ($data as $key => $value) {
+            if (array_key_exists($key, $this->mapping)) {
+                $this->data[$this->mapping[$key]] = $value;
             }
         }
     }
@@ -79,7 +78,10 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
 
     public function getStorableData()
     {
-        return $this->data;
+        return array(
+            'id' => self::SCHEMA_NAME,
+            'flat' => $this->data
+        );
     }
 
     public function getStorableBackendIdentifiers()
@@ -109,7 +111,6 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
     {
         return array(
             'MerchantReference' => 'Varchar',
-            'TransactionReference' => 'Varchar',
             'Amount' => 'Decimal',
             'AuthCode' => 'Varchar',
             'BillingID' => 'Varchar',

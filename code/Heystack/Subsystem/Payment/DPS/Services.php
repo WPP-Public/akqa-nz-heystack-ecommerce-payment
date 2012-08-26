@@ -15,6 +15,7 @@ final class Services
     const PXFUSION_SERVICE = 'pxfusion_service';
     const PXFUSION_INPUT_PROCESSOR = 'pxfusion_input_processor';
     const PXFUSION_OUTPUT_PROCESSOR = 'pxfusion_output_processor';
+    const PXFUSION_PAYMENT_RESPONSE = 'pxfusion_payment_response';
 
     const PXPOST_SERVICE = 'pxpost_service';
     const PXPOST_INPUT_PROCESSOR = 'pxpost_input_processor';

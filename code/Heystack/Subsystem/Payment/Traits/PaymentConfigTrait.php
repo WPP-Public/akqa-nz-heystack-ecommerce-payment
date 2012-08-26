@@ -159,7 +159,7 @@ trait PaymentConfigTrait
 
         }
 
-        if ($exceptionOnError) {
+        if ($this->hasErrors($errors) && $exceptionOnError) {
             throw new ConfigurationException(implode(', ', $errors));
         }
 
