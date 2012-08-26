@@ -10,8 +10,6 @@ parameters:
   pxpost_output_processor.class: Heystack\Subsystem\Payment\DPS\PXPost\OutputProcessor
   pxpost_subscriber.class: Heystack\Subsystem\Payment\DPS\PXPost\Subscriber
 
-  payment.class: $$$
-
 services:
 
   payment:
