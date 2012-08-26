@@ -14,7 +14,7 @@ use Heystack\Subsystem\Core\Services as CoreServices;
 
 use Heystack\Subsystem\Core\ContainerExtensionConfigProcessor;
 use Heystack\Subsystem\Core\Exception\ConfigurationException;
-use Heystack\Subsystem\Payment\DPS\PXFusion\Service;
+use Heystack\Subsystem\Payment\DPS\PXFusion\Service as PXFusionService;
 
 use Symfony\Component\Config\FileLocator;
 
@@ -43,7 +43,6 @@ class ContainerExtension extends ContainerExtensionConfigProcessor implements Ex
      */
     public function load(array $config, ContainerBuilder $container)
     {
-
         $loader = new YamlFileLoader(
             $container,
             new FileLocator(ECOMMERCE_PAYMENT_BASE_PATH . '/config')
@@ -55,12 +54,9 @@ class ContainerExtension extends ContainerExtensionConfigProcessor implements Ex
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * Adds the configuration for the payment handler.
-     *
-     * @param array                                                   $config
+     * @param array $config
      * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
+     * @throws \Heystack\Subsystem\Core\Exception\ConfigurationException
      */
     protected function processConfig(array $config, ContainerBuilder $container)
     {
@@ -68,69 +64,144 @@ class ContainerExtension extends ContainerExtensionConfigProcessor implements Ex
 
         $config = array_pop($config);
 
-        if (isset($config['pxfusion']) && isset($config['pxfusion']['config']) && $container->hasDefinition(Services::PXFUSION_SERVICE)) {
+        $dataObjectGenerator =
+            $container->hasDefinition(CoreServices::DATAOBJECT_GENERATOR)
+            ? $container->getDefinition(CoreServices::DATAOBJECT_GENERATOR)
+            : false;
 
-            $definition = $container->getDefinition(Services::PXFUSION_SERVICE);
+        $outputProcessorHandler =
+            $container->hasDefinition(CoreServices::OUTPUT_PROCESSOR_HANDLER)
+                ? $container->getDefinition(CoreServices::OUTPUT_PROCESSOR_HANDLER)
+                : false;
 
-            $definition->addMethodCall('setConfig', array($config['pxfusion']['config']));
+        $inputProcessorHandler =
+            $container->hasDefinition(CoreServices::INPUT_PROCESSOR_HANDLER)
+                ? $container->getDefinition(CoreServices::INPUT_PROCESSOR_HANDLER)
+                : false;
 
-            if ($config['pxfusion']['config']['Type'] == Service::TYPE_AUTH_COMPLETE) {
+        if (
+            isset($config['pxfusion'])
+            && isset($config['pxfusion']['config'])
+            && $container->hasDefinition(Services::PXFUSION_SERVICE)
+        ) {
+
+            $pxfusionService = $container->getDefinition(Services::PXFUSION_SERVICE);
+
+            $pxfusionService->addMethodCall('setConfig', array($config['pxfusion']['config'], true));
+
+            if ($config['pxfusion']['config']['Type'] == PXFusionService::TYPE_AUTH_COMPLETE) {
 
                 if ($container->hasDefinition(Services::PXPOST_SERVICE) && isset($config['pxpost'])) {
 
-                    $definition->addArgument(new Reference(Services::PXPOST_SERVICE));
+                    $pxfusionService->addArgument(new Reference(Services::PXPOST_SERVICE));
 
                 } else {
 
-                    throw new ConfigurationException('You have chosen PXFusion Auth-Complete but you haven\'t configured PXPost');
+                    throw new ConfigurationException(
+                        'You have chosen PXFusion Auth-Complete but you haven\'t configured PXPost'
+                    );
 
                 }
 
             }
 
             if (isset($config['pxfusion']['additional_config'])) {
-
-                $definition->addMethodCall('setAdditionalConfig', array($config['pxfusion']['additional_config']));
-
+                $pxfusionService->addMethodCall(
+                    'setAdditionalConfig',
+                    array($config['pxfusion']['additional_config'], true)
+                );
             }
 
-            if ($container->hasDefinition(CoreServices::INPUT_PROCESSOR_HANDLER)) {
-
-                $container->getDefinition(CoreServices::INPUT_PROCESSOR_HANDLER)->addMethodCall('addProcessor', array(new Reference(Services::PXFUSION_INPUT_PROCESSOR)));
-
+            if ($inputProcessorHandler) {
+                $inputProcessorHandler->addMethodCall(
+                    'addProcessor',
+                    array(
+                        new Reference(Services::PXFUSION_INPUT_PROCESSOR)
+                    )
+                );
             }
 
-            if ($container->hasDefinition(CoreServices::OUTPUT_PROCESSOR_HANDLER)) {
-
-                $container->getDefinition(CoreServices::OUTPUT_PROCESSOR_HANDLER)->addMethodCall('addProcessor', array(new Reference(Services::PXFUSION_OUTPUT_PROCESSOR)));
-
+            if ($outputProcessorHandler) {
+                $outputProcessorHandler->addMethodCall(
+                    'addProcessor',
+                    array(
+                        new Reference(Services::PXFUSION_OUTPUT_PROCESSOR)
+                    )
+                );
             }
 
-        } else {
+            if ($dataObjectGenerator) {
+                $dataObjectGenerator->addMethodCall(
+                    'addYamlSchema',
+                    array(
+                        'ecommerce-payment/config/storage/pxfusionpayment.yml'
+                    )
+                );
 
-            throw new ConfigurationException('Please configure the pxfusion subsystem on your /mysite/config/services.yml file');
+                $dataObjectGenerator->addMethodCall(
+                    'addYamlSchema',
+                    array(
+                        'ecommerce-payment/config/storage/transaction_pxfusionpayment.yml'
+                    )
+                );
+            }
 
         }
 
-        if (isset($config['pxpost']) && $container->hasDefinition(Services::PXPOST_SERVICE)) {
+        if (
+            isset($config['pxpost'])
+            && isset($config['pxpost']['config'])
+            && $container->hasDefinition(Services::PXPOST_SERVICE)
+        ) {
+            $container->getDefinition(Services::PXPOST_SERVICE)->addMethodCall(
+                'setConfig',
+                array(
+                    $config['pxpost']['config']
+                )
+            );
 
-            $container->getDefinition(Services::PXPOST_SERVICE)->addMethodCall('setConfig', array($config['pxpost']));
-
-            if ($container->hasDefinition(CoreServices::INPUT_PROCESSOR_HANDLER)) {
-
-                $container->getDefinition(CoreServices::INPUT_PROCESSOR_HANDLER)->addMethodCall('addProcessor', array(new Reference(Services::PXPOST_INPUT_PROCESSOR)));
-
+            if (isset($config['pxpost']['additional_config'])) {
+                $pxfusionService->addMethodCall(
+                    'setAdditionalConfig',
+                    array(
+                        $config['pxpost']['additional_config']
+                    )
+                );
             }
 
-            if ($container->hasDefinition(CoreServices::OUTPUT_PROCESSOR_HANDLER)) {
-
-                $container->getDefinition(CoreServices::OUTPUT_PROCESSOR_HANDLER)->addMethodCall('addProcessor', array(new Reference(Services::PXPOST_OUTPUT_PROCESSOR)));
-
+            if ($inputProcessorHandler) {
+                $inputProcessorHandler->addMethodCall(
+                    'addProcessor',
+                    array(
+                        new Reference(Services::PXPOST_INPUT_PROCESSOR)
+                    )
+                );
             }
 
-        } else {
+            if ($outputProcessorHandler) {
+                $outputProcessorHandler->addMethodCall(
+                    'addProcessor',
+                    array(
+                        new Reference(Services::PXPOST_OUTPUT_PROCESSOR)
+                    )
+                );
+            }
 
-            throw new ConfigurationException('Please configure the pxpost subsystem on your /mysite/config/services.yml file');
+            if ($dataObjectGenerator) {
+                $dataObjectGenerator->addMethodCall(
+                    'addYamlSchema',
+                    array(
+                        'ecommerce-payment/config/storage/pxpostpayment.yml'
+                    )
+                );
+
+                $dataObjectGenerator->addMethodCall(
+                    'addYamlSchema',
+                    array(
+                        'ecommerce-payment/config/storage/transaction_pxpostpayment.yml'
+                    )
+                );
+            }
 
         }
 

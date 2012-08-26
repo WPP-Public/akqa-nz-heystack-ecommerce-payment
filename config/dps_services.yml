@@ -23,7 +23,7 @@ services:
 
   pxfusion_input_processor:
     class: %pxfusion_input_processor.class%
-    arguments: [ @pxfusion_service ]
+    arguments: [ @pxfusion_service, @dataobject_generator ]
 
   pxfusion_output_processor:
     class: %pxfusion_output_processor.class%

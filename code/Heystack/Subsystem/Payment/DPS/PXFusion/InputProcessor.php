@@ -4,6 +4,10 @@ namespace Heystack\Subsystem\Payment\DPS\PXFusion;
 
 use Heystack\Subsystem\Core\Input\ProcessorInterface;
 
+use Heystack\Subsystem\Core\Storage\Storage;
+
+use Heystack\Subsystem\Core\State\State;
+
 class InputProcessor implements ProcessorInterface
 {
 
@@ -15,9 +19,24 @@ class InputProcessor implements ProcessorInterface
      */
     protected $paymentService;
 
-    public function __construct(PaymentServiceInterface $paymentService)
-    {
+    /**
+     * @var \Heystack\Subsystem\Core\State\State
+     */
+    protected $state;
+
+    /**
+     * @var \Heystack\Subsystem\Core\Storage\Storage
+     */
+    protected $storage;
+
+    public function __construct(
+        PaymentServiceInterface $paymentService,
+        Storage $storage,
+        State $state
+    ) {
         $this->paymentService = $paymentService;
+        $this->storage = $storage;
+        $this->state = $state;
     }
 
     public function getIdentifier()
@@ -27,24 +46,41 @@ class InputProcessor implements ProcessorInterface
 
     public function process(\SS_HTTPRequest $request)
     {
-
         $httpMethod = $request->httpMethod();
 
         if ($httpMethod == 'POST' && $request->param('ID') == 'complete') {
 
-            //Complete the transaction
-//            $this->paymentService->completeTransaction();
+            //get the payment dps txnref from the database
 
-        } elseif ($httpMethod == 'GET' && $request->param('ID') == 'return') {
+            //1. Get session id for transaction from state
 
-            $this->paymentService->checkTransaction($request->getVar('sessionid'));
+            //2. Get payment from storage
 
-        } elseif ($httpMethod == 'GET' && $request->param('ID') == 'auth') {
+            //3. Use txn ref from storage to complete the payment
 
-            $this->paymentService->checkTransaction($request->getVar('sessionid'));
+            $sessionId = $this->state->getByKey(self::IDENTIFIER . '.sessionid');
+
+            if ($sessionId) {
+
+                $payment = \DataObject::get_one("StoredPXFusionPayment", "SessionId = '{$sessionId}'");
+
+                if ($payment instanceof StoredPXFusionPayment && $payment->exists()) {
+
+                    $this->paymentService->completeTransaction($payment->DpsTxnRef);
+
+                }
+
+            }
+
+        } elseif ($httpMethod == 'GET' && $request->param('ID') == 'check') {
+
+            $paymentResponse = $this->paymentService->checkTransaction($request->getVar('sessionid'));
+
+            $this->state->setByKey(self::IDENTIFIER . '.sessionid', $request->getVar('sessionid'));
+
+            $this->storage->process($paymentResponse);
 
         }
-
     }
 
 }
