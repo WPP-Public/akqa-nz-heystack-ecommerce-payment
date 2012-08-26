@@ -371,12 +371,12 @@ class Service extends BaseService
         $result = $response->GetTransactionResult;
         $result->statusCode = $result->status;
 
-        if (in_array($result->StatusCode, $this->errorStatuses)) {
+        if (in_array($result->statusCode, $this->errorStatuses)) {
             $result->status = 'Error';
         } else {
-            if ($result->StatusCode === 0) {
+            if ($result->statusCode === 0) {
                 $result->status = 'Accepted';
-            } elseif ($result->StatusCode === 1) {
+            } elseif ($result->statusCode === 1) {
                 $result->status = 'Declined';
             }
         }

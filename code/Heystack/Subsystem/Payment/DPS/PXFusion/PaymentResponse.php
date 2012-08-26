@@ -17,7 +17,7 @@ use Heystack\Subsystem\Core\ViewableData\ViewableDataInterface;
 class PaymentResponse implements StorableInterface, ViewableDataInterface
 {
 
-    const INDENTIFIER = 'pxfusionpayment';
+    const IDENTIFIER = 'pxfusionpayment';
     const SCHEMA_NAME = 'PXFusionPayment';
 
     protected $data = array();
@@ -73,7 +73,7 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
 
     public function getStorableIdentifier()
     {
-        return self::INDENTIFIER;
+        return self::IDENTIFIER;
     }
 
     public function getStorableData()
