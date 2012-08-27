@@ -62,13 +62,27 @@ class InputProcessor implements ProcessorInterface
 
             if ($sessionId) {
 
+                // TODO
+                
+                error_log("sessionID: " .$sessionId);
+                
                 $payment = \DataObject::get_one("StoredPXFusionPayment", "SessionId = '{$sessionId}'");
+                
+                error_log(print_r($payment, true));
 
-                if ($payment instanceof StoredPXFusionPayment && $payment->exists()) {
+                if ($payment instanceof \StoredPXFusionPayment && $payment->DpsTxnRef) {
+                    
+                    error_log("payment-exists");
 
-                    $this->paymentService->completeTransaction($payment->DpsTxnRef);
+                    $paymentResponse = $this->paymentService->completeTransaction($payment->DpsTxnRef);
 
                 }
+                
+                return array(
+                    'Success' => true,
+                    'Complete' => true,
+                    'Data' => $paymentResponse
+                );
 
             }
 
@@ -79,8 +93,21 @@ class InputProcessor implements ProcessorInterface
             $this->state->setByKey(self::IDENTIFIER . '.sessionid', $request->getVar('sessionid'));
 
             $this->storage->process($paymentResponse);
+            
+            if ($paymentResponse->StatusCode === 0) {
+
+                return array(
+                    'Success' => true,
+                    'Data' => $paymentResponse
+                );
+                
+            }
 
         }
+        
+        return array(
+            'Success' => false
+        );
     }
 
 }

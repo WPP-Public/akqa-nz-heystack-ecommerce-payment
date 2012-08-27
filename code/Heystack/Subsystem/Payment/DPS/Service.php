@@ -67,5 +67,11 @@ abstract class Service
 
         return $currencyCode;
     }
+    
+    protected function responseFromErrors($errors = null) {
+        
+        die();
+        
+    }
 
 }

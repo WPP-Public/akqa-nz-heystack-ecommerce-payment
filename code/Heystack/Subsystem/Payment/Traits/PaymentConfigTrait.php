@@ -239,14 +239,14 @@ trait PaymentConfigTrait
 
     public function setAdditionalConfigByKey($key, $value, $exceptionOnError = false)
     {
-        return $this->setAdditionalConfig(array_merge($this->config, array(
+        return $this->setAdditionalConfig(array_merge($this->additionalConfig, array(
             $key => $value
         )), $exceptionOnError);
     }
 
     public function setUserConfigByKey($key, $value, $exceptionOnError = false)
     {
-        return $this->setUserConfig(array_merge($this->config, array(
+        return $this->setUserConfig(array_merge($this->userConfig, array(
             $key => $value
         )), $exceptionOnError);
     }

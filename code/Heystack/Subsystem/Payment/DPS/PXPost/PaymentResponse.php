@@ -29,7 +29,7 @@ use Heystack\Subsystem\Core\Storage\Traits\ParentReferenceTrait;
  * @package Heystack
  *
  */
-class Payment implements PaymentInterface, StorableInterface
+class PaymentResponse implements PaymentInterface, StorableInterface
 {
     use PaymentTrait;
     use DPSPaymentTrait;

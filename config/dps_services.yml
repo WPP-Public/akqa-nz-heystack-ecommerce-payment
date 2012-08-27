@@ -10,6 +10,7 @@ parameters:
   pxpost_input_processor.class: Heystack\Subsystem\Payment\DPS\PXPost\InputProcessor
   pxpost_output_processor.class: Heystack\Subsystem\Payment\DPS\PXPost\OutputProcessor
   pxpost_subscriber.class: Heystack\Subsystem\Payment\DPS\PXPost\Subscriber
+  pxpost_payment_response.class: Heystack\Subsystem\Payment\DPS\PXPost\PaymentResponse
 
 services:
 
@@ -51,3 +52,7 @@ services:
 
   pxpost_output_processor:
     class: %pxpost_output_processor.class%
+    
+  pxpost_payment_response:
+    class: %pxpost_payment_response.class%
+    arguments: [ [] ]

@@ -87,6 +87,12 @@ class Service extends BaseService
      * @var \Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface
      */
     protected $transaction;
+    
+    /**
+     * Holds the px post service for when using the auth complete cycle
+     * @var \Heystack\Subsystem\Payment\DPS\PXPost\Service 
+     */
+    protected $pxPostService;
 
     /**
      * Holds the data array which contains all the data specific to the payment
@@ -389,12 +395,13 @@ class Service extends BaseService
         $this->setStage(self::STAGE_COMPLETE);
 
         if ($this->pxPostService instanceof PXPostService) {
-
             $this->pxPostService->setTxnType(PXPostService::TXN_TYPE_COMPLETE);
             $this->pxPostService->setAdditionalConfigByKey('DpsTxnRef', $dpsTxnRef);
-            $this->pxPostService->processComplete();
+            return $this->pxPostService->processComplete();
 
         }
+        
+        return false;
     }
 
     /**

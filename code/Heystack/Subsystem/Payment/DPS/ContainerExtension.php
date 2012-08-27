@@ -92,7 +92,13 @@ class ContainerExtension extends ContainerExtensionConfigProcessor implements Ex
 
             $pxfusionService = $container->getDefinition(Services::PXFUSION_SERVICE);
 
-            $pxfusionService->addMethodCall('setConfig', array($config['pxfusion']['config'], true));
+            $pxfusionService->addMethodCall(
+                'setConfig',
+                array(
+                    $config['pxfusion']['config'],
+                    true
+                )
+            );
 
             if (isset($config['pxfusion']['config']['Type']) && $config['pxfusion']['config']['Type'] == PXFusionService::TYPE_AUTH_COMPLETE) {
 
@@ -113,7 +119,10 @@ class ContainerExtension extends ContainerExtensionConfigProcessor implements Ex
             if (isset($config['pxfusion']['additional_config'])) {
                 $pxfusionService->addMethodCall(
                     'setAdditionalConfig',
-                    array($config['pxfusion']['additional_config'], true)
+                    array(
+                        $config['pxfusion']['additional_config'],
+                        true
+                    )
                 );
             }
 
@@ -167,18 +176,21 @@ class ContainerExtension extends ContainerExtensionConfigProcessor implements Ex
             && isset($config['pxpost']['config'])
             && $container->hasDefinition(Services::PXPOST_SERVICE)
         ) {
-            $container->getDefinition(Services::PXPOST_SERVICE)->addMethodCall(
+            $pxpostService = $container->getDefinition(Services::PXPOST_SERVICE);
+            $pxpostService->addMethodCall(
                 'setConfig',
                 array(
-                    $config['pxpost']['config']
+                    $config['pxpost']['config'],
+                    true
                 )
             );
 
             if (isset($config['pxpost']['additional_config'])) {
-                $pxfusionService->addMethodCall(
+                $pxpostService->addMethodCall(
                     'setAdditionalConfig',
                     array(
-                        $config['pxpost']['additional_config']
+                        $config['pxpost']['additional_config'],
+                        true
                     )
                 );
             }

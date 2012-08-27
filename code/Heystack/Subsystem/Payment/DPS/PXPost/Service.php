@@ -315,7 +315,6 @@ class Service extends BaseService
         } else {
             $response = $this->responseFromResult($this->process());
         }
-        file_put_contents('results.txt', print_r($response, true));
         return $response;
     }
 
@@ -326,6 +325,7 @@ class Service extends BaseService
     {
         $this->setTxnType(self::TXN_TYPE_COMPLETE);
         $errors = $this->checkAll();
+        
         if ($this->hasErrors($errors)) {
             $response = $this->responseFromErrors($errors);
         } else {
