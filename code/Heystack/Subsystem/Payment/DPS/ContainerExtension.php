@@ -229,6 +229,16 @@ class ContainerExtension extends ContainerExtensionConfigProcessor implements Ex
                 );
             }
 
+            if ($ssOrm) {
+                $ssOrm->addMethodCall(
+                    'addDataProvider',
+                    array(
+                        new Reference(Services::PXPOST_PAYMENT_RESPONSE)
+                    )
+                );
+            }
+
+
         }
 
     }

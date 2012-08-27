@@ -20,5 +20,6 @@ final class Services
     const PXPOST_SERVICE = 'pxpost_service';
     const PXPOST_INPUT_PROCESSOR = 'pxpost_input_processor';
     const PXPOST_OUTPUT_PROCESSOR = 'pxpost_output_processor';
+    const PXPOST_PAYMENT_RESPONSE = 'pxpost_payment_response';
 
 }

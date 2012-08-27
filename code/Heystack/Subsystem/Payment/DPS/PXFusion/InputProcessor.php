@@ -77,7 +77,7 @@ class InputProcessor implements ProcessorInterface
 
                         $pxPostPayment = $results[Backend::IDENTIFIER];
 
-                        $payment->PxPostPaymentID = $pxPostPayment->ID;
+                        $payment->PXPostPaymentID = $pxPostPayment->ID;
 
                         $payment->write();
 
