@@ -65,15 +65,9 @@ class InputProcessor implements ProcessorInterface
 
                 // TODO
                 
-                error_log("sessionID: " .$sessionId);
-                
-                $payment = \DataObject::get_one("StoredPXFusionPayment", "SessionId = '{$sessionId}'");
-                
-                error_log(print_r($payment, true));
+                $payment = \DataObject::get_one('StoredPXFusionPayment', "SessionId = '{$sessionId}'");
 
                 if ($payment instanceof \StoredPXFusionPayment && $payment->DpsTxnRef) {
-                    
-                    error_log("payment-exists");
 
                     $paymentResponse = $this->paymentService->completeTransaction($payment->DpsTxnRef);
 
@@ -83,7 +77,7 @@ class InputProcessor implements ProcessorInterface
 
                         $pxPostPayment = $results[Backend::IDENTIFIER];
 
-                        $payment->PxPostPaymentID = $payment->ID;
+                        $payment->PxPostPaymentID = $pxPostPayment->ID;
 
                         $payment->write();
 

@@ -31,5 +31,4 @@ flat:
 related:
 parent:
   Parent: +Transaction
-children:
   PXPostPayment: +PXPostPayment
