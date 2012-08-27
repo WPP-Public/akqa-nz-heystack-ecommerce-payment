@@ -35,14 +35,79 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
 
     protected $data = array();
 
-    protected $mapping = array(
+    protected $allowedFields = array(
+        'ReCo',
+        'ResponseText',
+        'HelpText',
+        'Success',
+        'DpsTxnRef',
+        'TxnRef',
+        'RmReason',
+        'RmReasonId',
+        'RiskScore',
+        'RiskScoreText',
+        'Authorized',
+        'RxDate',
+        'RxDateLocal',
+        'LocalTimeZone',
+        'MerchantReference',
+        'CardName',
+        'Retry',
+        'StatusRequired',
+        'AuthCode',
+        'AmountBalance',
+        'Amount',
+        'CurrencyId',
+        'InputCurrencyId',
+        'InputCurrencyName',
+        'CurrencyRate',
+        'CurrencyName',
+        'CardHolderName',
+        'DateSettlement',
+        'TxnType',
+        'CardNumber',
+        'TxnMac',
+        'DateExpiry',
+        'ProductId',
+        'AcquirerDate',
+        'AcquirerTime',
+        'AcquirerId',
+        'Acquirer',
+        'AcquirerReCo',
+        'AcquirerResponseText',
+        'TestMode',
+        'CardId',
+        'CardHolderResponseText',
+        'CardHolderHelpText',
+        'CardHolderResponseDescription',
+        'MerchantResponseText',
+        'MerchantHelpText',
+        'MerchantResponseDescription',
+        'UrlFail',
+        'UrlSuccess',
+        'EnablePostResponse',
+        'PxPayName',
+        'PxPayLogoSrc',
+        'PxPayUserId',
+        'PxPayXsl',
+        'PxPayBgColor',
+        'PxPayOptions',
+        'Cvc2ResultCode',
+        'AcquirerPort',
+        'AcquirerTxnRef',
+        'GroupAccount',
+        'AllowRetry',
+        'DpsBillingId',
+        'BillingId',
+        'TransactionId',
+        'PxHostId'
     );
 
     function __construct($data)
     {
         foreach ($data as $key => $value) {
-            if (array_key_exists($key, $this->mapping)) {
-                $this->data[$this->mapping[$key]] = $value;
+            if (in_array($key, $this->allowedFields)) {
+                $this->data[$key] = $value;
             }
         }
     }
@@ -73,34 +138,17 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
 
     public function getStorableData()
     {
-        $data = array();
-
-        $data['id'] = $this->getSchemaName();
-
-        $data['flat'] = array(
-            'Status' => $this->getStatus(),
-            'CurrencyCode' => $this->getCurrencyCode(),
-            'Message' => $this->getMessage(),
-            'Amount' => $this->getAmount(),
-            'IP' => $this->getIP(),
-            'TransactionType' => $this->getTransactionType(),
-            'MerchantReference' => $this->getMerchantReference(),
-            'TransactionReference' => $this->getTransactionReference(),
-            'AuthCode' => $this->getAuthCode(),
-            'XMLResponse' => $this->getXMLResponse(),
-            'BillingID' => $this->getBillingID(),
-            'HelpText' => $this->getHelpText(),
-            'ResponseCode' => $this->getResponseCode(),
-            'SettlementDate' => $this->getSettlementDate(),
-            'ParentID' => $this->parentReference
+        return array(
+            'id' => $this->getSchemaName(),
+            'flat' => array_merge(
+                $this->data,
+                array(
+                    'ParentID' => $this->parentReference
+                )
+            ),
+            'parent' => true,
+            'related' => false
         );
-
-        $data['parent'] = true;
-
-        $data['related'] = false;
-
-        return $data;
-
     }
 
     /**
@@ -128,67 +176,64 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
     public function getCastings()
     {
         return array(
-            'Authorized',
-            'ReCo',
-            'RxDate',
-            'RxDateLocal',
-            'LocalTimeZone',
-            'MerchantReference',
-            'CardName',
-            'Retry',
-            'StatusRequired',
-            'AuthCode',
-            'AmountBalance',
-            'Amount',
-            'CurrencyId',
-            'InputCurrencyId',
-            'InputCurrencyName',
-            'CurrencyRate',
-            'CurrencyName',
-            'CardHolderName',
-            'DateSettlement',
-            'TxnType',
-            'CardNumber',
-            'TxnMac',
-            'DateExpiry',
-            'ProductId',
-            'AcquirerDate',
-            'AcquirerTime',
-            'AcquirerId',
-            'Acquirer',
-            'AcquirerReCo',
-            'AcquirerResponseText',
-            'TestMode',
-            'CardId',
-            'CardHolderResponseText',
-            'CardHolderHelpText',
-            'CardHolderResponseDescription',
-            'MerchantResponseText',
-            'MerchantHelpText',
-            'MerchantResponseDescription',
-            'UrlFail',
-            'UrlSuccess',
-            'EnablePostResponse',
-            'PxPayName',
-            'PxPayLogoSrc',
-            'PxPayUserId',
-            'PxPayXsl',
-            'PxPayBgColor',
-            'PxPayOptions',
-            'Cvc2ResultCode',
-            'AcquirerPort',
-            'AcquirerTxnRef',
-            'GroupAccount',
-            'DpsTxnRef',
-            'AllowRetry',
-            'DpsBillingId',
-            'BillingId',
-            'TransactionId',
-            'PxHostId',
-            'RmReason',
-            'RmReasonId',
-            'RiskScore',
-            'RiskScoreText'
+            'ReCo' => 'Varchar',
+            'ResponseText' => 'Varchar',
+            'HelpText' => 'Varchar',
+            'Success' => 'Int',
+            'DpsTxnRef' => 'Varchar',
+            'TxnRef' => 'Varchar',
+            'RmReason' => 'Varchar',
+            'RmReasonId' => 'Varchar',
+            'RiskScore' => 'Int',
+            'RiskScoreText' => 'Text',
+            'Authorized' => 'Int',
+            'RxDate' => 'Varchar',
+            'RxDateLocal' => 'Varchar',
+            'LocalTimeZone' => 'Varchar',
+            'MerchantReference' => 'Varchar',
+            'CardName' => 'Varchar',
+            'Retry' => 'Int',
+            'StatusRequired' => 'Int',
+            'AuthCode' => 'Varchar',
+            'AmountBalance' => 'Decimal',
+            'Amount' => 'Decimal',
+            'CurrencyId' => 'Int',
+            'InputCurrencyId' => 'Int',
+            'InputCurrencyName' => 'Varchar',
+            'CurrencyRate' => 'Decimal',
+            'CurrencyName' => 'Varchar',
+            'CardHolderName' => 'Varchar',
+            'DateSettlement' => 'Date',
+            'TxnType' => 'Varchar',
+            'CardNumber' => 'Varchar',
+            'TxnMac' => 'Varchar',
+            'DateExpiry' => 'Varchar',
+            'ProductId' => 'Int',
+            'AcquirerDate' => 'Date',
+            'AcquirerTime' => 'Varchar',
+            'AcquirerId' => 'Int',
+            'Acquirer' => 'Varchar',
+            'AcquirerReCo' => 'Varchar',
+            'AcquirerResponseText' => 'Text',
+            'TestMode' => 'Int',
+            'CardId' => 'Int',
+            'CardHolderResponseText' => 'Text',
+            'CardHolderHelpText' => 'Varchar',
+            'CardHolderResponseDescription' => 'Varchar',
+            'MerchantResponseText' => 'Text',
+            'MerchantHelpText' => 'Varchar',
+            'MerchantResponseDescription' => 'Varchar',
+            'UrlFail' => 'Varchar',
+            'UrlSuccess' => 'Varchar',
+            'EnablePostResponse' => 'Int',
+            'AcquirerPort' => 'Varchar',
+            'AcquirerTxnRef' => 'Varchar',
+            'GroupAccount' => 'Varchar',
+            'AllowRetry' => 'Int',
+            'DpsBillingId' => 'Varchar',
+            'BillingId' => 'Varchar',
+            'TransactionId' => 'Varchar',
+            'PxHostId' => 'Varchar'
         );
     }
 }

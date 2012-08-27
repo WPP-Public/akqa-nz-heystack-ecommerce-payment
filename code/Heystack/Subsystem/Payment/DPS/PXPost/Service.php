@@ -303,6 +303,13 @@ class Service extends BaseService
         return $xml->asXML();
     }
 
+    protected function prepareResponse($result)
+    {
+        unset($result['Transaction']);
+        unset($result['@attributes']);
+        return $result;
+    }
+
     /**
      * Processes and authorization transaction
      */
@@ -311,9 +318,9 @@ class Service extends BaseService
         $this->setTxnType(self::TXN_TYPE_AUTH);
         $errors = $this->checkAll();
         if ($this->hasErrors($errors)) {
-            $response = $this->responseFromErrors($errors);
+            $response = $errors;
         } else {
-            $response = $this->responseFromResult($this->process());
+            $response = new PaymentResponse($this->process());
         }
         return $response;
     }
@@ -327,9 +334,9 @@ class Service extends BaseService
         $errors = $this->checkAll();
         
         if ($this->hasErrors($errors)) {
-            $response = $this->responseFromErrors($errors);
+            $response = $errors;
         } else {
-            $response = $this->responseFromResult($this->process());
+            $response = new PaymentResponse($this->process());
         }
         return $response;
     }
@@ -345,11 +352,6 @@ class Service extends BaseService
         if ($this->hasErrors($errors)) {
             $response = $errors;
         } else {
-            $stuff = $this->process();
-            foreach ($stuff as $key => $value) {
-                echo "'$key',", PHP_EOL;
-            }
-            die;
             $response = new PaymentResponse($this->process());
         }
         return $response;
@@ -363,9 +365,9 @@ class Service extends BaseService
         $this->setTxnType(self::TXN_TYPE_REFUND);
         $errors = $this->checkAll();
         if ($this->hasErrors($errors)) {
-            $response = $this->responseFromErrors($errors);
+            $response = $errors;
         } else {
-            $response = $this->responseFromResult($this->process());
+            $response = new PaymentResponse($this->process());
         }
         return $response;
     }
@@ -388,10 +390,10 @@ class Service extends BaseService
 
         try {
             $response = new \SimpleXMLElement($resultXml);
-            $result = array_merge(
+            $result = $this->prepareResponse(array_merge(
                 json_decode(json_encode((array) $response), true),
                 json_decode(json_encode((array) $response->Transaction), true)
-            );
+            ));
         } catch (\Exception $e) {
             $result = null;
         }

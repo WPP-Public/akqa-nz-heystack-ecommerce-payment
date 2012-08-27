@@ -312,7 +312,6 @@ class Service extends BaseService
 
     public function getSoapClient()
     {
-
         if (!$this->soapClient) {
 
             $this->soapClient = new \SoapClient(
@@ -326,7 +325,6 @@ class Service extends BaseService
         }
 
         return $this->soapClient;
-
     }
 
     public function getTransactionId()
@@ -370,7 +368,6 @@ class Service extends BaseService
         $response = $soapClient->GetTransaction($configuration);
 
         if (!is_object($response) || !isset($response->GetTransactionResult)) {
-
             throw new Exception($soapClient->__getLastResponse(), $response, $configuration);
         }
 
@@ -387,7 +384,12 @@ class Service extends BaseService
             }
         }
 
-        return new PaymentResponse(json_decode(json_encode((array) $result), true));
+        return new PaymentResponse(
+            json_decode(
+                json_encode((array) $result),
+                true
+            )
+        );
     }
 
     public function completeTransaction($dpsTxnRef)

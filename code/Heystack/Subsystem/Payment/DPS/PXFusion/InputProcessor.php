@@ -5,6 +5,7 @@ namespace Heystack\Subsystem\Payment\DPS\PXFusion;
 use Heystack\Subsystem\Core\Input\ProcessorInterface;
 
 use Heystack\Subsystem\Core\Storage\Storage;
+use Heystack\Subsystem\Core\Storage\Backends\SilverStripeOrm\Backend;
 
 use Heystack\Subsystem\Core\State\State;
 
@@ -75,6 +76,18 @@ class InputProcessor implements ProcessorInterface
                     error_log("payment-exists");
 
                     $paymentResponse = $this->paymentService->completeTransaction($payment->DpsTxnRef);
+
+                    $results = $this->storage->process($paymentResponse);
+
+                    if (isset($results[Backend::IDENTIFIER])) {
+
+                        $pxPostPayment = $results[Backend::IDENTIFIER];
+
+                        $payment->PxPostPaymentID = $payment->ID;
+
+                        $payment->write();
+
+                    }
 
                 }
                 
