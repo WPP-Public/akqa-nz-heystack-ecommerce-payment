@@ -341,12 +341,16 @@ class Service extends BaseService
     {
         $this->setTxnType(self::TXN_TYPE_PURCHASE);
         $errors = $this->checkAll();
+        $response = null;
         if ($this->hasErrors($errors)) {
-//            $response = $this->responseFromErrors($errors);
+            $response = $errors;
         } else {
-//            $response = $this->responseFromResult($this->process());
-            var_dump($this->process());
+            $stuff = $this->process();
+            foreach ($stuff as $key => $value) {
+                echo "'$key',", PHP_EOL;
+            }
             die;
+            $response = new PaymentResponse($this->process());
         }
         return $response;
     }
@@ -384,7 +388,10 @@ class Service extends BaseService
 
         try {
             $response = new \SimpleXMLElement($resultXml);
-            $result = json_decode(json_encode((array) $response->Transaction), true);
+            $result = array_merge(
+                json_decode(json_encode((array) $response), true),
+                json_decode(json_encode((array) $response->Transaction), true)
+            );
         } catch (\Exception $e) {
             $result = null;
         }
