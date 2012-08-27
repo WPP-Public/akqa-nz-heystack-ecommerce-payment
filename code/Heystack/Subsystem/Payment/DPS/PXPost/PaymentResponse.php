@@ -10,15 +10,10 @@
  */
 namespace Heystack\Subsystem\Payment\DPS\PXPost;
 
-use Heystack\Subsystem\Payment\DPS\PXPost\PaymentInterface;
-
-use Heystack\Subsystem\Payment\Traits\PaymentTrait;
-use Heystack\Subsystem\Payment\DPS\PaymentTrait as DPSPaymentTrait;
-use Heystack\Subsystem\Payment\DPS\PXPost\PaymentTrait as PXPostPaymentTrait;
-
 use Heystack\Subsystem\Core\Storage\StorableInterface;
 use Heystack\Subsystem\Core\Storage\Backends\SilverStripeOrm\Backend;
 use Heystack\Subsystem\Core\Storage\Traits\ParentReferenceTrait;
+use Heystack\Subsystem\Core\ViewableData\ViewableDataInterface;
 
 /**
  * Payment stores information about payments made with the PXPost method
@@ -29,20 +24,42 @@ use Heystack\Subsystem\Core\Storage\Traits\ParentReferenceTrait;
  * @package Heystack
  *
  */
-class PaymentResponse implements PaymentInterface, StorableInterface
+class PaymentResponse implements StorableInterface, ViewableDataInterface
 {
-    use PaymentTrait;
-    use DPSPaymentTrait;
-    use PXPostPaymentTrait;
+
     use ParentReferenceTrait;
 
     const IDENTIFIER = 'pxpostpayment';
 
+    const SCHEMA_NAME = 'PXPostPayment';
+
+    protected $data = array();
+
+    protected $mapping = array(
+    );
+
+    function __construct($data)
+    {
+        foreach ($data as $key => $value) {
+            if (array_key_exists($key, $this->mapping)) {
+                $this->data[$this->mapping[$key]] = $value;
+            }
+        }
+    }
+
+    function __get($name)
+    {
+        return array_key_exists($name, $this->data) ? $this->data[$name] : false;
+    }
+
+    function __set($name, $value)
+    {
+        $this->data[$name] = $value;
+    }
+
     public function getStorableIdentifier()
     {
-
         return self::IDENTIFIER;
-
     }
 
     /**
@@ -51,16 +68,14 @@ class PaymentResponse implements PaymentInterface, StorableInterface
      */
     public function getSchemaName()
     {
-
-        return 'PXPostPayment';
-
+        return self::SCHEMA_NAME;
     }
 
     public function getStorableData()
     {
         $data = array();
 
-        $data['id'] = "PXPostPayment";
+        $data['id'] = $this->getSchemaName();
 
         $data['flat'] = array(
             'Status' => $this->getStatus(),
@@ -96,6 +111,84 @@ class PaymentResponse implements PaymentInterface, StorableInterface
     {
         return array(
             Backend::IDENTIFIER
+        );
+    }
+
+    /**
+     * Defines what methods the implementing class implements dynamically through __get and __set
+     */
+    public function getDynamicMethods()
+    {
+        return array_keys($this->data);
+    }
+
+    /**
+     * Returns an array of SilverStripe DBField castings keyed by field name
+     */
+    public function getCastings()
+    {
+        return array(
+            'Authorized',
+            'ReCo',
+            'RxDate',
+            'RxDateLocal',
+            'LocalTimeZone',
+            'MerchantReference',
+            'CardName',
+            'Retry',
+            'StatusRequired',
+            'AuthCode',
+            'AmountBalance',
+            'Amount',
+            'CurrencyId',
+            'InputCurrencyId',
+            'InputCurrencyName',
+            'CurrencyRate',
+            'CurrencyName',
+            'CardHolderName',
+            'DateSettlement',
+            'TxnType',
+            'CardNumber',
+            'TxnMac',
+            'DateExpiry',
+            'ProductId',
+            'AcquirerDate',
+            'AcquirerTime',
+            'AcquirerId',
+            'Acquirer',
+            'AcquirerReCo',
+            'AcquirerResponseText',
+            'TestMode',
+            'CardId',
+            'CardHolderResponseText',
+            'CardHolderHelpText',
+            'CardHolderResponseDescription',
+            'MerchantResponseText',
+            'MerchantHelpText',
+            'MerchantResponseDescription',
+            'UrlFail',
+            'UrlSuccess',
+            'EnablePostResponse',
+            'PxPayName',
+            'PxPayLogoSrc',
+            'PxPayUserId',
+            'PxPayXsl',
+            'PxPayBgColor',
+            'PxPayOptions',
+            'Cvc2ResultCode',
+            'AcquirerPort',
+            'AcquirerTxnRef',
+            'GroupAccount',
+            'DpsTxnRef',
+            'AllowRetry',
+            'DpsBillingId',
+            'BillingId',
+            'TransactionId',
+            'PxHostId',
+            'RmReason',
+            'RmReasonId',
+            'RiskScore',
+            'RiskScoreText'
         );
     }
 }
