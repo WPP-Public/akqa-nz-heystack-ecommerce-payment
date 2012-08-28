@@ -32,7 +32,7 @@ services:
 
   pxfusion_input_processor:
     class: %pxfusion_input_processor.class%
-    arguments: [ @pxfusion_service, @storage, @state ]
+    arguments: [ @pxfusion_service, @storage, @state, @transaction ]
 
   pxfusion_output_processor:
     class: %pxfusion_output_processor.class%
@@ -40,7 +40,15 @@ services:
   pxfusion_payment_response:
     class: %pxfusion_payment_response.class%
     arguments: [ [] ]
-
+    
+  pxfusion_subscriber:
+    class: %pxfusion_subscriber.class%
+    arguments: [ @event_dispatcher, @state, @storage ]
+    
+  event_dispatcher:
+    class: %event_dispatcher.class%
+    calls: 
+      - [ addSubscriber, [ @pxfusion_subscriber ] ]
 
   pxpost_service:
     class: %pxpost_service.class%

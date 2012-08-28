@@ -4,4 +4,4 @@ flat:
 parent:
 related:
 children:
-  Payment: +PXPostPayment
+  PostPayment: +PXPostPayment

@@ -28,15 +28,9 @@ class OutputProcessor implements ProcessorInterface
     public function process(\Controller $controller, $result = null)
     {
         
-        error_log(print_r($result, true));
-        
         if ($result['Success']) {
             
             if ($result['Complete']) {
-                
-                // successful auth-complete
-                
-                error_log("success-complete");
                 
                 \Director::redirect('checkout/thank-you');
                 

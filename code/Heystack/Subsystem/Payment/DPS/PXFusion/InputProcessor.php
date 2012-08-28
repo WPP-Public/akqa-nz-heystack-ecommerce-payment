@@ -9,6 +9,8 @@ use Heystack\Subsystem\Core\Storage\Backends\SilverStripeOrm\Backend;
 
 use Heystack\Subsystem\Core\State\State;
 
+use Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface;
+
 class InputProcessor implements ProcessorInterface
 {
 
@@ -29,15 +31,23 @@ class InputProcessor implements ProcessorInterface
      * @var \Heystack\Subsystem\Core\Storage\Storage
      */
     protected $storage;
+    
+    /**
+     * Holds the transaction
+     * @var Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface
+     */
+    protected $transaction;
 
     public function __construct(
         PaymentServiceInterface $paymentService,
         Storage $storage,
-        State $state
+        State $state,
+        TransactionInterface $transaction
     ) {
         $this->paymentService = $paymentService;
         $this->storage = $storage;
         $this->state = $state;
+        $this->transaction = $transaction;
     }
 
     public function getIdentifier()
@@ -63,24 +73,34 @@ class InputProcessor implements ProcessorInterface
 
             if ($sessionId) {
 
-                // TODO
+                // get the PXFusion payment associated with this sessionid
                 
                 $payment = \DataObject::get_one('StoredPXFusionPayment', "SessionId = '{$sessionId}'");
 
                 if ($payment instanceof \StoredPXFusionPayment && $payment->DpsTxnRef) {
 
                     $paymentResponse = $this->paymentService->completeTransaction($payment->DpsTxnRef);
-
+                    
                     $results = $this->storage->process($paymentResponse);
 
                     if (isset($results[Backend::IDENTIFIER])) {
-
+                        // store the transaction
+                        $transactionResults = $this->storage->process($this->transaction);
+                        
+                        // get the actual transaction and payment
+                        $storedTransaction = $transactionResults[Backend::IDENTIFIER];
                         $pxPostPayment = $results[Backend::IDENTIFIER];
-
+                                 
+                        // set the parents of each object
+                        $payment->ParentID = $storedTransaction->ID;
                         $payment->PXPostPaymentID = $pxPostPayment->ID;
-
                         $payment->write();
 
+                        $pxPostPayment->ParentID = $storedTransaction->ID;
+                        $pxPostPayment->write();
+                        
+                        
+                        
                     }
 
                 }

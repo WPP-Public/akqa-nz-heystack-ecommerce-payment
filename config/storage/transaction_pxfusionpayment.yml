@@ -4,4 +4,4 @@ flat:
 parent:
 related:
 children:
-  Payment: +PXFusionPayment
+  FusionPayment: +PXFusionPayment
