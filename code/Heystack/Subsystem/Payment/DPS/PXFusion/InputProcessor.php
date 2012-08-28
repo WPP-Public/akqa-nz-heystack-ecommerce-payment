@@ -82,11 +82,11 @@ class InputProcessor implements ProcessorInterface
                     $paymentResponse = $this->paymentService->completeTransaction($payment->DpsTxnRef);
                     
                     $results = $this->storage->process($paymentResponse);
+                    // store the transaction
+                    $transactionResults = $this->storage->process($this->transaction);
+                    
+                    if (isset($results[Backend::IDENTIFIER]) && isset($transactionResults[Backend::IDENTIFIER])) {
 
-                    if (isset($results[Backend::IDENTIFIER])) {
-                        // store the transaction
-                        $transactionResults = $this->storage->process($this->transaction);
-                        
                         // get the actual transaction and payment
                         $storedTransaction = $transactionResults[Backend::IDENTIFIER];
                         $pxPostPayment = $results[Backend::IDENTIFIER];

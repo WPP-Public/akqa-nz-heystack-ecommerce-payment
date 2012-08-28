@@ -23,6 +23,14 @@ abstract class Service
         'TOP', 'SBD', 'PGK', 'MYR',
         'KWD', 'FJD'
     );
+    
+    /**
+     * List of currencies which don't have cents
+     * @var array
+     */
+    protected $currenciesWithoutCents = array(
+        'JPY'
+    );
 
     /**
      * If testing last request data is needed form soap calls thi should be set to true

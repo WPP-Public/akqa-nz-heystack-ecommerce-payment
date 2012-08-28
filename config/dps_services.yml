@@ -3,13 +3,11 @@ parameters:
   pxfusion_service.class: Heystack\Subsystem\Payment\DPS\PXFusion\Service
   pxfusion_input_processor.class: Heystack\Subsystem\Payment\DPS\PXFusion\InputProcessor
   pxfusion_output_processor.class: Heystack\Subsystem\Payment\DPS\PXFusion\OutputProcessor
-  pxfusion_subscriber.class: Heystack\Subsystem\Payment\DPS\PXFusion\Subscriber
   pxfusion_payment_response.class: Heystack\Subsystem\Payment\DPS\PXFusion\PaymentResponse
 
   pxpost_service.class: Heystack\Subsystem\Payment\DPS\PXPost\Service
   pxpost_input_processor.class: Heystack\Subsystem\Payment\DPS\PXPost\InputProcessor
   pxpost_output_processor.class: Heystack\Subsystem\Payment\DPS\PXPost\OutputProcessor
-  pxpost_subscriber.class: Heystack\Subsystem\Payment\DPS\PXPost\Subscriber
   pxpost_payment_response.class: Heystack\Subsystem\Payment\DPS\PXPost\PaymentResponse
 
 services:
@@ -40,15 +38,6 @@ services:
   pxfusion_payment_response:
     class: %pxfusion_payment_response.class%
     arguments: [ [] ]
-    
-  pxfusion_subscriber:
-    class: %pxfusion_subscriber.class%
-    arguments: [ @event_dispatcher, @state, @storage ]
-    
-  event_dispatcher:
-    class: %event_dispatcher.class%
-    calls: 
-      - [ addSubscriber, [ @pxfusion_subscriber ] ]
 
   pxpost_service:
     class: %pxpost_service.class%
