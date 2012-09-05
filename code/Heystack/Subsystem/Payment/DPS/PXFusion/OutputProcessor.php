@@ -32,13 +32,13 @@ class OutputProcessor implements ProcessorInterface
             
             if ($result['Complete']) {
                 
-                \Director::redirect('checkout/thank-you');
+                \Director::redirect('checkout/thankyou');
                 
                 return;
                 
             } else {
                 
-                \Director::redirect('checkout/confirm-your-order');
+                \Director::redirect('checkout/confirm');
                 
                 return;
             }

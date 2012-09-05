@@ -82,6 +82,7 @@ class InputProcessor implements ProcessorInterface
                     $paymentResponse = $this->paymentService->completeTransaction($payment->DpsTxnRef);
                     
                     $results = $this->storage->process($paymentResponse);
+                    
                     // store the transaction
                     $transactionResults = $this->storage->process($this->transaction);
                     
@@ -98,8 +99,12 @@ class InputProcessor implements ProcessorInterface
 
                         $pxPostPayment->ParentID = $storedTransaction->ID;
                         $pxPostPayment->write();
+
+                    } else {
                         
-                        
+                        return array(
+                            'Success' => false
+                        );
                         
                     }
 

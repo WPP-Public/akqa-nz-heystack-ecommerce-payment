@@ -66,7 +66,7 @@ abstract class Service
     protected function getCurrencyCode()
     {
         $currencyCode = $this->getTransaction()->getCurrencyCode();
-
+        
         if (!in_array($currencyCode, $this->supportedCurrencies)) {
 
             throw new ConfigurationException("The currency $currencyCode is not supported by DPS");
