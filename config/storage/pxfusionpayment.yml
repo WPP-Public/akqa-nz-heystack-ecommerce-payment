@@ -1,0 +1,34 @@
+data_provider_id: pxfusionpayment
+id: PXFusionPayment
+flat:
+  Amount: "Decimal(10,2)"
+  AuthCode: Varchar(22)
+  BillingID: Varchar(32)
+  CardHolderName: Varchar(64)
+  CardName: Varchar(16)
+  CardNumber: Varchar(20)
+  CardNumber2: Varchar(19)
+  CurrencyId: Varchar(4)
+  CurrencyRate: Varchar(3)
+  DateExpiry: Varchar(4)
+  DateSettlement: Varchar(8)
+  DpsBillingId: Varchar(16)
+  DpsTxnRef: Varchar(16)
+  MerchantReference: Varchar(64)
+  ResponseCode: Varchar(2)
+  ResponseText: Varchar(32)
+  SessionId: Varchar(32)
+  Status: "Enum('Accepted,Declined,Error')"
+  StatusCode: Int
+  TestMode: Boolean
+  TransactionId: Varchar(255)
+  TxnData1: Varchar(255)
+  TxnData2: Varchar(255)
+  TxnData3: Varchar(255)
+  TxnMac: Varchar(255)
+  TxnRef: Varchar(255)
+  TransactionType: "Enum('Purchase,Auth', 'Purchase')"
+related:
+parent:
+  Parent: +Transaction
+  PXPostPayment: +PXPostPayment

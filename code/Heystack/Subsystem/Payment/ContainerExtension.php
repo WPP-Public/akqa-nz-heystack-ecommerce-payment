@@ -33,7 +33,7 @@ use Heystack\Subsystem\Core\ConfigurationException;
  * @package Ecommerce-Payment
  *
  */
-class ContainerExtension implements ExtensionInterface
+class ContainerExtension extends ContainerExtensionConfigProcessor implements ExtensionInterface
 {
 
     /**

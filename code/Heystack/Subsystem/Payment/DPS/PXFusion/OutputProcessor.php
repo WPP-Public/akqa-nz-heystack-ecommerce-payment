@@ -27,7 +27,27 @@ class OutputProcessor implements ProcessorInterface
 
     public function process(\Controller $controller, $result = null)
     {
+        
+        if ($result['Success']) {
+            
+            if ($result['Complete']) {
+                
+                \Director::redirect('checkout/thankyou');
+                
+                return;
+                
+            } else {
+                
+                \Director::redirect('checkout/confirm');
+                
+                return;
+            }
 
+        }
+        
+        \Director::redirectBack();
+        
+        return;
     }
 
 }

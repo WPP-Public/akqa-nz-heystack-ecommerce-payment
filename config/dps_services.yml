@@ -3,19 +3,26 @@ parameters:
   pxfusion_service.class: Heystack\Subsystem\Payment\DPS\PXFusion\Service
   pxfusion_input_processor.class: Heystack\Subsystem\Payment\DPS\PXFusion\InputProcessor
   pxfusion_output_processor.class: Heystack\Subsystem\Payment\DPS\PXFusion\OutputProcessor
-  pxfusion_subscriber.class: Heystack\Subsystem\Payment\DPS\PXFusion\Subscriber
+  pxfusion_payment_response.class: Heystack\Subsystem\Payment\DPS\PXFusion\PaymentResponse
 
   pxpost_service.class: Heystack\Subsystem\Payment\DPS\PXPost\Service
   pxpost_input_processor.class: Heystack\Subsystem\Payment\DPS\PXPost\InputProcessor
   pxpost_output_processor.class: Heystack\Subsystem\Payment\DPS\PXPost\OutputProcessor
-  pxpost_subscriber.class: Heystack\Subsystem\Payment\DPS\PXPost\Subscriber
-
-  payment.class: $$$
+  pxpost_payment_response.class: Heystack\Subsystem\Payment\DPS\PXPost\PaymentResponse
 
 services:
 
-  payment:
-    class: %payment.class%
+  ss_orm_backend:
+    class: %ss_orm_backend.class%
+
+  dataobject_generator:
+    class: %dataobject_generator.class%
+
+  input_processor_handler:
+    class: %input_processor_handler.class%
+
+  output_processor_handler:
+    class: %output_processor_handler.class%
 
   pxfusion_service:
     class: %pxfusion_service.class%
@@ -23,15 +30,18 @@ services:
 
   pxfusion_input_processor:
     class: %pxfusion_input_processor.class%
-    arguments: [ @pxfusion_service ]
+    arguments: [ @pxfusion_service, @storage, @state, @transaction ]
 
   pxfusion_output_processor:
     class: %pxfusion_output_processor.class%
 
+  pxfusion_payment_response:
+    class: %pxfusion_payment_response.class%
+    arguments: [ [] ]
 
   pxpost_service:
     class: %pxpost_service.class%
-    arguments: [ %payment.class%, @event_dispatcher, @transaction ]
+    arguments: [ @event_dispatcher, @transaction ]
 
   pxpost_input_processor:
     class: %pxpost_input_processor.class%
@@ -39,3 +49,7 @@ services:
 
   pxpost_output_processor:
     class: %pxpost_output_processor.class%
+    
+  pxpost_payment_response:
+    class: %pxpost_payment_response.class%
+    arguments: [ [] ]

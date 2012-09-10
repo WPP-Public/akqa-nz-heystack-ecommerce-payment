@@ -10,9 +10,9 @@
  */
 namespace Heystack\Subsystem\Payment\DPS\PXFusion;
 
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Heystack\Subsystem\Payment\DPS\Service as BaseService;
 
-use Heystack\Subsystem\Payment\Traits\PaymentConfigTrait;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 use Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface;
 use Heystack\Subsystem\Ecommerce\Transaction\Events as TransactionEvents;
@@ -27,10 +27,8 @@ use Heystack\Subsystem\Payment\DPS\PXPost\Service as PXPostService;
  * @copyright  Heyday
  * @package Ecommerce-Payment
  */
-class Service implements PaymentServiceInterface
+class Service extends BaseService
 {
-
-    use PaymentConfigTrait;
 
     /**
      * Config key for type
@@ -89,6 +87,12 @@ class Service implements PaymentServiceInterface
      * @var \Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface
      */
     protected $transaction;
+    
+    /**
+     * Holds the px post service for when using the auth complete cycle
+     * @var \Heystack\Subsystem\Payment\DPS\PXPost\Service 
+     */
+    protected $pxPostService;
 
     /**
      * Holds the data array which contains all the data specific to the payment
@@ -114,77 +118,10 @@ class Service implements PaymentServiceInterface
     protected $authAmount = 1;
 
     /**
-     * If testing last request data is needed form soap calls thi should be set to true
-     * @var bool
-     */
-    protected $testing = false;
-
-    /**
-     * Any additional information to be passed to dps in the soap request
-     * @var array
-     */
-    protected $additionalConfig = array();
-
-    /**
      * Default wsdl for Soap client
      * @var string
      */
     protected $wsdl = 'https://sec2.paymentexpress.com/pxf/pxf.svc?wsdl';
-
-    /**
-     * Stores a list of allowed additional config params
-     * @var array
-     */
-    protected $allowedAdditionalConfig = array(
-        'enableAddBillCard',
-        'avsAction',
-        'avsPostCode',
-        'avsStreetAddress',
-        'billingId',
-        'token billing',
-        'dateStart',
-        'enableAvsData',
-        'enablePaxInfo',
-        'merchantReference',
-        'paxDateDepart',
-        'paxName',
-        'paxOrigin',
-        'paxTicketNumber',
-        'paxTravelAgentInfo',
-        'timeout',
-        'txnData1',
-        'txnData2',
-        'txnData3'
-    );
-
-    /**
-     * List of currencies supported by DPS
-     * @var array
-     */
-    protected $supportedCurrencies = array(
-        'CAD',
-        'CHF',
-        'DKK',
-        'EUR',
-        'FRF',
-        'GBP',
-        'HKD',
-        'JPY',
-        'NZD',
-        'SGD',
-        'THB',
-        'USD',
-        'ZAR',
-        'AUD',
-        'WST',
-        'VUV',
-        'TOP',
-        'SBD',
-        'PGK',
-        'MYR',
-        'KWD',
-        'FJD'
-    );
 
     /**
      * List of messages for each status code
@@ -223,11 +160,16 @@ class Service implements PaymentServiceInterface
         }
     }
 
+    public function getTransaction()
+    {
+        return $this->transaction;
+    }
+
     /**
      * Defines an array of required parameters used in setConfig
      * @return array
      */
-    protected function getRequiredConfigParameters()
+    protected function getRequiredConfig()
     {
         return array(
             self::CONFIG_TYPE,
@@ -236,48 +178,125 @@ class Service implements PaymentServiceInterface
         );
     }
 
-    protected function validateConfig($config)
+    /**
+     * Defines an array of required parameters used in setConfig
+     * @return array
+     */
+    protected function getAllowedConfig()
     {
+        return array(
+            self::CONFIG_TYPE,
+            self::CONFIG_USERNAME,
+            self::CONFIG_PASSWORD
+        );
+    }
 
-        if (!in_array($config[self::CONFIG_TYPE], array(
+    /**
+     * Gets the allowed options for the additional configuration
+     * @return array
+     */
+    public function getAllowedAdditionalConfig()
+    {
+        return array(
+            'enableAddBillCard',
+            'avsAction',
+            'avsPostCode',
+            'avsStreetAddress',
+            'billingId',
+            'token billing',
+            'dateStart',
+            'enableAvsData',
+            'enablePaxInfo',
+            'merchantReference',
+            'paxDateDepart',
+            'paxName',
+            'paxOrigin',
+            'paxTicketNumber',
+            'paxTravelAgentInfo',
+            'timeout',
+            'txnData1',
+            'txnData2',
+            'txnData3'
+        );
+    }
+
+    protected function getRequiredAdditionalConfig()
+    {
+        return array();
+    }
+
+    protected function validateConfig(array $config)
+    {
+        $errors = array();
+
+        if (isset($config[self::CONFIG_TYPE]) && !in_array($config[self::CONFIG_TYPE], array(
             self::TYPE_AUTH_COMPLETE,
             self::TYPE_PURCHASE
         ))) {
-
-            throw new ConfigurationException("{$config[self::CONFIG_TYPE]} is not a valid Type for this payment handler");
-
+            $errors[] = "{$config[self::CONFIG_TYPE]} is not a valid 'Type' for this payment handler";
         }
 
+        return $errors;
+    }
+
+    /**
+     * Returns an array of required parameters used in setConfig
+     * @return array
+     */
+    protected function getRequiredUserConfig()
+    {
+        return array();
+    }
+
+    /**
+     * Returns an array of allowed config parameters
+     * @return array
+     */
+    protected function getAllowedUserConfig()
+    {
+        return array();
+    }
+
+    /**
+     * Validates config
+     */
+    protected function validateUserConfig(array $config)
+    {
+        return array();
+    }
+
+    /**
+     * @return bool
+     */
+    protected function validateAdditionalConfig(array $config)
+    {
+        return array();
     }
 
     public function getType()
     {
-
         return isset($this->config[self::CONFIG_TYPE]) ? $this->config[self::CONFIG_TYPE] : false;
-
     }
 
     public function setType($type)
     {
-
         $this->config[self::CONFIG_TYPE] = $type;
 
         $this->validateConfig($this->config);
-
     }
 
     public function getReturnUrl()
     {
-
+        $returnUrl = \EcommerceInputController::$url_segment. '/process/' . InputProcessor::IDENTIFIER;
         switch ($this->config[self::CONFIG_TYPE]) {
-
             case self::TYPE_AUTH_COMPLETE:
-                return \Director::absoluteURL(\EcommerceInputController::$url_segment . '/process/' . InputProcessor::IDENTIFIER . '/auth');
+                $returnUrl .= '/check/auth';
+                break;
             case self::TYPE_PURCHASE:
-                return \Director::absoluteURL(\EcommerceInputController::$url_segment . '/process/' . InputProcessor::IDENTIFIER . '/purchase');
-
+                $returnUrl .= '/check/purchase';
+                break;
         }
-
+        return \Director::absoluteURL($returnUrl);
     }
 
     public function getTxnType()
@@ -293,26 +312,23 @@ class Service implements PaymentServiceInterface
 
     public function getSoapClient()
     {
-
         if (!$this->soapClient) {
 
             $this->soapClient = new \SoapClient(
                 $this->getWsdl(),
                 array(
                     'soap_version' => SOAP_1_1,
-                    'trace' => $this->getTesting()
+                    'trace' => $this->getTestingMode()
                 )
             );
 
         }
 
         return $this->soapClient;
-
     }
 
     public function getTransactionId()
     {
-
         $soapClient = $this->getSoapClient();
 
         $configuration = array(
@@ -337,12 +353,10 @@ class Service implements PaymentServiceInterface
             throw new Exception($soapClient->__getLastResponse(), $response, $configuration);
 
         }
-
     }
 
     public function checkTransaction($transactionID)
     {
-
         $soapClient = $this->getSoapClient();
 
         $configuration = array(
@@ -353,37 +367,43 @@ class Service implements PaymentServiceInterface
 
         $response = $soapClient->GetTransaction($configuration);
 
-        if (is_object($response) && $response->GetTransactionResult) {
-
-            if (in_array($response->GetTransactionResult->Status, $this->errorStatuses)) {
-
-                //handle error
-
-            }
-
-            if ($response->GetTransactionResult->Status === 0) {
-                //Accepted
-            } elseif ($response->GetTransactionResult->Status === 1) {
-                //Declined
-            }
-
-        } else {
-
+        if (!is_object($response) || !isset($response->GetTransactionResult)) {
+            throw new Exception($soapClient->__getLastResponse(), $response, $configuration);
         }
 
+        $result = $response->GetTransactionResult;
+        $result->statusCode = $result->status;
+
+        if (in_array($result->statusCode, $this->errorStatuses)) {
+            $result->status = 'Error';
+        } else {
+            if ($result->statusCode === 0) {
+                $result->status = 'Accepted';
+            } elseif ($result->statusCode === 1) {
+                $result->status = 'Declined';
+            }
+        }
+
+        return new PaymentResponse(
+            json_decode(
+                json_encode((array) $result),
+                true
+            )
+        );
     }
 
-    public function completeTransaction()
+    public function completeTransaction($dpsTxnRef)
     {
-
         $this->setStage(self::STAGE_COMPLETE);
 
         if ($this->pxPostService instanceof PXPostService) {
-
-            //set up px post complete transaction
+            $this->pxPostService->setTxnType(PXPostService::TXN_TYPE_COMPLETE);
+            $this->pxPostService->setAdditionalConfigByKey('DpsTxnRef', $dpsTxnRef);
+            return $this->pxPostService->processComplete();
 
         }
-
+        
+        return false;
     }
 
     /**
@@ -393,10 +413,16 @@ class Service implements PaymentServiceInterface
      */
     public function setStage($stage)
     {
-        if ($this->getType() == self::TYPE_AUTH_COMPLETE && in_array($stage, array(
-            self::STAGE_AUTH,
-            self::STAGE_COMPLETE
-        ))) {
+        if (
+            $this->getType() == self::TYPE_AUTH_COMPLETE
+            && in_array(
+                $stage,
+                array(
+                    self::STAGE_AUTH,
+                    self::STAGE_COMPLETE
+                )
+            )
+        ) {
             $this->stage = $stage;
         } else {
             throw new ConfigurationException('Auth and Complete are the only supported stages for the Auth-Complete cycle');
@@ -418,15 +444,25 @@ class Service implements PaymentServiceInterface
      */
     public function getAmount()
     {
-
         if ($this->getTxnType() == self::TXN_TYPE_AUTH) {
-
+            
+            if (in_array($this->transaction->getCurrencyCode(), $this->currenciesWithoutCents)) {
+                
+                return $this->authAmount;
+                
+            }
+            
             return number_format($this->authAmount, 2);
+            
+        }
+        
+        if (in_array($this->transaction->getCurrencyCode(), $this->currenciesWithoutCents)) {
+                
+            return $this->transaction->getTotal();
 
         }
-
+        
         return number_format($this->transaction->getTotal(), 2);
-
     }
 
     /**
@@ -445,78 +481,6 @@ class Service implements PaymentServiceInterface
     public function getAuthAmount()
     {
         return $this->authAmount;
-    }
-
-    /**
-     * Set the testing mode
-     * @param boolean $testing
-     */
-    public function setTesting($testing)
-    {
-        $this->testing = $testing;
-    }
-
-    /**
-     * Get the testing mode
-     * @return boolean
-     */
-    public function getTesting()
-    {
-        return $this->testing;
-    }
-
-    /**
-     * Set the additional configuration
-     * @param array $additionalConfig
-     */
-    public function setAdditionalConfig(array $additionalConfig)
-    {
-        $this->additionalConfig = array_flip(array_intersect(array_flip($additionalConfig), $this->allowedAdditionalConfig));
-    }
-
-    /**
-     * Get the additional configuration information
-     * @return array
-     */
-    public function getAdditionalConfig()
-    {
-        return $this->additionalConfig;
-    }
-
-    /**
-     * Sets the allowed options for the additional configuration
-     * @param array $allowedAdditionalConfig
-     */
-    public function setAllowedAdditionalConfig($allowedAdditionalConfig)
-    {
-        $this->allowedAdditionalConfig = $allowedAdditionalConfig;
-    }
-
-    /**
-     * Gets the allowed options for the additional configuration
-     * @return array
-     */
-    public function getAllowedAdditionalConfig()
-    {
-        return $this->allowedAdditionalConfig;
-    }
-
-    /**
-     * Returns the currency code.
-     * @return mixed
-     * @throws ConfigurationException
-     */
-    protected function getCurrencyCode()
-    {
-        $currencyCode = $this->transaction->getCurrencyCode();
-
-        if (!in_array($currencyCode, $this->supportedCurrencies)) {
-
-            throw new ConfigurationException("The currency $currencyCode is not supported by PXFusion");
-
-        }
-
-        return $currencyCode;
     }
 
     /**
@@ -564,7 +528,6 @@ class Service implements PaymentServiceInterface
      */
     public function setWsdl($wsdl)
     {
-
         if (!\Director::is_absolute_url($wsdl)) {
 
             throw new ConfigurationException("Wsdl needs to be an absolute url");

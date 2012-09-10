@@ -1,20 +1,65 @@
 data_provider_id: pxpostpayment
 id: PXPostPayment
 flat:
-  Status: "Enum('Incomplete,Success,Failure,Pending','Incomplete')"
-  CurrencyCode: Varchar(255)
-  Message: Text
+  ReCo: Varchar(2)
+  ResponseText: Varchar(15)
+  HelpText: Varchar(150)
+  Success: Int
+  DpsTxnRef: Varchar(16)
+  TxnRef: Varchar(16)
+  RmReason: Varchar(255)
+  RmReasonId: Varchar(16)
+  RiskScore: Int
+  RiskScoreText: Text
+  Authorized: Int
+  RxDate: Varchar(255)
+  RxDateLocal: Varchar(255)
+  LocalTimeZone: Varchar(10)
+  MerchantReference: Varchar(64)
+  CardName: Varchar(16)
+  Retry: Int
+  StatusRequired: Int
+  AuthCode: Varchar(16)
+  AmountBalance: Decimal(10,2)
   Amount: Decimal(10,2)
-  IP: Varchar(255)
-  TransactionType: "Enum('Purchase,Auth,Complete,Refund,Validate', 'Purchase')"
-  MerchantReference: Varchar(255)
-  TransactionReference: Varchar(255)
-  AuthCode: Varchar(255)
-  XMLResponse: Text
-  BillingID: Varchar(255)
-  HelpText: Varchar(255)
-  ResponseCode: Varchar(255)
-  SettlementDate: Date
+  CurrencyId: Int
+  InputCurrencyId: Int
+  InputCurrencyName: Varchar(4)
+  CurrencyRate: Decimal(10,2)
+  CurrencyName: Varchar(4)
+  CardHolderName: Varchar(64)
+  DateSettlement: Date
+  TxnType: "Enum('Purchase,Auth,Complete,Refund,Validate', 'Purchase')"
+  CardNumber: Varchar(16)
+  TxnMac: Varchar(16)
+  DateExpiry: Varchar(4)
+  ProductId: Int
+  AcquirerDate: Date
+  AcquirerTime: Varchar(16)
+  AcquirerId: Int
+  Acquirer: Varchar(255)
+  AcquirerReCo: Varchar(2)
+  AcquirerResponseText: Text
+  TestMode: Int
+  CardId: Int
+  CardHolderResponseText: Text
+  CardHolderHelpText: Varchar(150)
+  CardHolderResponseDescription: Varchar(255)
+  MerchantResponseText: Text
+  MerchantHelpText: Varchar(150)
+  MerchantResponseDescription: Varchar(255)
+  UrlFail: Varchar(255)
+  UrlSuccess: Varchar(255)
+  EnablePostResponse: Int
+  AcquirerPort: Varchar(255)
+  AcquirerTxnRef: Varchar(16)
+  GroupAccount: Varchar(16)
+  AllowRetry: Int
+  DpsBillingId: Varchar(255)
+  BillingId: Varchar(255)
+  TransactionId: Varchar(255)
+  PxHostId: Varchar(255)
+
 related:
 parent:
   Parent: +Transaction
