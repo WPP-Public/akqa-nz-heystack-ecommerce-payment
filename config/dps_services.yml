@@ -26,7 +26,7 @@ services:
 
   pxfusion_service:
     class: %pxfusion_service.class%
-    arguments: [ @event_dispatcher, @transaction ]
+    arguments: [ @event_dispatcher, @transaction, @currency_service ]
 
   pxfusion_input_processor:
     class: %pxfusion_input_processor.class%
@@ -41,7 +41,7 @@ services:
 
   pxpost_service:
     class: %pxpost_service.class%
-    arguments: [ @event_dispatcher, @transaction ]
+    arguments: [ @event_dispatcher, @transaction, @currency_service ]
 
   pxpost_input_processor:
     class: %pxpost_input_processor.class%

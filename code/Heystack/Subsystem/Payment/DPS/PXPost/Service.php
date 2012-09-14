@@ -22,6 +22,8 @@ use Heystack\Subsystem\Ecommerce\Transaction\Events as TransactionEvents;
 
 use Heystack\Subsystem\Core\Exception\ConfigurationException;
 
+use Heystack\Subsystem\Ecommerce\Currency\CurrencyService;
+
 /**
  * Contains the main logic for creating Payment objects as well as interfacing
  * with DPS's PXPost API
@@ -98,6 +100,12 @@ class Service extends BaseService
     protected $eventService;
 
     /**
+     * Holds the currency service
+     * @var \Heystack\Subsystem\Ecommerce\Currency\CurrencyService 
+     */
+    protected $currencyService;
+    
+    /**
      * Holds the Transaction object
      * @var \Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface
      */
@@ -121,10 +129,12 @@ class Service extends BaseService
      */
     public function __construct(
         EventDispatcherInterface $eventService,
-        TransactionInterface $transaction
+        TransactionInterface $transaction,
+        CurrencyService $currencyService
     ) {
         $this->eventService = $eventService;
         $this->transaction = $transaction;
+        $this->currencyService = $currencyService;
     }
 
     /**

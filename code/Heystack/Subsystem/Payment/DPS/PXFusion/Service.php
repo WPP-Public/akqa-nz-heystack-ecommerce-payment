@@ -21,6 +21,8 @@ use Heystack\Subsystem\Core\Exception\ConfigurationException;
 
 use Heystack\Subsystem\Payment\DPS\PXPost\Service as PXPostService;
 
+use Heystack\Subsystem\Ecommerce\Currency\CurrencyService;
+
 /**
  *
  *
@@ -89,6 +91,12 @@ class Service extends BaseService
     protected $transaction;
     
     /**
+     * Holds the currency service
+     * @var \Heystack\Subsystem\Ecommerce\Currency\CurrencyService 
+     */
+    protected $currencyService;
+    
+    /**
      * Holds the px post service for when using the auth complete cycle
      * @var \Heystack\Subsystem\Payment\DPS\PXPost\Service 
      */
@@ -148,16 +156,17 @@ class Service extends BaseService
      * @param \Heystack\Subsystem\Payment\DPS\PXPost\Service                            $pxPostService
      */
     public function __construct(
-        EventDispatcherInterface $eventService,
-        TransactionInterface $transaction,
-        PXPostService $pxPostService = null
-    ) {
+            EventDispatcherInterface $eventService, 
+            TransactionInterface $transaction, 
+            CurrencyService $currencyService, 
+            PXPostService $pxPostService = null) {
         $this->eventService = $eventService;
         $this->transaction = $transaction;
 
         if (!is_null($pxPostService)) {
             $this->pxPostService = $pxPostService;
         }
+        $this->currencyService = $currencyService;
     }
 
     public function getTransaction()
@@ -446,7 +455,7 @@ class Service extends BaseService
     {
         if ($this->getTxnType() == self::TXN_TYPE_AUTH) {
             
-            if (in_array($this->transaction->getCurrencyCode(), $this->currenciesWithoutCents)) {
+            if (in_array($this->currencyService->getActiveCurrencyCode(), $this->currenciesWithoutCents)) {
                 
                 return $this->authAmount;
                 
@@ -456,7 +465,7 @@ class Service extends BaseService
             
         }
         
-        if (in_array($this->transaction->getCurrencyCode(), $this->currenciesWithoutCents)) {
+        if (in_array($this->currencyService->getActiveCurrencyCode(), $this->currenciesWithoutCents)) {
                 
             return $this->transaction->getTotal();
 

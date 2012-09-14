@@ -65,7 +65,7 @@ abstract class Service
      */
     protected function getCurrencyCode()
     {
-        $currencyCode = $this->getTransaction()->getCurrencyCode();
+        $currencyCode = $this->currencyService->getActiveCurrencyCode();
         
         if (!in_array($currencyCode, $this->supportedCurrencies)) {
 
