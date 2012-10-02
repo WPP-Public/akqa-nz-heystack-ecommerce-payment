@@ -2,11 +2,11 @@
 /**
  * This file is part of the Ecommerce-Products package
  *
- * @package Ecommerce-Products
+ * @package Ecommerce-Payment
  */
 
 /**
- * Products namespace
+ * Payment namespace
  */
 namespace Heystack\Subsystem\Payment;
 
@@ -15,6 +15,10 @@ use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+
+use Heystack\Subsystem\Core\ContainerExtensionConfigProcessor;
+
+use Heystack\Subsystem\Core\ConfigurationException;
 
 /**
  * Container extension for Heystack.
@@ -25,10 +29,11 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
  *
  * @copyright  Heyday
  * @author Cam Spiers <cameron@heyday.co.nz>
- * @package Ecommerce-Products
+ * @author Glenn Bautista <glenn@heyday.co.nz>
+ * @package Ecommerce-Payment
  *
  */
-class ContainerExtension implements ExtensionInterface
+class ContainerExtension extends ContainerExtensionConfigProcessor implements ExtensionInterface
 {
 
     /**
@@ -49,6 +54,7 @@ class ContainerExtension implements ExtensionInterface
 
         $loader->load('services.yml');
 
+        $this->processConfig($config, $container);
     }
 
     /**

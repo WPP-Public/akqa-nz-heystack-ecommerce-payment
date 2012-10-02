@@ -21,6 +21,13 @@ namespace Heystack\Subsystem\Payment;
  */
 final class Events
 {
+    /**
+     * Used to indicate that the payment was successful
+     */
     const SUCCESSFUL    = 'payment.successful';
+
+    /**
+     * Used to indicate that the payment has failed
+     */
     const FAILED        = 'payment.failed';
 }

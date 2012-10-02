@@ -1,41 +1,35 @@
 parameters:
-  payment_handler.class: Heystack\Subsystem\Payment\DPS\PXPostHandler
-  payment_input_processor.class: Heystack\Subsystem\Payment\DPS\Input\Processor
-  payment_output_processor.class: Heystack\Subsystem\Payment\DPS\Output\Processor
-  payment_subscriber.class: Heystack\Subsystem\Payment\Subscriber
-  payment.class: PXPostPayment
   
 services:
-  payment_input_processor:
-    class: %payment_input_processor.class%
-    arguments: [ @payment_handler ]
     
-  payment_output_processor:
-    class: %payment_output_processor.class%
-    
-  input_processor_handler:
-    class: %input_processor_handler.class%
-    calls:
-      - [ addProcessor, [ @payment_input_processor ] ]
+#  input_processor_handler:
+#    class: %input_processor_handler.class%
+#    calls:
+#      - [ addProcessor, [ @pxfusion_input_processor ] ]
+#      - [ addProcessor, [ @pxpost_input_processor ] ]
       
-  output_processor_handler:
-    class: %output_processor_handler.class%
-    calls:
-      - [ addProcessor, [ @payment_output_processor ] ]
+#  output_processor_handler:
+#    class: %output_processor_handler.class%
+#    calls:
+#      - [ addProcessor, [ @pxfusion_output_processor ] ]
+#      - [ addProcessor, [ @pxpost_output_processor ] ]
     
-  payment_handler:
-    class: %payment_handler.class%
-    arguments: [ %payment.class%, @event_dispatcher, @transaction, @currency_service ]
-    calls:
-      - [ setConfig, [{PostUsername:HeydayDev,PostPassword:post1234,GatewayURL:https://sec.paymentexpress.com/pxpost.aspx,MerchantReferencePrefix:Ecommerce}]]
+#  payment_subscriber:
+#    class: %payment_subscriber.class%
+#    arguments: [ @event_dispatcher, @payment_handler, @state, @storage ]
     
-  payment_subscriber:
-    class: %payment_subscriber.class%
-    arguments: [ @event_dispatcher, @payment_handler ]
+#  event_dispatcher:
+#    class: %event_dispatcher.class%
+#    calls:
+#      - [ addSubscriber, [ @payment_subscriber ] ]
     
-  event_dispatcher:
-    class: %event_dispatcher.class%
-    calls: 
-      - [ addSubscriber, [ @payment_subscriber ] ]
-    
-  
+#  dataobject_generator:
+#    class: %dataobject_generator.class%
+#    calls:
+#      - [ addYamlSchema, [ ecommerce-payment/config/storage/pxpostpayment.yml ] ]
+#      - [ addYamlSchema, [ ecommerce-payment/config/storage/transaction_pxpostpayment.yml ] ]
+      
+#  ss_orm_backend:
+#    class: %ss_orm_backend.class%
+#    calls:
+#      - [ addDataProvider, [ @payment ] ]
