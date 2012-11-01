@@ -129,7 +129,7 @@ class Service extends BaseService
      * Default wsdl for Soap client
      * @var string
      */
-    protected $wsdl = 'https://sec2.paymentexpress.com/pxf/pxf.svc?wsdl';
+    protected $wsdl = 'https://sec.paymentexpress.com/pxf/pxf.svc?wsdl';
 
     /**
      * List of messages for each status code
@@ -406,9 +406,18 @@ class Service extends BaseService
         $this->setStage(self::STAGE_COMPLETE);
 
         if ($this->pxPostService instanceof PXPostService) {
-            $this->pxPostService->setTxnType(PXPostService::TXN_TYPE_COMPLETE);
-            $this->pxPostService->setAdditionalConfigByKey('DpsTxnRef', $dpsTxnRef);
-            return $this->pxPostService->processComplete();
+            
+            try {
+                
+                $this->pxPostService->setTxnType(PXPostService::TXN_TYPE_COMPLETE);
+                $this->pxPostService->setAdditionalConfigByKey('DpsTxnRef', $dpsTxnRef);
+                return $this->pxPostService->processComplete();
+                
+            } catch(\Exception $e) {
+                
+                return false;
+                
+            }
 
         }
         

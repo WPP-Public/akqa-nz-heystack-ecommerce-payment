@@ -8,16 +8,20 @@ class OutputProcessor implements ProcessorInterface
 {
 
     const IDENTIFIER = 'dps_fusion';
+    
+    protected $completeURL;
+    
+    protected $confirmationURL;
+    
+    protected $failureURL;
 
-    /**
-     * Holds the payment handler
-     * @var \Heystack\Subsystem\Payment\DPS\PXFusion\PaymentServiceInterface
-     */
-    protected $paymentService;
-
-    public function __construct(PaymentServiceInterface $paymentService)
+    public function __construct($completeURL, $confirmationURL, $failureURL)
     {
-        $this->paymentService = $paymentService;
+        $this->completeURL = $completeURL;
+        
+        $this->confirmationURL = $confirmationURL;
+        
+        $this->failureURL = $failureURL;
     }
 
     public function getIdentifier()
@@ -32,20 +36,30 @@ class OutputProcessor implements ProcessorInterface
             
             if ($result['Complete']) {
                 
-                \Director::redirect('checkout/thankyou');
+                \Director::redirect($this->completeURL);
                 
                 return;
                 
             } else {
                 
-                \Director::redirect('checkout/confirm');
+                \Director::redirect($this->confirmationURL);
                 
                 return;
             }
 
         }
         
-        \Director::redirectBack();
+        if ($result['CheckFailure']) {
+            
+            \Director::redirectBack();
+            
+        } else {
+            
+            \Director::redirect($this->failureURL);
+            
+        }
+        
+        
         
         return;
     }

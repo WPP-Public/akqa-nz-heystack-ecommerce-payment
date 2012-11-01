@@ -103,12 +103,20 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
         'PxHostId'
     );
 
-    function __construct($data)
+    function __construct(array $data)
     {
-        foreach ($data as $key => $value) {
-            if (in_array($key, $this->allowedFields)) {
-                $this->data[$key] = $value;
+        if (is_array($data)) { 
+            
+            foreach ($data as $key => $value) {
+                if (in_array($key, $this->allowedFields)) {
+                    $this->data[$key] = $value;
+                }
             }
+            
+        } else {
+            
+            throw new \Exception('payment response data must be an array');
+            
         }
     }
 
@@ -120,6 +128,20 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
     function __set($name, $value)
     {
         $this->data[$name] = $value;
+    }
+    
+    public function updateTransaction(\Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface $transaction){
+        
+        if($this->Success){
+            
+            $transaction->setStatus('Successful');
+            
+        }else{
+            
+            $transaction->setStatus('Failed');
+            
+        }
+        
     }
 
     public function getStorableIdentifier()

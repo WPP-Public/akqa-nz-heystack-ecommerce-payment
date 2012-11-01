@@ -3,6 +3,9 @@ parameters:
   pxfusion_service.class: Heystack\Subsystem\Payment\DPS\PXFusion\Service
   pxfusion_input_processor.class: Heystack\Subsystem\Payment\DPS\PXFusion\InputProcessor
   pxfusion_output_processor.class: Heystack\Subsystem\Payment\DPS\PXFusion\OutputProcessor
+  pxfusion_output_processor.completeURL: checkout/thankyou
+  pxfusion_output_processor.confirmationURL: 'checkout/confirm'
+  pxfusion_output_processor.failureURL: checkout/failure
   pxfusion_payment_response.class: Heystack\Subsystem\Payment\DPS\PXFusion\PaymentResponse
 
   pxpost_service.class: Heystack\Subsystem\Payment\DPS\PXPost\Service
@@ -34,6 +37,7 @@ services:
 
   pxfusion_output_processor:
     class: %pxfusion_output_processor.class%
+    arguments: [ %pxfusion_output_processor.completeURL%, %pxfusion_output_processor.confirmationURL%, %pxfusion_output_processor.failureURL% ]
 
   pxfusion_payment_response:
     class: %pxfusion_payment_response.class%
