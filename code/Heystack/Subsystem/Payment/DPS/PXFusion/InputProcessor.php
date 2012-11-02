@@ -81,7 +81,7 @@ class InputProcessor implements ProcessorInterface
 
                 if ($payment instanceof \StoredPXFusionPayment && $payment->DpsTxnRef) {
                     
-                    $this->transaction->setStatus('Failure');
+                    $this->transaction->setStatus('Processing');
 
                     //make sure completeTrans does a try catch type thing returning false on badness
                     $paymentResponse = $this->paymentService->completeTransaction($payment->DpsTxnRef);
