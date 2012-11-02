@@ -11,6 +11,8 @@ use Heystack\Subsystem\Core\State\State;
 
 use Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface;
 
+use Heystack\Subsystem\Payment\DPS\PXPost\PaymentResponse as PXPostPaymentResponse;
+
 class InputProcessor implements ProcessorInterface
 {
 
@@ -78,35 +80,52 @@ class InputProcessor implements ProcessorInterface
                 $payment = \DataObject::get_one('StoredPXFusionPayment', "SessionId = '{$sessionId}'");
 
                 if ($payment instanceof \StoredPXFusionPayment && $payment->DpsTxnRef) {
+                    
+                    $this->transaction->setStatus('Failure');
 
+                    //make sure completeTrans does a try catch type thing returning false on badness
                     $paymentResponse = $this->paymentService->completeTransaction($payment->DpsTxnRef);
                     
-                    $results = $this->storage->process($paymentResponse);
+                    $results = false;
+                    
+                    if ($paymentResponse instanceof PXPostPaymentResponse) {
+
+                        $results = $this->storage->process($paymentResponse);
+
+                        $paymentResponse->updateTransaction($this->transaction);
+                        
+                    }
                     
                     // store the transaction
                     $transactionResults = $this->storage->process($this->transaction);
+                    $payment->ParentID = $transactionResults[Backend::IDENTIFIER]->ID;
                     
-                    if (isset($results[Backend::IDENTIFIER]) && isset($transactionResults[Backend::IDENTIFIER])) {
+                    if ($results && isset($results[Backend::IDENTIFIER]) && isset($transactionResults[Backend::IDENTIFIER])) {
 
                         // get the actual transaction and payment
                         $storedTransaction = $transactionResults[Backend::IDENTIFIER];
                         $pxPostPayment = $results[Backend::IDENTIFIER];
-                                 
+                        
                         // set the parents of each object
-                        $payment->ParentID = $storedTransaction->ID;
+                        
                         $payment->PXPostPaymentID = $pxPostPayment->ID;
                         $payment->write();
+                        
 
                         $pxPostPayment->ParentID = $storedTransaction->ID;
                         $pxPostPayment->write();
 
                     } else {
                         
+                        $payment->write();
+                        
                         return array(
                             'Success' => false
                         );
                         
                     }
+                    
+                    
 
                 }
                 
@@ -131,6 +150,13 @@ class InputProcessor implements ProcessorInterface
                 return array(
                     'Success' => true,
                     'Data' => $paymentResponse
+                );
+                
+            }else{
+                
+                return array(
+                    'Success' => false,
+                    'CheckFailure' => true
                 );
                 
             }
