@@ -6,6 +6,8 @@ use Heystack\Subsystem\Payment\DPS\PXFusion\Service;
 
 use Heystack\Subsystem\Payment\DPS\PXFusion\InputProcessor;
 
+use Heystack\Subsystem\Ecommerce\Currency\CurrencyService;
+
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class PXFusionTest extends \PHPUnit_Framework_TestCase
@@ -16,7 +18,12 @@ class PXFusionTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
 
-        $this->paymentService = new Service(new EventDispatcher(), new TestTransaction());
+        $this->paymentService = new Service(
+            new EventDispatcher(),
+            new TestTransaction(),
+            new CurrencyService()
+        );
+        
         $this->paymentService->setTestingMode(true);
 
     }

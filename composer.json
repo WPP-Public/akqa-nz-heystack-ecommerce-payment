@@ -9,18 +9,22 @@
     ],
     "require": {        
         "php": ">=5.4.0",
-        "composer/installers": "*"
+        "composer/installers": "1.0.0"
     },
     "require-dev": {
+        "silverstripe/framework": "2.4.9",
         "heystack/heystack": "dev-develop",
         "heystack/ecommerce-core": "dev-develop",
-        "silverstripe/sapphire": "2.4.7"
+        "composer/composer": "1.0.0-alpha6",
+        "phpmd/phpmd": "1.4.*",
+        "phploc/phploc": "dev-master",
+        "pdepend/pdepend": "1.1.*",
+        "sami/sami": "dev-master"
     },
     "autoload": {
         "psr-0": {
             "Heystack": "code/"
-        },
-        "classmap": ["sapphire/"]
+        }
     },
     "minimum-stability": "dev"
 }

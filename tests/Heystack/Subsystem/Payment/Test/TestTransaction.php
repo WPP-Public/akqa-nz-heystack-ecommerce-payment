@@ -61,4 +61,14 @@ class TestTransaction implements TransactionInterface
 
     }
 
+    public function setStatus($status)
+    {
+
+    }
+    
+    public function getStatus()
+    {
+
+    }
+
 }
