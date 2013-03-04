@@ -2,34 +2,3 @@ parameters:
   
 services:
     
-#  input_processor_handler:
-#    class: %input_processor_handler.class%
-#    calls:
-#      - [ addProcessor, [ @pxfusion_input_processor ] ]
-#      - [ addProcessor, [ @pxpost_input_processor ] ]
-      
-#  output_processor_handler:
-#    class: %output_processor_handler.class%
-#    calls:
-#      - [ addProcessor, [ @pxfusion_output_processor ] ]
-#      - [ addProcessor, [ @pxpost_output_processor ] ]
-    
-#  payment_subscriber:
-#    class: %payment_subscriber.class%
-#    arguments: [ @event_dispatcher, @payment_handler, @state, @storage ]
-    
-#  event_dispatcher:
-#    class: %event_dispatcher.class%
-#    calls:
-#      - [ addSubscriber, [ @payment_subscriber ] ]
-    
-#  dataobject_generator:
-#    class: %dataobject_generator.class%
-#    calls:
-#      - [ addYamlSchema, [ ecommerce-payment/config/storage/pxpostpayment.yml ] ]
-#      - [ addYamlSchema, [ ecommerce-payment/config/storage/transaction_pxpostpayment.yml ] ]
-      
-#  ss_orm_backend:
-#    class: %ss_orm_backend.class%
-#    calls:
-#      - [ addDataProvider, [ @payment ] ]

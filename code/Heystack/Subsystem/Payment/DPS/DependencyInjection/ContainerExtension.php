@@ -8,13 +8,12 @@
 /**
  * Payment namespace
  */
-namespace Heystack\Subsystem\Payment\DPS;
+namespace Heystack\Subsystem\Payment\DPS\DependencyInjection;
 
-use Heystack\Subsystem\Core\Services as CoreServices;
-
-use Heystack\Subsystem\Core\ContainerExtensionConfigProcessor;
+use Heystack\Subsystem\Core\DependencyInjection\ContainerExtensionConfigProcessor;
 use Heystack\Subsystem\Core\Exception\ConfigurationException;
 use Heystack\Subsystem\Payment\DPS\PXFusion\Service as PXFusionService;
+use Heystack\Subsystem\Payment\DPS\Services;
 
 use Symfony\Component\Config\FileLocator;
 
@@ -27,6 +26,7 @@ use Symfony\Component\DependencyInjection\Reference;
  *
  * @copyright  Heyday
  * @author Cam Spiers <cameron@heyday.co.nz>
+ * @author Glenn Bautista <glenn@heyday.co.nz>
  * @package Ecommerce-Payment
  *
  */
@@ -63,26 +63,6 @@ class ContainerExtension extends ContainerExtensionConfigProcessor implements Ex
         parent::processConfig($config, $container);
 
         $config = array_pop($config);
-
-        $dataObjectGenerator =
-            $container->hasDefinition(CoreServices::DATAOBJECT_GENERATOR)
-            ? $container->getDefinition(CoreServices::DATAOBJECT_GENERATOR)
-            : false;
-
-        $outputProcessorHandler =
-            $container->hasDefinition(CoreServices::OUTPUT_PROCESSOR_HANDLER)
-                ? $container->getDefinition(CoreServices::OUTPUT_PROCESSOR_HANDLER)
-                : false;
-
-        $inputProcessorHandler =
-            $container->hasDefinition(CoreServices::INPUT_PROCESSOR_HANDLER)
-                ? $container->getDefinition(CoreServices::INPUT_PROCESSOR_HANDLER)
-                : false;
-
-        $ssOrm =
-            $container->hasDefinition(CoreServices::SS_ORM_BACKEND)
-                ? $container->getDefinition(CoreServices::SS_ORM_BACKEND)
-                : false;
 
         if (
             isset($config['pxfusion'])
@@ -126,49 +106,6 @@ class ContainerExtension extends ContainerExtensionConfigProcessor implements Ex
                 );
             }
 
-            if ($inputProcessorHandler) {
-                $inputProcessorHandler->addMethodCall(
-                    'addProcessor',
-                    array(
-                        new Reference(Services::PXFUSION_INPUT_PROCESSOR)
-                    )
-                );
-            }
-
-            if ($outputProcessorHandler) {
-                $outputProcessorHandler->addMethodCall(
-                    'addProcessor',
-                    array(
-                        new Reference(Services::PXFUSION_OUTPUT_PROCESSOR)
-                    )
-                );
-            }
-
-            if ($dataObjectGenerator) {
-                $dataObjectGenerator->addMethodCall(
-                    'addYamlSchema',
-                    array(
-                        'ecommerce-payment/config/storage/pxfusionpayment.yml'
-                    )
-                );
-
-                $dataObjectGenerator->addMethodCall(
-                    'addYamlSchema',
-                    array(
-                        'ecommerce-payment/config/storage/transaction_pxfusionpayment.yml',
-                    )
-                );
-            }
-
-            if ($ssOrm) {
-                $ssOrm->addMethodCall(
-                    'addDataProvider',
-                    array(
-                        new Reference(Services::PXFUSION_PAYMENT_RESPONSE)
-                    )
-                );
-            }
-
         }
 
         if (
@@ -193,52 +130,39 @@ class ContainerExtension extends ContainerExtensionConfigProcessor implements Ex
                         true
                     )
                 );
-            }
-
-            if ($inputProcessorHandler) {
-                $inputProcessorHandler->addMethodCall(
-                    'addProcessor',
-                    array(
-                        new Reference(Services::PXPOST_INPUT_PROCESSOR)
-                    )
-                );
-            }
-
-            if ($outputProcessorHandler) {
-                $outputProcessorHandler->addMethodCall(
-                    'addProcessor',
-                    array(
-                        new Reference(Services::PXPOST_OUTPUT_PROCESSOR)
-                    )
-                );
-            }
-
-            if ($dataObjectGenerator) {
-                $dataObjectGenerator->addMethodCall(
-                    'addYamlSchema',
-                    array(
-                        'ecommerce-payment/config/storage/pxpostpayment.yml'
-                    )
-                );
-
-                $dataObjectGenerator->addMethodCall(
-                    'addYamlSchema',
-                    array(
-                        'ecommerce-payment/config/storage/transaction_pxpostpayment.yml'
-                    )
-                );
-            }
-
-            if ($ssOrm) {
-                $ssOrm->addMethodCall(
-                    'addDataProvider',
-                    array(
-                        new Reference(Services::PXPOST_PAYMENT_RESPONSE)
-                    )
-                );
-            }
-
-
+            }            
+        }
+        
+        if(isset($config['yml.transaction_pxfusion_payment']) && $container->hasDefinition('transaction_pxfusion_payment_schema')){
+            
+            $definition = $container->getDefinition('transaction_pxfusion_payment_schema');
+            
+            $definition->replaceArgument(0, $config['yml.transaction_pxfusion_payment']);
+            
+        }
+        
+        if(isset($config['yml.pxfusion_payment']) && $container->hasDefinition('pxfusion_payment_schema')){
+            
+            $definition = $container->getDefinition('pxfusion_payment_schema');
+            
+            $definition->replaceArgument(0, $config['yml.pxfusion_payment']);
+            
+        }
+        
+        if(isset($config['yml.pxpost_payment']) && $container->hasDefinition('pxpost_payment_schema')){
+            
+            $definition = $container->getDefinition('pxpost_payment_schema');
+            
+            $definition->replaceArgument(0, $config['yml.pxpost_payment']);
+            
+        }
+        
+        if(isset($config['yml.transaction_pxpost_payment']) && $container->hasDefinition('transaction_pxpost_payment_schema')){
+            
+            $definition = $container->getDefinition('transaction_pxpost_payment_schema');
+            
+            $definition->replaceArgument(0, $config['yml.transaction_pxpost_payment']);
+            
         }
 
     }

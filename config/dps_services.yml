@@ -14,18 +14,9 @@ parameters:
   pxpost_payment_response.class: Heystack\Subsystem\Payment\DPS\PXPost\PaymentResponse
 
 services:
-
-  ss_orm_backend:
-    class: %ss_orm_backend.class%
-
+  
   dataobject_generator:
     class: %dataobject_generator.class%
-
-  input_processor_handler:
-    class: %input_processor_handler.class%
-
-  output_processor_handler:
-    class: %output_processor_handler.class%
 
   pxfusion_service:
     class: %pxfusion_service.class%
@@ -34,14 +25,20 @@ services:
   pxfusion_input_processor:
     class: %pxfusion_input_processor.class%
     arguments: [ @pxfusion_service, @storage, @state, @transaction ]
+    tags:
+      - { name: input_processor_handler.processor }
 
   pxfusion_output_processor:
     class: %pxfusion_output_processor.class%
     arguments: [ %pxfusion_output_processor.completeURL%, %pxfusion_output_processor.confirmationURL%, %pxfusion_output_processor.failureURL% ]
+    tags:
+      - { name: output_processor_handler.processor }
 
   pxfusion_payment_response:
     class: %pxfusion_payment_response.class%
     arguments: [ [] ]
+    tags:
+      - { name: ss_orm_backend.data_provider }
 
   pxpost_service:
     class: %pxpost_service.class%
@@ -50,10 +47,40 @@ services:
   pxpost_input_processor:
     class: %pxpost_input_processor.class%
     arguments: [ @pxpost_service ]
+    tags:
+      - { name: input_processor_handler.processor }
 
   pxpost_output_processor:
     class: %pxpost_output_processor.class%
+    tags:
+      - { name: output_processor_handler.processor }
     
   pxpost_payment_response:
     class: %pxpost_payment_response.class%
     arguments: [ [] ]
+    tags:
+      - { name: ss_orm_backend.data_provider }
+      
+  transaction_pxfusion_payment_schema:
+    class: %yaml_data_object_schema.class%
+    arguments: [ ecommerce-payment/config/storage/transaction_pxfusionpayment.yml, @state_global ]
+    tags:
+      - { name: dataobject_generator.schema }
+      
+  pxfusion_payment_schema:
+    class: %yaml_data_object_schema.class%
+    arguments: [ ecommerce-payment/config/storage/pxfusionpayment.yml, @state_global ]
+    tags:
+      - { name: dataobject_generator.schema }
+      
+  pxpost_payment_schema:
+    class: %yaml_data_object_schema.class%
+    arguments: [ ecommerce-payment/config/storage/pxpostpayment.yml, @state_global ]
+    tags:
+      - { name: dataobject_generator.schema }
+      
+  transaction_pxpost_payment_schema:
+    class: %yaml_data_object_schema.class%
+    arguments: [ ecommerce-payment/config/storage/transaction_pxpostpayment.yml, @state_global ]
+    tags:
+      - { name: dataobject_generator.schema }
