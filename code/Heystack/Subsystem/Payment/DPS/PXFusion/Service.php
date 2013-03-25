@@ -401,7 +401,7 @@ class Service extends BaseService
         );
     }
 
-    public function completeTransaction($dpsTxnRef)
+    public function completeTransaction($dpsTxnRef, $merchantReference = null)
     {
         $this->setStage(self::STAGE_COMPLETE);
 
@@ -411,6 +411,9 @@ class Service extends BaseService
                 
                 $this->pxPostService->setTxnType(PXPostService::TXN_TYPE_COMPLETE);
                 $this->pxPostService->setAdditionalConfigByKey('DpsTxnRef', $dpsTxnRef);
+                if (!is_null($merchantReference)) {
+                    $this->pxPostService->setAdditionalConfigByKey('MerchantReference', $merchantReference);                    
+                }
                 return $this->pxPostService->processComplete();
                 
             } catch(\Exception $e) {
