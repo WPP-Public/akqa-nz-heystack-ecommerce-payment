@@ -1,5 +1,7 @@
 <?php
-use Camspiers\DependencyInjection\SharedContainerFactory;
 
-SharedContainerFactory::addExtension(new Heystack\Subsystem\Payment\DependencyInjection\ContainerExtension);
-SharedContainerFactory::addExtension(new Heystack\Subsystem\Payment\DPS\DependencyInjection\ContainerExtension);
+use Camspiers\DependencyInjection\SharedContainerFactory;
+use Heystack\Subsystem\Payment;
+
+SharedContainerFactory::addExtension(new Payment\DependencyInjection\ContainerExtension());
+SharedContainerFactory::addExtension(new Payment\DPS\DependencyInjection\ContainerExtension());
