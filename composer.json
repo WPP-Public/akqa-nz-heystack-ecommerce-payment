@@ -17,7 +17,6 @@
         "heystack/ecommerce-core": "1.1.*@dev",
         "symfony/class-loader": "~2.2",
         "phpmd/phpmd": "1.4.*",
-        "phploc/phploc": "dev-master",
         "pdepend/pdepend": "1.1.*",
         "sami/sami": "dev-master"
     },

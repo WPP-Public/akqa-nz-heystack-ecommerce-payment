@@ -2,12 +2,11 @@
 
 namespace Heystack\Subsystem\Payment\Test;
 
-use Heystack\Subsystem\Payment\DPS\PXFusion\Service;
-
-use Heystack\Subsystem\Payment\DPS\PXFusion\InputProcessor;
-
+use Heystack\Subsystem\Core\State\State;
+use Heystack\Subsystem\Core\Test\TestBackend;
 use Heystack\Subsystem\Ecommerce\Currency\CurrencyService;
-
+use Heystack\Subsystem\Payment\DPS\PXFusion\InputProcessor;
+use Heystack\Subsystem\Payment\DPS\PXFusion\Service;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class PXFusionTest extends \PHPUnit_Framework_TestCase
@@ -17,11 +16,21 @@ class PXFusionTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
+        $eventDispatcher = new EventDispatcher();
+        $state = new State(
+            $backend = new TestBackend(),
+            $eventDispatcher
+        );
 
         $this->paymentService = new Service(
-            new EventDispatcher(),
+            $eventDispatcher,
             new TestTransaction(),
-            new CurrencyService()
+            new CurrencyService(
+                'Currency',
+                $state,
+                $state,
+                $eventDispatcher
+            )
         );
         
         $this->paymentService->setTestingMode(true);
@@ -122,7 +131,9 @@ class PXFusionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Purchase', $this->paymentService->getTxnType());
 
     }
-
+    /**
+     * @large
+     */
     public function testGetTransactionIdPurchase()
     {
 

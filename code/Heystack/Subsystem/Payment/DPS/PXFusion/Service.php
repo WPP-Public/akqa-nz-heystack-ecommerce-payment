@@ -159,7 +159,8 @@ class Service extends BaseService
             EventDispatcherInterface $eventService, 
             TransactionInterface $transaction, 
             CurrencyService $currencyService, 
-            PXPostService $pxPostService = null) {
+            PXPostService $pxPostService = null
+    ) {
         $this->eventService = $eventService;
         $this->transaction = $transaction;
 
