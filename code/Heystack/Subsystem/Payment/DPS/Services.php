@@ -11,7 +11,6 @@ namespace Heystack\Subsystem\Payment\DPS;
  */
 final class Services
 {
-
     const PXFUSION_SERVICE = 'pxfusion_service';
     const PXFUSION_INPUT_PROCESSOR = 'pxfusion_input_processor';
     const PXFUSION_OUTPUT_PROCESSOR = 'pxfusion_output_processor';
@@ -21,5 +20,4 @@ final class Services
     const PXPOST_INPUT_PROCESSOR = 'pxpost_input_processor';
     const PXPOST_OUTPUT_PROCESSOR = 'pxpost_output_processor';
     const PXPOST_PAYMENT_RESPONSE = 'pxpost_payment_response';
-
 }

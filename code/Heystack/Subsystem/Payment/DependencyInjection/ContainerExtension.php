@@ -10,13 +10,11 @@
  */
 namespace Heystack\Subsystem\Payment\DependencyInjection;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
-
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
-use Heystack\Subsystem\Core\DependencyInjection\ContainerExtensionConfigProcessor;
 /**
  * Container extension for Heystack.
  *
@@ -30,7 +28,7 @@ use Heystack\Subsystem\Core\DependencyInjection\ContainerExtensionConfigProcesso
  * @package Ecommerce-Payment
  *
  */
-class ContainerExtension extends ContainerExtensionConfigProcessor implements ExtensionInterface
+class ContainerExtension extends Extension
 {
 
     /**
@@ -50,8 +48,6 @@ class ContainerExtension extends ContainerExtensionConfigProcessor implements Ex
         );
 
         $loader->load('services.yml');
-
-        $this->processConfig($config, $container);
     }
 
     /**

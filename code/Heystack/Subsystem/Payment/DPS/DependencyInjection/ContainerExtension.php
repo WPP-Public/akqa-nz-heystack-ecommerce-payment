@@ -10,16 +10,15 @@
  */
 namespace Heystack\Subsystem\Payment\DPS\DependencyInjection;
 
-use Heystack\Subsystem\Core\DependencyInjection\ContainerExtensionConfigProcessor;
 use Heystack\Subsystem\Core\Exception\ConfigurationException;
+use Heystack\Subsystem\Payment\DPS\Config\ContainerConfig;
 use Heystack\Subsystem\Payment\DPS\PXFusion\Service as PXFusionService;
 use Heystack\Subsystem\Payment\DPS\Services;
-
+use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Config\FileLocator;
-
-use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
+use Symfony\Component\DependencyInjection\Extension\Extension;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
@@ -30,18 +29,18 @@ use Symfony\Component\DependencyInjection\Reference;
  * @package Ecommerce-Payment
  *
  */
-class ContainerExtension extends ContainerExtensionConfigProcessor implements ExtensionInterface
+class ContainerExtension extends Extension
 {
 
     /**
      * Loads a services.yml file into a fresh container, ready to me merged
      * back into the main container
      *
-     * @param  array            $config
+     * @param  array            $configs
      * @param  ContainerBuilder $container
      * @return null
      */
-    public function load(array $config, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container)
     {
         $loader = new YamlFileLoader(
             $container,
@@ -50,7 +49,13 @@ class ContainerExtension extends ContainerExtensionConfigProcessor implements Ex
 
         $loader->load('dps_services.yml');
 
-        $this->processConfig($config, $container);
+        $this->processConfig(
+            (new Processor())->processConfiguration(
+                new ContainerConfig(),
+                $configs
+            ),
+            $container
+        );
     }
 
     /**
@@ -60,10 +65,6 @@ class ContainerExtension extends ContainerExtensionConfigProcessor implements Ex
      */
     protected function processConfig(array $config, ContainerBuilder $container)
     {
-        parent::processConfig($config, $container);
-
-        $config = array_pop($config);
-
         if (
             isset($config['pxfusion'])
             && isset($config['pxfusion']['config'])
