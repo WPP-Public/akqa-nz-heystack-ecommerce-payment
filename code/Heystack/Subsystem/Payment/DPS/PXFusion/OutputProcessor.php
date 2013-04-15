@@ -34,7 +34,7 @@ class OutputProcessor implements ProcessorInterface
         
         if ($result['Success']) {
             
-            if ($result['Complete']) {
+            if (isset($result['Complete']) && $result['Complete']) {
                 
                 \Director::redirect($this->completeURL);
                 
@@ -49,7 +49,7 @@ class OutputProcessor implements ProcessorInterface
 
         }
         
-        if ($result['CheckFailure']) {
+        if (isset($result['CheckFailure']) && $result['CheckFailure']) {
             
             \Director::redirectBack();
             
