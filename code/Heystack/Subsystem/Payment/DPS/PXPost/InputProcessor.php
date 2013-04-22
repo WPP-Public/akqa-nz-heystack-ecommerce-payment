@@ -10,6 +10,7 @@
  */
 namespace Heystack\Subsystem\Payment\DPS\PXPost;
 
+use Heystack\Subsystem\Core\Identifier\Identifier;
 use Heystack\Subsystem\Core\Input\ProcessorInterface;
 use Heystack\Subsystem\Payment\Interfaces\PaymentServiceInterface;
 
@@ -39,11 +40,11 @@ class InputProcessor implements ProcessorInterface
 
     /**
      * Returns an identifier used for routing to this processor
-     * @return string
+     * @return \Heystack\Subsystem\Core\Identifier\Identifier
      */
     public function getIdentifier()
     {
-        return 'dps_post';
+        return new Identifier('dps_post');
     }
 
     /**

@@ -2,19 +2,41 @@
 
 namespace Heystack\Subsystem\Payment\DPS\PXFusion;
 
+use Heystack\Subsystem\Core\Identifier\Identifier;
 use Heystack\Subsystem\Core\Output\ProcessorInterface;
 
+/**
+ * Class OutputProcessor
+ * @package Heystack\Subsystem\Payment\DPS\PXFusion
+ */
 class OutputProcessor implements ProcessorInterface
 {
 
+    /**
+     *
+     */
     const IDENTIFIER = 'dps_fusion';
-    
+
+    /**
+     * @var
+     */
     protected $completeURL;
-    
+
+    /**
+     * @var
+     */
     protected $confirmationURL;
-    
+
+    /**
+     * @var
+     */
     protected $failureURL;
 
+    /**
+     * @param $completeURL
+     * @param $confirmationURL
+     * @param $failureURL
+     */
     public function __construct($completeURL, $confirmationURL, $failureURL)
     {
         $this->completeURL = $completeURL;
@@ -23,12 +45,18 @@ class OutputProcessor implements ProcessorInterface
         
         $this->failureURL = $failureURL;
     }
-
+    /**
+     * @return \Heystack\Subsystem\Core\Identifier\Identifier
+     */
     public function getIdentifier()
     {
-        return self::IDENTIFIER;
+        return new Identifier(self::IDENTIFIER);
     }
 
+    /**
+     * @param \Controller $controller
+     * @param null        $result
+     */
     public function process(\Controller $controller, $result = null)
     {
         

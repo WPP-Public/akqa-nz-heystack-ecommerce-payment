@@ -2,6 +2,7 @@
 
 namespace Heystack\Subsystem\Payment\DPS\PXFusion;
 
+use Heystack\Subsystem\Core\Identifier\Identifier;
 use Heystack\Subsystem\Core\Input\ProcessorInterface;
 
 use Heystack\Subsystem\Core\Storage\Storage;
@@ -13,9 +14,16 @@ use Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface;
 
 use Heystack\Subsystem\Payment\DPS\PXPost\PaymentResponse as PXPostPaymentResponse;
 
+/**
+ * Class InputProcessor
+ * @package Heystack\Subsystem\Payment\DPS\PXFusion
+ */
 class InputProcessor implements ProcessorInterface
 {
 
+    /**
+     *
+     */
     const IDENTIFIER = 'dps_fusion';
 
     /**
@@ -40,6 +48,12 @@ class InputProcessor implements ProcessorInterface
      */
     protected $transaction;
 
+    /**
+     * @param PaymentServiceInterface $paymentService
+     * @param Storage                 $storage
+     * @param State                   $state
+     * @param TransactionInterface    $transaction
+     */
     public function __construct(
         PaymentServiceInterface $paymentService,
         Storage $storage,
@@ -51,12 +65,18 @@ class InputProcessor implements ProcessorInterface
         $this->state = $state;
         $this->transaction = $transaction;
     }
-
+    /**
+     * @return \Heystack\Subsystem\Core\Identifier\Identifier
+     */
     public function getIdentifier()
     {
-        return self::IDENTIFIER;
+        return new Identifier(self::IDENTIFIER);
     }
 
+    /**
+     * @param \SS_HTTPRequest $request
+     * @return array
+     */
     public function process(\SS_HTTPRequest $request)
     {
         $httpMethod = $request->httpMethod();
