@@ -10,24 +10,18 @@
  */
 namespace Heystack\Subsystem\Payment\DPS\PXFusion;
 
-use Heystack\Subsystem\Payment\DPS\Service as BaseService;
-
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-
-use Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface;
-use Heystack\Subsystem\Ecommerce\Transaction\Events as TransactionEvents;
-
 use Heystack\Subsystem\Core\Exception\ConfigurationException;
-
-use Heystack\Subsystem\Payment\DPS\PXPost\Service as PXPostService;
-
 use Heystack\Subsystem\Ecommerce\Currency\CurrencyService;
+use Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface;
+use Heystack\Subsystem\Payment\DPS\PXPost\Service as PXPostService;
+use Heystack\Subsystem\Payment\DPS\Service as BaseService;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  *
  *
  * @copyright  Heyday
- * @package Ecommerce-Payment
+ * @package    Ecommerce-Payment
  */
 class Service extends BaseService
 {
@@ -89,16 +83,16 @@ class Service extends BaseService
      * @var \Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface
      */
     protected $transaction;
-    
+
     /**
      * Holds the currency service
-     * @var \Heystack\Subsystem\Ecommerce\Currency\CurrencyService 
+     * @var \Heystack\Subsystem\Ecommerce\Currency\CurrencyService
      */
     protected $currencyService;
-    
+
     /**
      * Holds the px post service for when using the auth complete cycle
-     * @var \Heystack\Subsystem\Payment\DPS\PXPost\Service 
+     * @var \Heystack\Subsystem\Payment\DPS\PXPost\Service
      */
     protected $pxPostService;
 
@@ -145,8 +139,15 @@ class Service extends BaseService
         6 => 'No transaction found (SessionId query failed to return a transaction record - transaction not yet attempted)'
     );
 
+    /**
+     * @var array
+     */
     protected $errorStatuses = array(
-        2, 3, 4, 5, 6
+        2,
+        3,
+        4,
+        5,
+        6
     );
 
     /**
@@ -156,10 +157,10 @@ class Service extends BaseService
      * @param \Heystack\Subsystem\Payment\DPS\PXPost\Service                            $pxPostService
      */
     public function __construct(
-            EventDispatcherInterface $eventService, 
-            TransactionInterface $transaction, 
-            CurrencyService $currencyService, 
-            PXPostService $pxPostService = null
+        EventDispatcherInterface $eventService,
+        TransactionInterface $transaction,
+        CurrencyService $currencyService,
+        PXPostService $pxPostService = null
     ) {
         $this->eventService = $eventService;
         $this->transaction = $transaction;
@@ -170,6 +171,9 @@ class Service extends BaseService
         $this->currencyService = $currencyService;
     }
 
+    /**
+     * @return TransactionInterface
+     */
     public function getTransaction()
     {
         return $this->transaction;
@@ -230,19 +234,30 @@ class Service extends BaseService
         );
     }
 
+    /**
+     * @return array
+     */
     protected function getRequiredAdditionalConfig()
     {
         return array();
     }
 
+    /**
+     * @param array $config
+     * @return array
+     */
     protected function validateConfig(array $config)
     {
         $errors = array();
 
-        if (isset($config[self::CONFIG_TYPE]) && !in_array($config[self::CONFIG_TYPE], array(
-            self::TYPE_AUTH_COMPLETE,
-            self::TYPE_PURCHASE
-        ))) {
+        if (isset($config[self::CONFIG_TYPE]) && !in_array(
+            $config[self::CONFIG_TYPE],
+            array(
+                self::TYPE_AUTH_COMPLETE,
+                self::TYPE_PURCHASE
+            )
+        )
+        ) {
             $errors[] = "{$config[self::CONFIG_TYPE]} is not a valid 'Type' for this payment handler";
         }
 
@@ -283,11 +298,17 @@ class Service extends BaseService
         return array();
     }
 
+    /**
+     * @return bool
+     */
     public function getType()
     {
         return isset($this->config[self::CONFIG_TYPE]) ? $this->config[self::CONFIG_TYPE] : false;
     }
 
+    /**
+     * @param $type
+     */
     public function setType($type)
     {
         $this->config[self::CONFIG_TYPE] = $type;
@@ -295,9 +316,12 @@ class Service extends BaseService
         $this->validateConfig($this->config);
     }
 
+    /**
+     * @return string
+     */
     public function getReturnUrl()
     {
-        $returnUrl = \EcommerceInputController::$url_segment. '/process/' . InputProcessor::IDENTIFIER;
+        $returnUrl = \EcommerceInputController::$url_segment . '/process/' . InputProcessor::IDENTIFIER;
         switch ($this->config[self::CONFIG_TYPE]) {
             case self::TYPE_AUTH_COMPLETE:
                 $returnUrl .= '/check/auth';
@@ -306,9 +330,13 @@ class Service extends BaseService
                 $returnUrl .= '/check/purchase';
                 break;
         }
+
         return \Director::absoluteURL($returnUrl);
     }
 
+    /**
+     * @return string
+     */
     public function getTxnType()
     {
 
@@ -320,6 +348,9 @@ class Service extends BaseService
 
     }
 
+    /**
+     * @return \SoapClient
+     */
     public function getSoapClient()
     {
         if (!$this->soapClient) {
@@ -328,7 +359,7 @@ class Service extends BaseService
                 $this->getWsdl(),
                 array(
                     'soap_version' => SOAP_1_1,
-                    'trace' => $this->getTestingMode()
+                    'trace'        => $this->getTestingMode()
                 )
             );
 
@@ -337,19 +368,26 @@ class Service extends BaseService
         return $this->soapClient;
     }
 
+    /**
+     * @return mixed
+     * @throws Exception
+     */
     public function getTransactionId()
     {
         $soapClient = $this->getSoapClient();
 
         $configuration = array(
-            'username' => $this->config[self::CONFIG_USERNAME],
-            'password' => $this->config[self::CONFIG_PASSWORD],
-            'tranDetail' => array_merge(array(
-                'txnType' => $this->getTxnType(),
-                'currency' => $this->getCurrencyCode(),
-                'amount' => $this->getAmount(),
-                'returnUrl' => $this->getReturnUrl()
-            ), $this->getAdditionalConfig())
+            'username'   => $this->config[self::CONFIG_USERNAME],
+            'password'   => $this->config[self::CONFIG_PASSWORD],
+            'tranDetail' => array_merge(
+                array(
+                    'txnType'   => $this->getTxnType(),
+                    'currency'  => $this->getCurrencyCode(),
+                    'amount'    => $this->getAmount(),
+                    'returnUrl' => $this->getReturnUrl()
+                ),
+                $this->getAdditionalConfig()
+            )
         );
 
         $response = $soapClient->GetTransactionId($configuration);
@@ -365,13 +403,18 @@ class Service extends BaseService
         }
     }
 
+    /**
+     * @param $transactionID
+     * @return PaymentResponse
+     * @throws Exception
+     */
     public function checkTransaction($transactionID)
     {
         $soapClient = $this->getSoapClient();
 
         $configuration = array(
-            'username' => $this->config[self::CONFIG_USERNAME],
-            'password' => $this->config[self::CONFIG_PASSWORD],
+            'username'      => $this->config[self::CONFIG_USERNAME],
+            'password'      => $this->config[self::CONFIG_PASSWORD],
             'transactionId' => $transactionID
         );
 
@@ -396,32 +439,37 @@ class Service extends BaseService
 
         return new PaymentResponse(
             json_decode(
-                json_encode((array) $result),
+                json_encode((array)$result),
                 true
             )
         );
     }
 
+    /**
+     * @param $dpsTxnRef
+     * @return array|bool|\Heystack\Subsystem\Payment\DPS\PXPost\PaymentResponse
+     */
     public function completeTransaction($dpsTxnRef)
     {
         $this->setStage(self::STAGE_COMPLETE);
 
         if ($this->pxPostService instanceof PXPostService) {
-            
+
             try {
-                
+
                 $this->pxPostService->setTxnType(PXPostService::TXN_TYPE_COMPLETE);
                 $this->pxPostService->setAdditionalConfigByKey('DpsTxnRef', $dpsTxnRef);
+
                 return $this->pxPostService->processComplete();
-                
-            } catch(\Exception $e) {
-                
+
+            } catch (\Exception $e) {
+
                 return false;
-                
+
             }
 
         }
-        
+
         return false;
     }
 
@@ -464,23 +512,23 @@ class Service extends BaseService
     public function getAmount()
     {
         if ($this->getTxnType() == self::TXN_TYPE_AUTH) {
-            
+
             if (in_array($this->currencyService->getActiveCurrencyCode(), $this->currenciesWithoutCents)) {
-                
+
                 return $this->authAmount;
-                
+
             }
-            
+
             return number_format($this->authAmount, 2);
-            
+
         }
-        
+
         if (in_array($this->currencyService->getActiveCurrencyCode(), $this->currenciesWithoutCents)) {
-                
+
             return $this->transaction->getTotal();
 
         }
-        
+
         return number_format($this->transaction->getTotal(), 2);
     }
 

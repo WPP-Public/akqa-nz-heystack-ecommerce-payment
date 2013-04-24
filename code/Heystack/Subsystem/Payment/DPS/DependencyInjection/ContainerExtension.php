@@ -81,6 +81,17 @@ class ContainerExtension extends Extension
                 )
             );
 
+            if (isset($config['pxfusion']['testing']) && $config['pxfusion']['testing']) {
+
+                $pxfusionService->addMethodCall(
+                    'setTestingMode',
+                    array(
+                        true
+                    )
+                );
+
+            }
+
             if (isset($config['pxfusion']['config']['Type']) && $config['pxfusion']['config']['Type'] == PXFusionService::TYPE_AUTH_COMPLETE) {
 
                 if ($container->hasDefinition(Services::PXPOST_SERVICE) && isset($config['pxpost'])) {
@@ -122,6 +133,17 @@ class ContainerExtension extends Extension
                     true
                 )
             );
+
+            if (isset($config['pxpost']['testing']) && $config['pxpost']['testing']) {
+
+                $pxpostService->addMethodCall(
+                    'setTestingMode',
+                    array(
+                        true
+                    )
+                );
+
+            }
 
             if (isset($config['pxpost']['additional_config'])) {
                 $pxpostService->addMethodCall(
