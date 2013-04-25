@@ -29,7 +29,7 @@ class PXFusionTest extends \PHPUnit_Framework_TestCase
             $transaction,
             $currencyService
         );
-        
+
         $this->paymentService->setTestingMode(true);
     }
 

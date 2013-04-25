@@ -184,7 +184,7 @@ trait PaymentConfigTrait
     /**
      * Sets an array of config parameters onto the data array.
      * Checks to see if all the required parameters are present.
-     * @param  array      $config
+     * @param  array                  $config
      * @throws ConfigurationException
      */
     public function setConfig(array $config, $exceptionOnError = false)

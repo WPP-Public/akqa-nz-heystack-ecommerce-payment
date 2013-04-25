@@ -52,7 +52,7 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
         'txnType' => 'TransactionType'
     );
 
-    function __construct($data)
+    public function __construct($data)
     {
         foreach ($data as $key => $value) {
             if (array_key_exists($key, $this->mapping)) {
@@ -61,12 +61,12 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
         }
     }
 
-    function __get($name)
+    public function __get($name)
     {
         return array_key_exists($name, $this->data) ? $this->data[$name] : false;
     }
 
-    function __set($name, $value)
+    public function __set($name, $value)
     {
         $this->data[$name] = $value;
     }

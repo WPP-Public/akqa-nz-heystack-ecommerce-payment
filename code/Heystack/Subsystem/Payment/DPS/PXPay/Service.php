@@ -37,28 +37,28 @@ class Service implements PaymentServiceInterface
     {
 
         throw new \Exception('PXPay is not yet implemented');
-        
+
     }
 
     public function getConfig()
     {
 
         throw new \Exception('PXPay is not yet implemented');
-        
+
     }
 
     public function savePaymentData(array $data)
     {
 
         throw new \Exception('PXPay is not yet implemented');
-        
+
     }
 
     public function setConfig(array $config)
     {
 
         throw new \Exception('PXPay is not yet implemented');
-        
+
     }
 
 }

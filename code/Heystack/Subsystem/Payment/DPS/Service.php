@@ -23,7 +23,7 @@ abstract class Service
         'TOP', 'SBD', 'PGK', 'MYR',
         'KWD', 'FJD'
     );
-    
+
     /**
      * List of currencies which don't have cents
      * @var array
@@ -66,7 +66,7 @@ abstract class Service
     protected function getCurrencyCode()
     {
         $currencyCode = $this->currencyService->getActiveCurrencyCode();
-        
+
         if (!in_array($currencyCode, $this->supportedCurrencies)) {
 
             throw new ConfigurationException("The currency $currencyCode is not supported by DPS");
@@ -75,11 +75,11 @@ abstract class Service
 
         return $currencyCode;
     }
-    
-    protected function responseFromErrors($errors = null) {
-        
+
+    protected function responseFromErrors($errors = null)
+    {
         die();
-        
+
     }
 
 }

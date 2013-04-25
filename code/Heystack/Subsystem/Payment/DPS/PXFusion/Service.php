@@ -243,7 +243,7 @@ class Service extends BaseService
     }
 
     /**
-     * @param array $config
+     * @param  array $config
      * @return array
      */
     protected function validateConfig(array $config)
@@ -393,7 +393,6 @@ class Service extends BaseService
         $response = $soapClient->GetTransactionId($configuration);
 
         if (is_object($response) && $response->GetTransactionIdResult && $response->GetTransactionIdResult->success) {
-
             return $response->GetTransactionIdResult->sessionId;
 
         } else {
@@ -439,7 +438,7 @@ class Service extends BaseService
 
         return new PaymentResponse(
             json_decode(
-                json_encode((array)$result),
+                json_encode((array) $result),
                 true
             )
         );
@@ -463,7 +462,6 @@ class Service extends BaseService
                 return $this->pxPostService->processComplete();
 
             } catch (\Exception $e) {
-
                 return false;
 
             }
@@ -475,7 +473,7 @@ class Service extends BaseService
 
     /**
      * Sets the stage of the Auth-Complete cycle
-     * @param string $stage
+     * @param  string                 $stage
      * @throws ConfigurationException
      */
     public function setStage($stage)
@@ -514,7 +512,6 @@ class Service extends BaseService
         if ($this->getTxnType() == self::TXN_TYPE_AUTH) {
 
             if (in_array($this->currencyService->getActiveCurrencyCode(), $this->currenciesWithoutCents)) {
-
                 return $this->authAmount;
 
             }
@@ -524,7 +521,6 @@ class Service extends BaseService
         }
 
         if (in_array($this->currencyService->getActiveCurrencyCode(), $this->currenciesWithoutCents)) {
-
             return $this->transaction->getTotal();
 
         }
@@ -589,7 +585,7 @@ class Service extends BaseService
     }
 
     /**
-     * @param string $wsdl
+     * @param  string                 $wsdl
      * @throws ConfigurationException
      * @return void
      */

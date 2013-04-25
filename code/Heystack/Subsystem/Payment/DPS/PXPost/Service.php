@@ -12,10 +12,8 @@ namespace Heystack\Subsystem\Payment\DPS\PXPost;
 
 use Heystack\Subsystem\Core\Exception\ConfigurationException;
 use Heystack\Subsystem\Ecommerce\Currency\Interfaces\CurrencyServiceInterface;
-use Heystack\Subsystem\Ecommerce\Transaction\Events as TransactionEvents;
 use Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface;
 use Heystack\Subsystem\Payment\DPS\Service as BaseService;
-use Heystack\Subsystem\Payment\Events;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -95,10 +93,10 @@ class Service extends BaseService
 
     /**
      * Holds the currency service
-     * @var \Heystack\Subsystem\Ecommerce\Currency\CurrencyService 
+     * @var \Heystack\Subsystem\Ecommerce\Currency\CurrencyService
      */
     protected $currencyService;
-    
+
     /**
      * Holds the Transaction object
      * @var \Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface
@@ -186,6 +184,7 @@ class Service extends BaseService
                 self::CONFIG_USER_DATA_CARD_NUMBER
             );
         }
+
         return array();
     }
 
@@ -311,6 +310,7 @@ class Service extends BaseService
     {
         unset($result['Transaction']);
         unset($result['@attributes']);
+
         return $result;
     }
 
@@ -326,6 +326,7 @@ class Service extends BaseService
         } else {
             $response = new PaymentResponse($this->process());
         }
+
         return $response;
     }
 
@@ -336,12 +337,13 @@ class Service extends BaseService
     {
         $this->setTxnType(self::TXN_TYPE_COMPLETE);
         $errors = $this->checkAll();
-        
+
         if ($this->hasErrors($errors)) {
             $response = $errors;
         } else {
             $response = new PaymentResponse($this->process());
         }
+
         return $response;
     }
 
@@ -358,6 +360,7 @@ class Service extends BaseService
         } else {
             $response = new PaymentResponse($this->process());
         }
+
         return $response;
     }
 
@@ -373,6 +376,7 @@ class Service extends BaseService
         } else {
             $response = new PaymentResponse($this->process());
         }
+
         return $response;
     }
 
@@ -430,7 +434,7 @@ class Service extends BaseService
 
     /**
      *
-     * @param string $txnType
+     * @param  string                                                    $txnType
      * @throws \Heystack\Subsystem\Core\Exception\ConfigurationException
      * @return void
      */

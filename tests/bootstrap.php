@@ -17,4 +17,3 @@ $loader->addClassMap(ClassMapGenerator::createMap(BASE_PATH . '/sapphire'));
 $loader->add('Heystack\Subsystem\Payment\Test', __DIR__);
 
 \Director::setBaseURL('http://localhost/');
-

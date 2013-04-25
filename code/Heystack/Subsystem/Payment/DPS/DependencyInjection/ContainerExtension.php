@@ -59,8 +59,8 @@ class ContainerExtension extends Extension
     }
 
     /**
-     * @param array $config
-     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
+     * @param  array                                                     $config
+     * @param  \Symfony\Component\DependencyInjection\ContainerBuilder   $container
      * @throws \Heystack\Subsystem\Core\Exception\ConfigurationException
      */
     protected function processConfig(array $config, ContainerBuilder $container)
@@ -153,39 +153,39 @@ class ContainerExtension extends Extension
                         true
                     )
                 );
-            }            
+            }
         }
-        
-        if(isset($config['yml.transaction_pxfusion_payment']) && $container->hasDefinition('transaction_pxfusion_payment_schema')){
-            
+
+        if (isset($config['yml.transaction_pxfusion_payment']) && $container->hasDefinition('transaction_pxfusion_payment_schema')) {
+
             $definition = $container->getDefinition('transaction_pxfusion_payment_schema');
-            
+
             $definition->replaceArgument(0, $config['yml.transaction_pxfusion_payment']);
-            
+
         }
-        
-        if(isset($config['yml.pxfusion_payment']) && $container->hasDefinition('pxfusion_payment_schema')){
-            
+
+        if (isset($config['yml.pxfusion_payment']) && $container->hasDefinition('pxfusion_payment_schema')) {
+
             $definition = $container->getDefinition('pxfusion_payment_schema');
-            
+
             $definition->replaceArgument(0, $config['yml.pxfusion_payment']);
-            
+
         }
-        
-        if(isset($config['yml.pxpost_payment']) && $container->hasDefinition('pxpost_payment_schema')){
-            
+
+        if (isset($config['yml.pxpost_payment']) && $container->hasDefinition('pxpost_payment_schema')) {
+
             $definition = $container->getDefinition('pxpost_payment_schema');
-            
+
             $definition->replaceArgument(0, $config['yml.pxpost_payment']);
-            
+
         }
-        
-        if(isset($config['yml.transaction_pxpost_payment']) && $container->hasDefinition('transaction_pxpost_payment_schema')){
-            
+
+        if (isset($config['yml.transaction_pxpost_payment']) && $container->hasDefinition('transaction_pxpost_payment_schema')) {
+
             $definition = $container->getDefinition('transaction_pxpost_payment_schema');
-            
+
             $definition->replaceArgument(0, $config['yml.transaction_pxpost_payment']);
-            
+
         }
 
     }

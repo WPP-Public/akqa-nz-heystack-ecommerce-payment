@@ -40,9 +40,9 @@ class OutputProcessor implements ProcessorInterface
     public function __construct($completeURL, $confirmationURL, $failureURL)
     {
         $this->completeURL = $completeURL;
-        
+
         $this->confirmationURL = $confirmationURL;
-        
+
         $this->failureURL = $failureURL;
     }
     /**
@@ -59,36 +59,34 @@ class OutputProcessor implements ProcessorInterface
      */
     public function process(\Controller $controller, $result = null)
     {
-        
+
         if ($result['Success']) {
-            
+
             if (isset($result['Complete']) && $result['Complete']) {
-                
+
                 \Director::redirect($this->completeURL);
-                
+
                 return;
-                
+
             } else {
-                
+
                 \Director::redirect($this->confirmationURL);
-                
+
                 return;
             }
 
         }
-        
+
         if (isset($result['CheckFailure']) && $result['CheckFailure']) {
-            
+
             \Director::redirectBack();
-            
+
         } else {
-            
+
             \Director::redirect($this->failureURL);
-            
+
         }
-        
-        
-        
+
         return;
     }
 
