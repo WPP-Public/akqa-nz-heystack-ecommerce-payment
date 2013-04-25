@@ -10,18 +10,19 @@
  */
 namespace Heystack\Subsystem\Payment\DPS\PXPost;
 
-use Heystack\Subsystem\Core\Storage\StorableInterface;
 use Heystack\Subsystem\Core\Storage\Backends\SilverStripeOrm\Backend;
+use Heystack\Subsystem\Core\Storage\StorableInterface;
 use Heystack\Subsystem\Core\Storage\Traits\ParentReferenceTrait;
 use Heystack\Subsystem\Core\ViewableData\ViewableDataInterface;
+use Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface;
 
 /**
  * Payment stores information about payments made with the PXPost method
  *
  * @copyright  Heyday
- * @author Glenn Bautista <glenn@heyday.co.nz>
- * @author Stevie Mayhew <stevie@heyday.co.nz>
- * @package Heystack
+ * @author     Glenn Bautista <glenn@heyday.co.nz>
+ * @author     Stevie Mayhew <stevie@heyday.co.nz>
+ * @package    Heystack
  *
  */
 class PaymentResponse implements StorableInterface, ViewableDataInterface
@@ -29,12 +30,24 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
 
     use ParentReferenceTrait;
 
+    /**
+     *
+     */
     const IDENTIFIER = 'pxpostpayment';
 
+    /**
+     *
+     */
     const SCHEMA_NAME = 'PXPostPayment';
 
+    /**
+     * @var array
+     */
     protected $data = array();
 
+    /**
+     * @var array
+     */
     protected $allowedFields = array(
         'ReCo',
         'ResponseText',
@@ -103,47 +116,61 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
         'PxHostId'
     );
 
-    function __construct(array $data)
+    /**
+     * @param array $data
+     */
+    public function __construct(array $data)
     {
-        if (is_array($data)) { 
-            
+        if (is_array($data)) {
             foreach ($data as $key => $value) {
                 if (in_array($key, $this->allowedFields)) {
                     $this->data[$key] = $value;
                 }
             }
-            
         } else {
-            
             throw new \Exception('payment response data must be an array');
-            
         }
     }
 
-    function __get($name)
+    /**
+     * @param $name
+     * @return bool
+     */
+    public function __get($name)
     {
         return array_key_exists($name, $this->data) ? $this->data[$name] : false;
     }
 
-    function __set($name, $value)
+    /**
+     * @param $name
+     * @param $value
+     */
+    public function __set($name, $value)
     {
         $this->data[$name] = $value;
     }
-    
-    public function updateTransaction(\Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface $transaction){
-        
-        if($this->Success){
-            
+
+    /**
+     * @param TransactionInterface $transaction
+     */
+    public function updateTransaction(TransactionInterface $transaction)
+    {
+
+        if ($this->Success) {
+
             $transaction->setStatus('Successful');
-            
-        }else{
-            
+
+        } else {
+
             $transaction->setStatus('Failed');
-            
+
         }
-        
+
     }
 
+    /**
+     * @return string
+     */
     public function getStorableIdentifier()
     {
         return self::IDENTIFIER;
@@ -158,23 +185,25 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
         return self::SCHEMA_NAME;
     }
 
+    /**
+     * @return array
+     */
     public function getStorableData()
     {
         return array(
-            'id' => $this->getSchemaName(),
-            'flat' => array_merge(
+            'id'      => $this->getSchemaName(),
+            'flat'    => array_merge(
                 $this->data,
                 array(
                     'ParentID' => $this->parentReference
                 )
             ),
-            'parent' => true,
+            'parent'  => true,
             'related' => false
         );
     }
 
     /**
-     * @todo document this
      * @return string
      */
     public function getStorableBackendIdentifiers()
@@ -198,64 +227,64 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
     public function getCastings()
     {
         return array(
-            'ReCo' => 'Varchar',
-            'ResponseText' => 'Varchar',
-            'HelpText' => 'Varchar',
-            'Success' => 'Int',
-            'DpsTxnRef' => 'Varchar',
-            'TxnRef' => 'Varchar',
-            'RmReason' => 'Varchar',
-            'RmReasonId' => 'Varchar',
-            'RiskScore' => 'Int',
-            'RiskScoreText' => 'Text',
-            'Authorized' => 'Int',
-            'RxDate' => 'Varchar',
-            'RxDateLocal' => 'Varchar',
-            'LocalTimeZone' => 'Varchar',
-            'MerchantReference' => 'Varchar',
-            'CardName' => 'Varchar',
-            'Retry' => 'Int',
-            'StatusRequired' => 'Int',
-            'AuthCode' => 'Varchar',
-            'AmountBalance' => 'Decimal',
-            'Amount' => 'Decimal',
-            'CurrencyId' => 'Int',
-            'InputCurrencyId' => 'Int',
-            'InputCurrencyName' => 'Varchar',
-            'CurrencyRate' => 'Decimal',
-            'CurrencyName' => 'Varchar',
-            'CardHolderName' => 'Varchar',
-            'DateSettlement' => 'Date',
-            'TxnType' => 'Varchar',
-            'CardNumber' => 'Varchar',
-            'TxnMac' => 'Varchar',
-            'DateExpiry' => 'Varchar',
-            'ProductId' => 'Int',
-            'AcquirerDate' => 'Date',
-            'AcquirerTime' => 'Varchar',
-            'AcquirerId' => 'Int',
-            'Acquirer' => 'Varchar',
-            'AcquirerReCo' => 'Varchar',
-            'AcquirerResponseText' => 'Text',
-            'TestMode' => 'Int',
-            'CardId' => 'Int',
-            'CardHolderResponseText' => 'Text',
-            'CardHolderHelpText' => 'Varchar',
+            'ReCo'                          => 'Varchar',
+            'ResponseText'                  => 'Varchar',
+            'HelpText'                      => 'Varchar',
+            'Success'                       => 'Int',
+            'DpsTxnRef'                     => 'Varchar',
+            'TxnRef'                        => 'Varchar',
+            'RmReason'                      => 'Varchar',
+            'RmReasonId'                    => 'Varchar',
+            'RiskScore'                     => 'Int',
+            'RiskScoreText'                 => 'Text',
+            'Authorized'                    => 'Int',
+            'RxDate'                        => 'Varchar',
+            'RxDateLocal'                   => 'Varchar',
+            'LocalTimeZone'                 => 'Varchar',
+            'MerchantReference'             => 'Varchar',
+            'CardName'                      => 'Varchar',
+            'Retry'                         => 'Int',
+            'StatusRequired'                => 'Int',
+            'AuthCode'                      => 'Varchar',
+            'AmountBalance'                 => 'Decimal',
+            'Amount'                        => 'Decimal',
+            'CurrencyId'                    => 'Int',
+            'InputCurrencyId'               => 'Int',
+            'InputCurrencyName'             => 'Varchar',
+            'CurrencyRate'                  => 'Decimal',
+            'CurrencyName'                  => 'Varchar',
+            'CardHolderName'                => 'Varchar',
+            'DateSettlement'                => 'Date',
+            'TxnType'                       => 'Varchar',
+            'CardNumber'                    => 'Varchar',
+            'TxnMac'                        => 'Varchar',
+            'DateExpiry'                    => 'Varchar',
+            'ProductId'                     => 'Int',
+            'AcquirerDate'                  => 'Date',
+            'AcquirerTime'                  => 'Varchar',
+            'AcquirerId'                    => 'Int',
+            'Acquirer'                      => 'Varchar',
+            'AcquirerReCo'                  => 'Varchar',
+            'AcquirerResponseText'          => 'Text',
+            'TestMode'                      => 'Int',
+            'CardId'                        => 'Int',
+            'CardHolderResponseText'        => 'Text',
+            'CardHolderHelpText'            => 'Varchar',
             'CardHolderResponseDescription' => 'Varchar',
-            'MerchantResponseText' => 'Text',
-            'MerchantHelpText' => 'Varchar',
-            'MerchantResponseDescription' => 'Varchar',
-            'UrlFail' => 'Varchar',
-            'UrlSuccess' => 'Varchar',
-            'EnablePostResponse' => 'Int',
-            'AcquirerPort' => 'Varchar',
-            'AcquirerTxnRef' => 'Varchar',
-            'GroupAccount' => 'Varchar',
-            'AllowRetry' => 'Int',
-            'DpsBillingId' => 'Varchar',
-            'BillingId' => 'Varchar',
-            'TransactionId' => 'Varchar',
-            'PxHostId' => 'Varchar'
+            'MerchantResponseText'          => 'Text',
+            'MerchantHelpText'              => 'Varchar',
+            'MerchantResponseDescription'   => 'Varchar',
+            'UrlFail'                       => 'Varchar',
+            'UrlSuccess'                    => 'Varchar',
+            'EnablePostResponse'            => 'Int',
+            'AcquirerPort'                  => 'Varchar',
+            'AcquirerTxnRef'                => 'Varchar',
+            'GroupAccount'                  => 'Varchar',
+            'AllowRetry'                    => 'Int',
+            'DpsBillingId'                  => 'Varchar',
+            'BillingId'                     => 'Varchar',
+            'TransactionId'                 => 'Varchar',
+            'PxHostId'                      => 'Varchar'
         );
     }
 }

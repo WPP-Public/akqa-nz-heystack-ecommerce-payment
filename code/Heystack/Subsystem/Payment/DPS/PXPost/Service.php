@@ -399,7 +399,7 @@ class Service extends BaseService
                 json_decode(json_encode((array) $response->Transaction), true)
             ));
         } catch (\Exception $e) {
-            $result = null;
+            $result = array();
         }
 
         return $result;
