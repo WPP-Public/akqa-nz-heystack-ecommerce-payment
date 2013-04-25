@@ -25,6 +25,7 @@
         <delete dir="${basedir}/sapphire"/>
         <delete dir="${basedir}/heystack"/>
         <delete dir="${basedir}/ecommerce-core"/>
+        <delete dir="${basedir}/vendor"/>
     </target>
 
     <target name="prepare" depends="clean" description="Prepare for build">
