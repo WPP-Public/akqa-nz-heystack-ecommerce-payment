@@ -11,7 +11,7 @@
 namespace Heystack\Subsystem\Payment\DPS\PXFusion;
 
 use Heystack\Subsystem\Core\Exception\ConfigurationException;
-use Heystack\Subsystem\Ecommerce\Currency\CurrencyService;
+use Heystack\Subsystem\Ecommerce\Currency\Interfaces\CurrencyServiceInterface;
 use Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface;
 use Heystack\Subsystem\Payment\DPS\PXPost\Service as PXPostService;
 use Heystack\Subsystem\Payment\DPS\Service as BaseService;
@@ -159,7 +159,7 @@ class Service extends BaseService
     public function __construct(
         EventDispatcherInterface $eventService,
         TransactionInterface $transaction,
-        CurrencyService $currencyService,
+        CurrencyServiceInterface $currencyService,
         PXPostService $pxPostService = null
     ) {
         $this->eventService = $eventService;

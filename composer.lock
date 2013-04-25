@@ -1,5 +1,5 @@
 {
-    "hash": "2273006070baf97093831cc6e4ee53cd",
+    "hash": "66fde2af0870f2c278586e3c2938a1e1",
     "packages": [
         {
             "name": "composer/installers",
@@ -77,22 +77,22 @@
     "packages-dev": [
         {
             "name": "camspiers/shared-dependency-injection",
-            "version": "0.2.0",
+            "version": "0.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/camspiers/shared-dependency-injection.git",
-                "reference": "0.2.0"
+                "reference": "0.4.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/camspiers/shared-dependency-injection/zipball/0.2.0",
-                "reference": "0.2.0",
+                "url": "https://api.github.com/repos/camspiers/shared-dependency-injection/zipball/0.4.1",
+                "reference": "0.4.1",
                 "shasum": ""
             },
             "require": {
-                "symfony/config": ">=2.1,<3.0",
-                "symfony/dependency-injection": ">=2.1,<3.0",
-                "symfony/yaml": ">=2.1,<3.0"
+                "symfony/config": ">=2.2,<3.0",
+                "symfony/dependency-injection": ">=2.2,<3.0",
+                "symfony/yaml": ">=2.2,<3.0"
             },
             "require-dev": {
                 "phpunit/phpunit": ">=3.7,<4.0"
@@ -111,7 +111,7 @@
                 }
             ],
             "description": "Shared Dependency Injection",
-            "time": "2013-04-07 22:25:55"
+            "time": "2013-04-09 05:12:02"
         },
         {
             "name": "heystack/ecommerce-core",
@@ -119,46 +119,15 @@
             "source": {
                 "type": "git",
                 "url": "ssh://sls@slsapp.com:110/heyday/ecommerce-core.git",
-                "reference": "f3bf7ba7fc19690f323369393870882485e08e39"
+                "reference": "575c6000fdd143161b7acc5ad28b1d38a8406d50"
             },
             "require": {
-                "composer/installers": "~1.0.0",
+                "composer/installers": "~1.0",
+                "heystack/heystack": "self.version",
                 "php": ">=5.4.0"
-            },
-            "type": "silverstripe-module",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.1.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Heystack": "code/"
-                },
-                "classmap": [
-                    "code/SilverStripe"
-                ]
-            },
-            "time": "2013-04-07 23:49:15"
-        },
-        {
-            "name": "heystack/heystack",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "ssh://sls@slsapp.com:110/heyday/heystack.git",
-                "reference": "0db236aeadb01eab3ca7ac83aa9ddb0101a35ad1"
-            },
-            "require": {
-                "camspiers/shared-dependency-injection": "~0.2",
-                "composer/installers": "~1.0.0",
-                "monolog/monolog": ">=1.0,<1.2-dev",
-                "php": ">=5.4.0",
-                "symfony/event-dispatcher": "2.*"
             },
             "require-dev": {
                 "pdepend/pdepend": "1.1.*",
-                "phploc/phploc": "dev-master",
                 "phpmd/phpmd": "1.4.*",
                 "sami/sami": "dev-master",
                 "silverstripe/framework": "~2.4",
@@ -183,7 +152,52 @@
                     "code/SilverStripe"
                 ]
             },
-            "time": "2013-04-07 23:46:49"
+            "time": "2013-04-25 01:57:36"
+        },
+        {
+            "name": "heystack/heystack",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "ssh://sls@slsapp.com:110/heyday/heystack.git",
+                "reference": "76d3c1fd3631bdb1bf62bb90e108508e3daf2e15"
+            },
+            "require": {
+                "camspiers/shared-dependency-injection": "~0.4",
+                "composer/installers": "~1.0.0",
+                "monolog/monolog": ">=1.0,<1.2-dev",
+                "php": ">=5.4.0",
+                "symfony/console": "~2.2",
+                "symfony/dependency-injection": "~2.2",
+                "symfony/event-dispatcher": "~2.2"
+            },
+            "require-dev": {
+                "pdepend/pdepend": "1.1.*",
+                "phpmd/phpmd": "1.4.*",
+                "sami/sami": "dev-master",
+                "silverstripe/framework": "~2.4",
+                "symfony/class-loader": "~2.2"
+            },
+            "type": "silverstripe-module",
+            "extra": {
+                "installer-paths": {
+                    "sapphire": [
+                        "silverstripe/framework"
+                    ]
+                },
+                "branch-alias": {
+                    "dev-master": "1.1.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Heystack": "code/"
+                },
+                "classmap": [
+                    "code/SilverStripe"
+                ]
+            },
+            "time": "2013-04-25 01:40:09"
         },
         {
             "name": "monolog/monolog",
@@ -380,12 +394,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/fabpot/Sami.git",
-                "reference": "v1.0"
+                "reference": "d40930dfa56dfa38f65f89972ca70b5fd5a0508e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Sami/zipball/v1.0",
-                "reference": "v1.0",
+                "url": "https://api.github.com/repos/fabpot/Sami/zipball/d40930dfa56dfa38f65f89972ca70b5fd5a0508e",
+                "reference": "d40930dfa56dfa38f65f89972ca70b5fd5a0508e",
                 "shasum": ""
             },
             "require": {
@@ -428,7 +442,7 @@
             "keywords": [
                 "phpdoc"
             ],
-            "time": "2013-04-05 13:01:32"
+            "time": "2013-04-24 20:02:54"
         },
         {
             "name": "silverstripe/framework",
@@ -914,16 +928,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.12.2",
+            "version": "v1.12.3",
             "source": {
                 "type": "git",
-                "url": "git://github.com/fabpot/Twig.git",
-                "reference": "v1.12.2"
+                "url": "https://github.com/fabpot/Twig.git",
+                "reference": "v1.12.3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fabpot/Twig/zipball/v1.12.2",
-                "reference": "v1.12.2",
+                "url": "https://api.github.com/repos/fabpot/Twig/zipball/v1.12.3",
+                "reference": "v1.12.3",
                 "shasum": ""
             },
             "require": {
@@ -959,7 +973,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2013-02-09 18:21:53"
+            "time": "2013-04-08 12:40:11"
         }
     ],
     "aliases": [

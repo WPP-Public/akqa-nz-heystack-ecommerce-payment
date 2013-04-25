@@ -9,7 +9,9 @@ $iterator = Finder::create()
     ->exclude('build')
     ->exclude('vendor')
     ->exclude('tests')
-    ->exclude('framework')
+    ->exclude('sapphire')
+    ->exclude('heystack')
+    ->exclude('ecommerce-core')
     ->in(__DIR__);
 
 return new Sami($iterator, array(

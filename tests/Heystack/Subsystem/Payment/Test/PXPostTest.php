@@ -15,7 +15,24 @@ class PXPostTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->paymentService = new Service(new EventDispatcher(), new TestTransaction());
+        $eventDispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcher');
+
+        $currencyService = $this->getMock('Heystack\Subsystem\Ecommerce\Currency\Interfaces\CurrencyServiceInterface');
+        $currencyService->expects($this->any())
+            ->method('getActiveCurrencyCode')
+            ->will($this->returnValue('NZD'));
+
+        $transaction = $this->getMock('Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface');
+        $transaction->expects($this->any())
+            ->method('getTotal')
+            ->will($this->returnValue(10));
+
+        $this->paymentService = new Service(
+            $eventDispatcher,
+            $transaction,
+            $currencyService
+        );
+
         $this->paymentService->setTestingMode(true);
     }
 
@@ -28,7 +45,9 @@ class PXPostTest extends \PHPUnit_Framework_TestCase
     {
 
     }
-
+    /**
+     * @large
+     */
     public function testPurchase()
     {
 
@@ -47,6 +66,4 @@ class PXPostTest extends \PHPUnit_Framework_TestCase
         $this->paymentService->processPurchase();
 
     }
-
-
 }

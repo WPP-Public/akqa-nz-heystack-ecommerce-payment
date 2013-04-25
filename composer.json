@@ -1,20 +1,14 @@
 {
     "name": "heystack/ecommerce-payment",
     "type": "silverstripe-module",
-    "repositories": [
-        {
-            "type": "composer",
-            "url": "http://packages.heyday.net.nz/"
-        }
-    ],
     "require": {        
         "php": ">=5.4.0",
         "composer/installers": "~1.0.0"
     },
     "require-dev": {
         "silverstripe/framework": "~2.4",
-        "heystack/heystack": "1.1.*@dev",
-        "heystack/ecommerce-core": "1.1.*@dev",
+        "heystack/heystack": "self.version",
+        "heystack/ecommerce-core": "self.version",
         "symfony/class-loader": "~2.2",
         "phpmd/phpmd": "1.4.*",
         "pdepend/pdepend": "1.1.*",

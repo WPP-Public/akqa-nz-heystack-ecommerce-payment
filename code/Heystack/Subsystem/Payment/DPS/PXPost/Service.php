@@ -10,19 +10,13 @@
  */
 namespace Heystack\Subsystem\Payment\DPS\PXPost;
 
-use Heystack\Subsystem\Payment\DPS\Service as BaseService;
-
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-
-use Heystack\Subsystem\Payment\Events;
-use Heystack\Subsystem\Payment\Events\PaymentEvent;
-
-use Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface;
-use Heystack\Subsystem\Ecommerce\Transaction\Events as TransactionEvents;
-
 use Heystack\Subsystem\Core\Exception\ConfigurationException;
-
-use Heystack\Subsystem\Ecommerce\Currency\CurrencyService;
+use Heystack\Subsystem\Ecommerce\Currency\Interfaces\CurrencyServiceInterface;
+use Heystack\Subsystem\Ecommerce\Transaction\Events as TransactionEvents;
+use Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface;
+use Heystack\Subsystem\Payment\DPS\Service as BaseService;
+use Heystack\Subsystem\Payment\Events;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Contains the main logic for creating Payment objects as well as interfacing
@@ -130,7 +124,7 @@ class Service extends BaseService
     public function __construct(
         EventDispatcherInterface $eventService,
         TransactionInterface $transaction,
-        CurrencyService $currencyService
+        CurrencyServiceInterface $currencyService
     ) {
         $this->eventService = $eventService;
         $this->transaction = $transaction;
