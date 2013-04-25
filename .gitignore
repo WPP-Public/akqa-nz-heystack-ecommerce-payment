@@ -1,5 +1,5 @@
-build
-sapphire
-vendor
-.idea
-cache.properties
+/build
+/sapphire
+/vendor
+/.idea
+/cache.properties
