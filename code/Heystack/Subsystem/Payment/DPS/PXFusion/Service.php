@@ -466,24 +466,12 @@ class Service extends BaseService
     public function getAmount()
     {
         if ($this->getTxnType() == self::TXN_TYPE_AUTH) {
-            
-            if (in_array($this->currencyService->getActiveCurrencyCode(), $this->currenciesWithoutCents)) {
-                
-                return $this->authAmount;
-                
-            }
-            
-            return number_format($this->authAmount, 2, '.', '');
-            
-        }
-        
-        if (in_array($this->currencyService->getActiveCurrencyCode(), $this->currenciesWithoutCents)) {
-                
-            return $this->transaction->getTotal();
 
+            return $this->formatAmount($this->authAmount);
+            
         }
-        
-        return number_format($this->transaction->getTotal(), 2, '.', '');
+
+        return $this->formatAmount($this->transaction->getTotal());
     }
 
     /**

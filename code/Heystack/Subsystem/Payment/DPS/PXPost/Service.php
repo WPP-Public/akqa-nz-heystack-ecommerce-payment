@@ -471,12 +471,7 @@ class Service extends BaseService
      */
     public function getAmount()
     {
-        if (in_array($this->currencyService->getActiveCurrencyCode(), $this->currenciesWithoutCents)) {
-
-            return $this->transaction->getTotal();
-
-        }
-        return number_format($this->getTransaction()->getTotal(), 2, '.', '');
+        return $this->formatAmount($this->getTransaction()->getTotal());
     }
 
 }
