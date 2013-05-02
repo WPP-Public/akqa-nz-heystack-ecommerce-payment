@@ -471,7 +471,7 @@ class Service extends BaseService
      */
     public function getAmount()
     {
-        return $this->formatAmount($this->getTransaction()->getTotal());
+        return $this->formatAmount($this->transaction->getTotal());
     }
 
 }
