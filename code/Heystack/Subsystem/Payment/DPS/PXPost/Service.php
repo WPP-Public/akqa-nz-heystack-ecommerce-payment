@@ -476,7 +476,7 @@ class Service extends BaseService
             return $this->transaction->getTotal();
 
         }
-        return number_format($this->getTransaction()->getTotal(), 2);
+        return number_format($this->getTransaction()->getTotal(), 2, '.', '');
     }
 
 }

@@ -473,7 +473,7 @@ class Service extends BaseService
                 
             }
             
-            return number_format($this->authAmount, 2);
+            return number_format($this->authAmount, 2, '.', '');
             
         }
         
@@ -483,7 +483,7 @@ class Service extends BaseService
 
         }
         
-        return number_format($this->transaction->getTotal(), 2);
+        return number_format($this->transaction->getTotal(), 2, '.', '');
     }
 
     /**
