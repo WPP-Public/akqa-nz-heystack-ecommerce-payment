@@ -1,5 +1,9 @@
 {
-    "hash": "66fde2af0870f2c278586e3c2938a1e1",
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+    ],
+    "hash": "0b0b98ef7b65876d7e477b492318002a",
     "packages": [
         {
             "name": "composer/installers",
@@ -119,7 +123,7 @@
             "source": {
                 "type": "git",
                 "url": "ssh://sls@slsapp.com:110/heyday/ecommerce-core.git",
-                "reference": "575c6000fdd143161b7acc5ad28b1d38a8406d50"
+                "reference": "8f6f0dcc4c332ff4b8eee469b2c65e05c432456e"
             },
             "require": {
                 "composer/installers": "~1.0",
@@ -152,7 +156,7 @@
                     "code/SilverStripe"
                 ]
             },
-            "time": "2013-04-25 01:57:36"
+            "time": "2013-04-25 05:03:42"
         },
         {
             "name": "heystack/heystack",
@@ -160,7 +164,7 @@
             "source": {
                 "type": "git",
                 "url": "ssh://sls@slsapp.com:110/heyday/heystack.git",
-                "reference": "76d3c1fd3631bdb1bf62bb90e108508e3daf2e15"
+                "reference": "fb0c789a17dd0b0dc58c54c2e12242baf1683f75"
             },
             "require": {
                 "camspiers/shared-dependency-injection": "~0.4",
@@ -197,7 +201,7 @@
                     "code/SilverStripe"
                 ]
             },
-            "time": "2013-04-25 01:40:09"
+            "time": "2013-04-29 02:50:49"
         },
         {
             "name": "monolog/monolog",

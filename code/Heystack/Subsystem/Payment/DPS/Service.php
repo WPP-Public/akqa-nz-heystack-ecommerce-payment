@@ -82,4 +82,20 @@ abstract class Service
 
     }
 
+   /**
+    * Returns the formatted payment amount
+    * @return string Amount
+    */
+    protected function formatAmount($amount)
+    {
+        $currencyCode = $this->currencyService->getActiveCurrencyCode();
+
+        if (!in_array($currencyCode, $this->currenciesWithoutCents)) {
+            return number_format($amount, 2, '.', '');
+        }
+
+        return $amount;
+
+    }
+
 }

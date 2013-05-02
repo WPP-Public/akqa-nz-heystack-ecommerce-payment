@@ -469,7 +469,7 @@ class Service extends BaseService
      */
     public function getAmount()
     {
-        return number_format($this->getTransaction()->getTotal(), 2);
+         return $this->formatAmount($this->transaction->getTotal());
     }
 
 }

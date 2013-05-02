@@ -1,6 +1,12 @@
 {
     "name": "heystack/ecommerce-payment",
     "type": "silverstripe-module",
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "http://packages:satis@packages.heyday.net.nz/"
+        }
+    ],
     "require": {        
         "php": ">=5.4.0",
         "composer/installers": "~1.0.0"

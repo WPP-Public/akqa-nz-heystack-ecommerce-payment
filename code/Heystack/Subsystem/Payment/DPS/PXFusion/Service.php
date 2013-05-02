@@ -504,28 +504,18 @@ class Service extends BaseService
     }
 
     /**
-     *
-     * @return string
+     * Get the amount for the transaction
+     * @return string Amount
      */
-    public function getAmount()
+   public function getAmount()
     {
         if ($this->getTxnType() == self::TXN_TYPE_AUTH) {
 
-            if (in_array($this->currencyService->getActiveCurrencyCode(), $this->currenciesWithoutCents)) {
-                return $this->authAmount;
-
-            }
-
-            return number_format($this->authAmount, 2);
-
+            return $this->formatAmount($this->authAmount);
+            
         }
 
-        if (in_array($this->currencyService->getActiveCurrencyCode(), $this->currenciesWithoutCents)) {
-            return $this->transaction->getTotal();
-
-        }
-
-        return number_format($this->transaction->getTotal(), 2);
+        return $this->formatAmount($this->transaction->getTotal());
     }
 
     /**
