@@ -24,7 +24,7 @@ services:
 
   pxfusion_input_processor:
     class: %pxfusion_input_processor.class%
-    arguments: [ @pxfusion_service, @storage, @state, @transaction ]
+    arguments: [ @pxfusion_service, @storage, @state, @transaction, @dataobject_handler ]
     tags:
       - { name: input_processor_handler.processor }
 
