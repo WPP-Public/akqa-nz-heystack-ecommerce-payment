@@ -311,6 +311,12 @@ class Service extends BaseService
         unset($result['Transaction']);
         unset($result['@attributes']);
 
+        foreach ($result as $index => $value) {
+            if (is_array($value) && 0 === count($value)) {
+                $result[$index] = null;
+            }
+        }
+
         return $result;
     }
 
@@ -398,10 +404,14 @@ class Service extends BaseService
 
         try {
             $response = new \SimpleXMLElement($resultXml);
-            $result = $this->prepareResponse(array_merge(
-                json_decode(json_encode((array) $response), true),
-                json_decode(json_encode((array) $response->Transaction), true)
-            ));
+            $result = $this->prepareResponse(
+                array_merge(
+                    json_decode(json_encode((array) $response), true),
+                    json_decode(json_encode((array) $response->Transaction), true)
+                )
+            );
+
+            error_log(print_r($result, true));
         } catch (\Exception $e) {
             $result = array();
         }

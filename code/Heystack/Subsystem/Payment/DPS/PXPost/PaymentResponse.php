@@ -27,7 +27,6 @@ use Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface;
  */
 class PaymentResponse implements StorableInterface, ViewableDataInterface
 {
-
     use ParentReferenceTrait;
 
     /**
