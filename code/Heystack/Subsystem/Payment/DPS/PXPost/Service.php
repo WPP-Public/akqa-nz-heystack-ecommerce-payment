@@ -411,7 +411,6 @@ class Service extends BaseService
                 )
             );
 
-            error_log(print_r($result, true));
         } catch (\Exception $e) {
             $result = array();
         }
