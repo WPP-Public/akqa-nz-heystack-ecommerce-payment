@@ -321,7 +321,7 @@ class Service extends BaseService
      */
     public function getReturnUrl()
     {
-        $returnUrl = \EcommerceInputController::$url_segment . '/process/' . InputProcessor::IDENTIFIER;
+        $returnUrl = 'ecommerce/input/process/' . InputProcessor::IDENTIFIER;
         switch ($this->config[self::CONFIG_TYPE]) {
             case self::TYPE_AUTH_COMPLETE:
                 $returnUrl .= '/check/auth';
@@ -331,7 +331,7 @@ class Service extends BaseService
                 break;
         }
 
-        return \Director::absoluteURL($returnUrl);
+        return \Director::protocolAndHost() . '/' . $returnUrl;
     }
 
     /**

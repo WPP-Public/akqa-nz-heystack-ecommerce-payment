@@ -64,13 +64,13 @@ class OutputProcessor implements ProcessorInterface
 
             if (isset($result['Complete']) && $result['Complete']) {
 
-                \Director::redirect($this->completeURL);
+                $controller->redirect($this->completeURL);
 
                 return;
 
             } else {
 
-                \Director::redirect($this->confirmationURL);
+                $controller->redirect($this->confirmationURL);
 
                 return;
             }
@@ -79,11 +79,11 @@ class OutputProcessor implements ProcessorInterface
 
         if (isset($result['CheckFailure']) && $result['CheckFailure']) {
 
-            \Director::redirectBack();
+            $controller->redirectBack();
 
         } else {
 
-            \Director::redirect($this->failureURL);
+            $controller->redirect($this->failureURL);
 
         }
 

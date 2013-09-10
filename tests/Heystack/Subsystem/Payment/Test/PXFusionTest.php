@@ -60,7 +60,7 @@ class PXFusionTest extends \PHPUnit_Framework_TestCase
             'Password' => 'Test'
         ));
 
-        $this->assertEquals(\Director::absoluteURL(\EcommerceInputController::$url_segment . '/process/' . InputProcessor::IDENTIFIER . '/check/auth'), $this->paymentService->getReturnUrl());
+        $this->assertEquals('http://localhost/ecommerce/input/process/' . InputProcessor::IDENTIFIER . '/check/auth', $this->paymentService->getReturnUrl());
 
         $this->paymentService->setConfig(array(
             'Type' => 'Purchase',
@@ -68,7 +68,7 @@ class PXFusionTest extends \PHPUnit_Framework_TestCase
             'Password' => 'Test'
         ));
 
-        $this->assertEquals(\Director::absoluteURL(\EcommerceInputController::$url_segment . '/process/' . InputProcessor::IDENTIFIER . '/check/purchase'), $this->paymentService->getReturnUrl());
+        $this->assertEquals('http://localhost/ecommerce/input/process/' . InputProcessor::IDENTIFIER . '/check/purchase', $this->paymentService->getReturnUrl());
 
     }
 
