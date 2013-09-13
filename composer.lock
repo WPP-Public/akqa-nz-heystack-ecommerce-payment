@@ -177,8 +177,8 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "ssh://sls@slsapp.com:110/heyday/ecommerce-core.git",
-                "reference": "ee643905451b09334f4c2bbfc7c614a64a9b77c2"
+                "url": "ssh://git@git.heyday.net.nz:1234/heystack/ecommerce-core.git",
+                "reference": "6da129d1af9dd8dadafcbf058ca5300f7730d12e"
             },
             "require": {
                 "composer/installers": "~1.0",
@@ -194,11 +194,6 @@
             },
             "type": "silverstripe-module",
             "extra": {
-                "installer-paths": {
-                    "sapphire": [
-                        "silverstripe/framework"
-                    ]
-                },
                 "branch-alias": {
                     "dev-master": "3.0.x-dev",
                     "dev-1.0": "1.0.x-dev"
@@ -212,15 +207,15 @@
                     "code/SilverStripe"
                 ]
             },
-            "time": "2013-09-10 03:33:04"
+            "time": "2013-09-11 21:51:21"
         },
         {
             "name": "heystack/heystack",
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "ssh://sls@slsapp.com:110/heyday/heystack.git",
-                "reference": "dc8bd3585ee91337cd07bf5d6a568cf5e2a14360"
+                "url": "ssh://git@git.heyday.net.nz:1234/heystack/heystack.git",
+                "reference": "09f53a542c15a616ecb9ec0b0b54f5a452e52844"
             },
             "require": {
                 "camspiers/shared-dependency-injection": "~0.4",
@@ -255,7 +250,7 @@
                     "code/Heystack/Subsystem/Core/Util/functions.php"
                 ]
             },
-            "time": "2013-09-10 01:50:31"
+            "time": "2013-09-11 06:13:21"
         },
         {
             "name": "monolog/monolog",
