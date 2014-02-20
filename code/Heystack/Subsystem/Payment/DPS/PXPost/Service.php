@@ -142,10 +142,10 @@ class Service extends BaseService
      */
     protected function getAllowedConfig()
     {
-        return array(
+        return [
             self::CONFIG_USERNAME,
             self::CONFIG_PASSWORD
-        );
+        ];
     }
 
     /**
@@ -154,20 +154,20 @@ class Service extends BaseService
      */
     protected function getRequiredConfig()
     {
-        return array(
+        return [
             self::CONFIG_USERNAME,
             self::CONFIG_PASSWORD
-        );
+        ];
     }
 
     protected function getAllowedUserConfig()
     {
-        return array(
+        return [
             self::CONFIG_USER_DATA_CARD_NUMBER,
             self::CONFIG_USER_DATA_CARD_HOLDER_NAME,
             self::CONFIG_USER_DATA_CARD_DATE_EXPIRY,
             self::CONFIG_USER_DATA_CARD_CVC2
-        );
+        ];
     }
 
     /**
@@ -175,17 +175,17 @@ class Service extends BaseService
      */
     protected function getRequiredUserConfig()
     {
-        if (in_array($this->getTxnType(), array(
+        if (in_array($this->getTxnType(), [
             self::TXN_TYPE_AUTH,
             self::TXN_TYPE_PURCHASE,
             self::TXN_TYPE_VALIDATE
-        ))) {
-            return array(
+        ])) {
+            return [
                 self::CONFIG_USER_DATA_CARD_NUMBER
-            );
+            ];
         }
 
-        return array();
+        return [];
     }
 
     /**
@@ -194,7 +194,7 @@ class Service extends BaseService
      */
     public function getAllowedAdditionalConfig()
     {
-        return array(
+        return [
             'BillingId',
             'DpsBillingId',
             'DpsTxnRef',
@@ -211,21 +211,21 @@ class Service extends BaseService
             'DateStart',
             'IssueNumber',
             'Track2'
-        );
+        ];
     }
 
     public function getRequiredAdditionalConfig()
     {
-        if (in_array($this->getTxnType(), array(
+        if (in_array($this->getTxnType(), [
             self::TXN_TYPE_COMPLETE,
             self::TXN_TYPE_REFUND
-        ))) {
-            return array(
+        ])) {
+            return [
                 'DpsTxnRef'
-            );
+            ];
         }
 
-        return array();
+        return [];
     }
 
     /**
@@ -233,7 +233,7 @@ class Service extends BaseService
      */
     protected function validateConfig(array $config)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -241,7 +241,7 @@ class Service extends BaseService
      */
     protected function validateAdditionalConfig(array $config)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -249,7 +249,7 @@ class Service extends BaseService
      */
     protected function validateUserConfig(array $config)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -262,27 +262,27 @@ class Service extends BaseService
         $txnType = $this->getTxnType();
 
         $config = array_merge(
-            array(
+            [
                 'PostUsername' => $this->config[self::CONFIG_USERNAME],
                 'PostPassword' => $this->config[self::CONFIG_PASSWORD],
                 'TxnType' => $txnType,
                 'Amount' => $this->getAmount()
-            ),
+            ],
             $this->getAdditionalConfig()
         );
 
-        if (in_array($txnType, array(
+        if (in_array($txnType, [
             self::TXN_TYPE_AUTH,
             self::TXN_TYPE_PURCHASE,
             self::TXN_TYPE_VALIDATE
-        ))) {
+        ])) {
 
             $config = array_merge(
                 $config,
                 $this->getUserConfig(),
-                array(
+                [
                     'InputCurrency' => $this->getCurrencyCode()
-                )
+                ]
             );
 
         }
@@ -412,7 +412,7 @@ class Service extends BaseService
             );
 
         } catch (\Exception $e) {
-            $result = array();
+            $result = [];
         }
 
         return $result;
@@ -449,13 +449,13 @@ class Service extends BaseService
      */
     public function setTxnType($txnType)
     {
-        if (!in_array($txnType, array(
+        if (!in_array($txnType, [
             self::TXN_TYPE_PURCHASE,
             self::TXN_TYPE_AUTH,
             self::TXN_TYPE_COMPLETE,
             self::TXN_TYPE_REFUND,
             self::TXN_TYPE_VALIDATE
-        ))) {
+        ])) {
 
             throw new ConfigurationException('PXPost only supports Purchase, Auth, Complete and Refund txn types');
 

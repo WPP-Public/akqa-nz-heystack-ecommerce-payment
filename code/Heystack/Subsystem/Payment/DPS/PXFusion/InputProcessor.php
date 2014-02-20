@@ -147,19 +147,19 @@ class InputProcessor implements ProcessorInterface
 
                         $payment->write();
 
-                        return array(
+                        return [
                             'Success' => false
-                        );
+                        ];
 
                     }
 
                 }
 
-                return array(
+                return [
                     'Success' => true,
                     'Complete' => true,
                     'Data' => $paymentResponse
-                );
+                ];
 
             }
 
@@ -172,24 +172,24 @@ class InputProcessor implements ProcessorInterface
             $this->storage->process($paymentResponse);
 
             if ($paymentResponse->StatusCode === 0) {
-                return array(
+                return [
                     'Success' => true,
                     'Data' => $paymentResponse
-                );
+                ];
 
             } else {
-                return array(
+                return [
                     'Success' => false,
                     'CheckFailure' => true
-                );
+                ];
 
             }
 
         }
 
-        return array(
+        return [
             'Success' => false
-        );
+        ];
     }
 
 }

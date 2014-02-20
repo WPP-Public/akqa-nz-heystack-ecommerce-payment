@@ -20,9 +20,9 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
     const IDENTIFIER = 'pxfusionpayment';
     const SCHEMA_NAME = 'PXFusionPayment';
 
-    protected $data = array();
+    protected $data = [];
 
-    protected $mapping = array(
+    protected $mapping = [
         'merchantReference' => 'MerchantReference',
         'amount' => 'Amount',
         'authCode' => 'AuthCode',
@@ -50,7 +50,7 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
         'txnMac' => 'TxnMac',
         'txnRef' => 'TxnRef',
         'txnType' => 'TransactionType'
-    );
+    ];
 
     public function __construct($data)
     {
@@ -78,17 +78,17 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
 
     public function getStorableData()
     {
-        return array(
+        return [
             'id' => self::SCHEMA_NAME,
             'flat' => $this->data
-        );
+        ];
     }
 
     public function getStorableBackendIdentifiers()
     {
-        return array(
+        return [
             Backend::IDENTIFIER
-        );
+        ];
     }
 
     public function getSchemaName()
@@ -109,7 +109,7 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
      */
     public function getCastings()
     {
-        return array(
+        return [
             'MerchantReference' => 'Varchar',
             'Amount' => 'Decimal',
             'AuthCode' => 'Varchar',
@@ -137,7 +137,7 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
             'TxnMac' => 'Varchar',
             'TxnRef' => 'Varchar',
             'TransactionType' => 'Enum'
-        );
+        ];
     }
 
 }

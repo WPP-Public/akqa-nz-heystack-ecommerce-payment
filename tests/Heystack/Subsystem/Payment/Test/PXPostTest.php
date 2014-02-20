@@ -49,17 +49,17 @@ class PXPostTest extends \PHPUnit_Framework_TestCase
     public function testPurchase()
     {
 
-        $this->paymentService->setConfig(array(
+        $this->paymentService->setConfig([
             Service::CONFIG_USERNAME => 'HeydayDev',
             Service::CONFIG_PASSWORD => 'post1234'
-        ));
+        ]);
 
-        $this->paymentService->setUserConfig(array(
+        $this->paymentService->setUserConfig([
             Service::CONFIG_USER_DATA_CARD_NUMBER => '4111111111111111',
             Service::CONFIG_USER_DATA_CARD_HOLDER_NAME => 'Test Holder',
             Service::CONFIG_USER_DATA_CARD_DATE_EXPIRY => date('my'),
             Service::CONFIG_USER_DATA_CARD_CVC2 => '1234',
-        ));
+        ]);
 
         $this->paymentService->processPurchase();
 

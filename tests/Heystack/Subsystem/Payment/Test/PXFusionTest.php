@@ -42,31 +42,31 @@ class PXFusionTest extends \PHPUnit_Framework_TestCase
 
     public function testConfig()
     {
-        $this->assertEquals(3, count($this->paymentService->setConfig(array())));
-        $this->assertTrue($this->paymentService->setConfig(array(
+        $this->assertEquals(3, count($this->paymentService->setConfig([])));
+        $this->assertTrue($this->paymentService->setConfig([
             'Type' => 'Auth-Complete',
             'Username' => 'Test',
             'Password' => 'Test'
-        )));
+        ]));
 
     }
 
     public function testReturnUrl()
     {
 
-        $this->paymentService->setConfig(array(
+        $this->paymentService->setConfig([
             'Type' => 'Auth-Complete',
             'Username' => 'Test',
             'Password' => 'Test'
-        ));
+        ]);
 
         $this->assertEquals('http://localhost/ecommerce/input/process/' . InputProcessor::IDENTIFIER . '/check/auth', $this->paymentService->getReturnUrl());
 
-        $this->paymentService->setConfig(array(
+        $this->paymentService->setConfig([
             'Type' => 'Purchase',
             'Username' => 'Test',
             'Password' => 'Test'
-        ));
+        ]);
 
         $this->assertEquals('http://localhost/ecommerce/input/process/' . InputProcessor::IDENTIFIER . '/check/purchase', $this->paymentService->getReturnUrl());
 
@@ -75,11 +75,11 @@ class PXFusionTest extends \PHPUnit_Framework_TestCase
     public function testSetGetType()
     {
 
-        $this->paymentService->setConfig(array(
+        $this->paymentService->setConfig([
             'Type' => Service::TYPE_PURCHASE,
             'Username' => 'Test',
             'Password' => 'Test'
-        ));
+        ]);
 
         $this->assertEquals('Purchase', $this->paymentService->getType());
 
@@ -92,11 +92,11 @@ class PXFusionTest extends \PHPUnit_Framework_TestCase
     public function testTxnType()
     {
 
-        $this->paymentService->setConfig(array(
+        $this->paymentService->setConfig([
             'Type' => Service::TYPE_PURCHASE,
             'Username' => 'Test',
             'Password' => 'Test'
-        ));
+        ]);
 
         $this->assertEquals('Purchase', $this->paymentService->getTxnType());
 
@@ -114,11 +114,11 @@ class PXFusionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertNotNull($test);
 
-        $this->paymentService->setConfig(array(
+        $this->paymentService->setConfig([
             'Type' => Service::TYPE_AUTH_COMPLETE,
             'Username' => 'Test',
             'Password' => 'Test'
-        ));
+        ]);
 
         $this->assertEquals('Auth', $this->paymentService->getTxnType());
 
@@ -133,11 +133,11 @@ class PXFusionTest extends \PHPUnit_Framework_TestCase
     public function testGetTransactionIdPurchase()
     {
 
-        $this->paymentService->setConfig(array(
+        $this->paymentService->setConfig([
             'Type' => Service::TYPE_PURCHASE,
             'Username' => 'HeydayPXFDev',
             'Password' => 'test1234'
-        ));
+        ]);
 
         $this->assertInternalType('string', $this->paymentService->getTransactionId());
 
@@ -145,11 +145,11 @@ class PXFusionTest extends \PHPUnit_Framework_TestCase
 
     public function testGetTransactionIdAuth()
     {
-        $this->paymentService->setConfig(array(
+        $this->paymentService->setConfig([
             'Type' => Service::TYPE_AUTH_COMPLETE,
             'Username' => 'HeydayPXFDev',
             'Password' => 'test1234'
-        ));
+        ]);
 
         $this->assertInternalType('string', $this->paymentService->getTransactionId());
     }
@@ -159,16 +159,16 @@ class PXFusionTest extends \PHPUnit_Framework_TestCase
     public function testGetTransaction()
     {
 
-        $this->paymentService->setConfig(array(
+        $this->paymentService->setConfig([
             'Type' => Service::TYPE_PURCHASE,
             'Username' => 'HeydayPXFDev',
             'Password' => 'test1234'
-        ));
+        ]);
 
         $id = $this->paymentService->getTransactionId();
 
-        $context = stream_context_create(array(
-            'http' => array(
+        $context = stream_context_create([
+            'http' => [
                 'method' => 'POST',
                 'header' => "Content-Type: multipart/form-data; boundary=----TestPXFusionBoundry",
                 'content' => <<<REQUEST
@@ -199,8 +199,8 @@ Joe Bloggs
 ------TestPXFusionBoundry--
 REQUEST
 
-            )
-        ));
+            ]
+        ]);
 
         $fp = @fopen('https://sec.paymentexpress.com/pxmi3/pxfusionauth', 'rb', false, $context);
 
@@ -212,18 +212,18 @@ REQUEST
 
     public function testSetAdditionalConfig()
     {
-        $this->assertCount(1, $this->paymentService->setAdditionalConfig(array(
+        $this->assertCount(1, $this->paymentService->setAdditionalConfig([
             'txnData1' => 'Hello',
             'badKey' => 'bad'
-        )));
+        ]));
 
-        $this->paymentService->setAdditionalConfig(array(
+        $this->paymentService->setAdditionalConfig([
             'txnData1' => 'Hello'
-        ));
+        ]);
 
-        $this->assertEquals(array(
+        $this->assertEquals([
             'txnData1' => 'Hello'
-        ), $this->paymentService->getAdditionalConfig());
+        ], $this->paymentService->getAdditionalConfig());
     }
 
     public function testSetGetAuthAmount()
@@ -237,19 +237,19 @@ REQUEST
 
     public function testGetAmount()
     {
-        $this->paymentService->setConfig(array(
+        $this->paymentService->setConfig([
             'Type' => Service::TYPE_PURCHASE,
             'Username' => 'HeydayPXFDev',
             'Password' => 'test1234',
-        ));
+        ]);
 
         $this->assertEquals('10.00', $this->paymentService->getAmount());
 
-        $this->paymentService->setConfig(array(
+        $this->paymentService->setConfig([
             'Type' => Service::TYPE_AUTH_COMPLETE,
             'Username' => 'HeydayPXFDev',
             'Password' => 'test1234'
-        ));
+        ]);
 
         $this->assertEquals('1.00', $this->paymentService->getAmount());
     }

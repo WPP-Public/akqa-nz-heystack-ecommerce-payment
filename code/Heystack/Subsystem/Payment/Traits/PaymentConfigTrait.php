@@ -27,19 +27,19 @@ trait PaymentConfigTrait
      * Stores config for payment services
      * @var array
      */
-    protected $config = array();
+    protected $config = [];
 
     /**
      * Any additional information to be passed to dps
      * @var array
      */
-    protected $additionalConfig = array();
+    protected $additionalConfig = [];
 
     /**
      * Holds data submitted by the user
      * @var array
      */
-    protected $userConfig = array();
+    protected $userConfig = [];
 
     /**
      * Returns an array of required parameters used in setConfig
@@ -107,7 +107,7 @@ trait PaymentConfigTrait
             $config,
             $this->getRequiredConfig(),
             $this->getAllowedConfig(),
-            array($this, 'validateConfig'),
+            [$this, 'validateConfig'],
             $exceptionOnError
         );
     }
@@ -118,7 +118,7 @@ trait PaymentConfigTrait
             $config,
             $this->getRequiredAdditionalConfig(),
             $this->getAllowedAdditionalConfig(),
-            array($this, 'validateAdditionalConfig'),
+            [$this, 'validateAdditionalConfig'],
             $exceptionOnError
         );
     }
@@ -129,7 +129,7 @@ trait PaymentConfigTrait
             $config,
             $this->getRequiredUserConfig(),
             $this->getAllowedUserConfig(),
-            array($this, 'validateUserConfig'),
+            [$this, 'validateUserConfig'],
             $exceptionOnError
         );
     }
@@ -141,7 +141,7 @@ trait PaymentConfigTrait
         callable $extraValidation = null,
         $exceptionOnError = false
     ) {
-        $errors = array();
+        $errors = [];
 
         foreach (array_diff(array_keys($config), $allowed) as $notAllowed) {
             $errors[] = $this->errorNotAllowed($notAllowed);
@@ -232,23 +232,23 @@ trait PaymentConfigTrait
 
     public function setConfigByKey($key, $value, $exceptionOnError = false)
     {
-        return $this->setConfig(array_merge($this->config, array(
+        return $this->setConfig(array_merge($this->config, [
             $key => $value
-        )), $exceptionOnError);
+        ]), $exceptionOnError);
     }
 
     public function setAdditionalConfigByKey($key, $value, $exceptionOnError = false)
     {
-        return $this->setAdditionalConfig(array_merge($this->additionalConfig, array(
+        return $this->setAdditionalConfig(array_merge($this->additionalConfig, [
             $key => $value
-        )), $exceptionOnError);
+        ]), $exceptionOnError);
     }
 
     public function setUserConfigByKey($key, $value, $exceptionOnError = false)
     {
-        return $this->setUserConfig(array_merge($this->userConfig, array(
+        return $this->setUserConfig(array_merge($this->userConfig, [
             $key => $value
-        )), $exceptionOnError);
+        ]), $exceptionOnError);
     }
 
     /**

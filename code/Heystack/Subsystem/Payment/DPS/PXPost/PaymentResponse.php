@@ -42,12 +42,12 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
     /**
      * @var array
      */
-    protected $data = array();
+    protected $data = [];
 
     /**
      * @var array
      */
-    protected $allowedFields = array(
+    protected $allowedFields = [
         'ReCo',
         'ResponseText',
         'HelpText',
@@ -113,7 +113,7 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
         'BillingId',
         'TransactionId',
         'PxHostId'
-    );
+    ];
 
     /**
      * @param array $data
@@ -189,17 +189,17 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
      */
     public function getStorableData()
     {
-        return array(
+        return [
             'id'      => $this->getSchemaName(),
             'flat'    => array_merge(
                 $this->data,
-                array(
+                [
                     'ParentID' => $this->parentReference
-                )
+                ]
             ),
             'parent'  => true,
             'related' => false
-        );
+        ];
     }
 
     /**
@@ -207,9 +207,9 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
      */
     public function getStorableBackendIdentifiers()
     {
-        return array(
+        return [
             Backend::IDENTIFIER
-        );
+        ];
     }
 
     /**
@@ -225,7 +225,7 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
      */
     public function getCastings()
     {
-        return array(
+        return [
             'ReCo'                          => 'Varchar',
             'ResponseText'                  => 'Varchar',
             'HelpText'                      => 'Varchar',
@@ -284,6 +284,6 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
             'BillingId'                     => 'Varchar',
             'TransactionId'                 => 'Varchar',
             'PxHostId'                      => 'Varchar'
-        );
+        ];
     }
 }

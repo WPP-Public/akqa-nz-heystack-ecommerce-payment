@@ -100,7 +100,7 @@ class Service extends BaseService
      * Holds the data array which contains all the data specific to the payment
      * @var array
      */
-    protected $data = array();
+    protected $data = [];
 
     /**
      * Hold the soap client used for connections with DPS
@@ -129,7 +129,7 @@ class Service extends BaseService
      * List of messages for each status code
      * @var array
      */
-    protected $statusMessages = array(
+    protected $statusMessages = [
         0 => 'Approved',
         1 => 'Declined',
         2 => 'Declined due to temporary error, please retry',
@@ -137,18 +137,18 @@ class Service extends BaseService
         4 => 'Transaction result cannot be determined at this time (re-run GetTransaction)',
         5 => 'Transaction did not proceed due to being attempted after timeout timestamp or having been cancelled by a CancelTransaction call',
         6 => 'No transaction found (SessionId query failed to return a transaction record - transaction not yet attempted)'
-    );
+    ];
 
     /**
      * @var array
      */
-    protected $errorStatuses = array(
+    protected $errorStatuses = [
         2,
         3,
         4,
         5,
         6
-    );
+    ];
 
     /**
      * Creates the Service object
@@ -185,11 +185,11 @@ class Service extends BaseService
      */
     protected function getRequiredConfig()
     {
-        return array(
+        return [
             self::CONFIG_TYPE,
             self::CONFIG_USERNAME,
             self::CONFIG_PASSWORD
-        );
+        ];
     }
 
     /**
@@ -198,11 +198,11 @@ class Service extends BaseService
      */
     protected function getAllowedConfig()
     {
-        return array(
+        return [
             self::CONFIG_TYPE,
             self::CONFIG_USERNAME,
             self::CONFIG_PASSWORD
-        );
+        ];
     }
 
     /**
@@ -211,7 +211,7 @@ class Service extends BaseService
      */
     public function getAllowedAdditionalConfig()
     {
-        return array(
+        return [
             'enableAddBillCard',
             'avsAction',
             'avsPostCode',
@@ -231,7 +231,7 @@ class Service extends BaseService
             'txnData1',
             'txnData2',
             'txnData3'
-        );
+        ];
     }
 
     /**
@@ -239,7 +239,7 @@ class Service extends BaseService
      */
     protected function getRequiredAdditionalConfig()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -248,14 +248,14 @@ class Service extends BaseService
      */
     protected function validateConfig(array $config)
     {
-        $errors = array();
+        $errors = [];
 
         if (isset($config[self::CONFIG_TYPE]) && !in_array(
             $config[self::CONFIG_TYPE],
-            array(
+            [
                 self::TYPE_AUTH_COMPLETE,
                 self::TYPE_PURCHASE
-            )
+            ]
         )
         ) {
             $errors[] = "{$config[self::CONFIG_TYPE]} is not a valid 'Type' for this payment handler";
@@ -270,7 +270,7 @@ class Service extends BaseService
      */
     protected function getRequiredUserConfig()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -279,7 +279,7 @@ class Service extends BaseService
      */
     protected function getAllowedUserConfig()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -287,7 +287,7 @@ class Service extends BaseService
      */
     protected function validateUserConfig(array $config)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -295,7 +295,7 @@ class Service extends BaseService
      */
     protected function validateAdditionalConfig(array $config)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -357,10 +357,10 @@ class Service extends BaseService
 
             $this->soapClient = new \SoapClient(
                 $this->getWsdl(),
-                array(
+                [
                     'soap_version' => SOAP_1_1,
                     'trace'        => $this->getTestingMode()
-                )
+                ]
             );
 
         }
@@ -376,19 +376,19 @@ class Service extends BaseService
     {
         $soapClient = $this->getSoapClient();
 
-        $configuration = array(
+        $configuration = [
             'username'   => $this->config[self::CONFIG_USERNAME],
             'password'   => $this->config[self::CONFIG_PASSWORD],
             'tranDetail' => array_merge(
-                array(
+                [
                     'txnType'   => $this->getTxnType(),
                     'currency'  => $this->getCurrencyCode(),
                     'amount'    => $this->getAmount(),
                     'returnUrl' => $this->getReturnUrl()
-                ),
+                ],
                 $this->getAdditionalConfig()
             )
-        );
+        ];
 
         $response = $soapClient->GetTransactionId($configuration);
 
@@ -411,11 +411,11 @@ class Service extends BaseService
     {
         $soapClient = $this->getSoapClient();
 
-        $configuration = array(
+        $configuration = [
             'username'      => $this->config[self::CONFIG_USERNAME],
             'password'      => $this->config[self::CONFIG_PASSWORD],
             'transactionId' => $transactionID
-        );
+        ];
 
         $response = $soapClient->GetTransaction($configuration);
 
@@ -482,10 +482,10 @@ class Service extends BaseService
             $this->getType() == self::TYPE_AUTH_COMPLETE
             && in_array(
                 $stage,
-                array(
+                [
                     self::STAGE_AUTH,
                     self::STAGE_COMPLETE
-                )
+                ]
             )
         ) {
             $this->stage = $stage;

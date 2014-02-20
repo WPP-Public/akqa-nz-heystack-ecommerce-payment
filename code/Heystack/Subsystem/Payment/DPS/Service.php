@@ -15,22 +15,22 @@ abstract class Service
      * List of currencies supported by DPS
      * @var array
      */
-    protected $supportedCurrencies = array(
+    protected $supportedCurrencies = [
         'CAD', 'CHF', 'DKK', 'EUR',
         'FRF', 'GBP', 'HKD', 'JPY',
         'NZD', 'SGD', 'THB', 'USD',
         'ZAR', 'AUD', 'WST', 'VUV',
         'TOP', 'SBD', 'PGK', 'MYR',
         'KWD', 'FJD'
-    );
+    ];
 
     /**
      * List of currencies which don't have cents
      * @var array
      */
-    protected $currenciesWithoutCents = array(
+    protected $currenciesWithoutCents = [
         'JPY'
-    );
+    ];
 
     /**
      * If testing last request data is needed form soap calls thi should be set to true
