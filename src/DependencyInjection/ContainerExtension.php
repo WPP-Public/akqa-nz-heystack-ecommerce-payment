@@ -8,7 +8,7 @@
 /**
  * Payment namespace
  */
-namespace Heystack\Subsystem\Payment\DependencyInjection;
+namespace Heystack\Payment\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

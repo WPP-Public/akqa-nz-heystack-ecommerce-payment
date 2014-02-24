@@ -8,13 +8,13 @@
 /**
  * DPS namespace
  */
-namespace Heystack\Subsystem\Payment\DPS\PXPost;
+namespace Heystack\Payment\DPS\PXPost;
 
-use Heystack\Subsystem\Core\Storage\Backends\SilverStripeOrm\Backend;
-use Heystack\Subsystem\Core\Storage\StorableInterface;
-use Heystack\Subsystem\Core\Storage\Traits\ParentReferenceTrait;
-use Heystack\Subsystem\Core\ViewableData\ViewableDataInterface;
-use Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface;
+use Heystack\Core\Storage\Backends\SilverStripeOrm\Backend;
+use Heystack\Core\Storage\StorableInterface;
+use Heystack\Core\Storage\Traits\ParentReferenceTrait;
+use Heystack\Core\ViewableData\ViewableDataInterface;
+use Heystack\Ecommerce\Transaction\Interfaces\TransactionInterface;
 
 /**
  * Payment stores information about payments made with the PXPost method

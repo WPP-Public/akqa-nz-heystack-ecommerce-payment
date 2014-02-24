@@ -8,7 +8,7 @@
 /**
  * Traits namespace
  */
-namespace Heystack\Subsystem\Payment\DPS\PXPost;
+namespace Heystack\Payment\DPS\PXPost;
 
 /**
  * Provides an implementation for the PXPostPaymentInterface for use on a Payment object

@@ -8,9 +8,9 @@
 /**
  * Interfaces namespace
  */
-namespace Heystack\Subsystem\Payment\DPS;
+namespace Heystack\Payment\DPS;
 
-use \Heystack\Subsystem\Payment\Interfaces\PaymentInterface as DefaultPaymentInterface;
+use \Heystack\Payment\Interfaces\PaymentInterface as DefaultPaymentInterface;
 
 /**
  * Defines methods that need to be implemented by DPSPayments

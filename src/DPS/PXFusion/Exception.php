@@ -8,11 +8,11 @@
 /**
  * DPS namespace
  */
-namespace Heystack\Subsystem\Payment\DPS\PXFusion;
+namespace Heystack\Payment\DPS\PXFusion;
 
 /**
  * Class Exception
- * @package Heystack\Subsystem\Payment\DPS\PXFusion
+ * @package Heystack\Payment\DPS\PXFusion
  */
 class Exception extends \Exception
 {

@@ -1,13 +1,13 @@
 <?php
 
-namespace Heystack\Subsystem\Payment\DPS\PXFusion;
+namespace Heystack\Payment\DPS\PXFusion;
 
-use Heystack\Subsystem\Core\Identifier\Identifier;
-use Heystack\Subsystem\Core\Output\ProcessorInterface;
+use Heystack\Core\Identifier\Identifier;
+use Heystack\Core\Output\ProcessorInterface;
 
 /**
  * Class OutputProcessor
- * @package Heystack\Subsystem\Payment\DPS\PXFusion
+ * @package Heystack\Payment\DPS\PXFusion
  */
 class OutputProcessor implements ProcessorInterface
 {
@@ -46,7 +46,7 @@ class OutputProcessor implements ProcessorInterface
         $this->failureURL = $failureURL;
     }
     /**
-     * @return \Heystack\Subsystem\Core\Identifier\Identifier
+     * @return \Heystack\Core\Identifier\Identifier
      */
     public function getIdentifier()
     {

@@ -8,10 +8,10 @@
 /**
  * Event namespace
  */
-namespace Heystack\Subsystem\Payment\Events;
+namespace Heystack\Payment\Events;
 
 use Symfony\Component\EventDispatcher\Event;
-use Heystack\Subsystem\Payment\Interfaces\PaymentInterface;
+use Heystack\Payment\Interfaces\PaymentInterface;
 
 /**
  * Payment Event

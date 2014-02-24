@@ -8,9 +8,9 @@
 /**
  * Interfaces namespace
  */
-namespace Heystack\Subsystem\Payment\DPS\PXPost;
+namespace Heystack\Payment\DPS\PXPost;
 
-use Heystack\Subsystem\Payment\DPS\PaymentInterface as DPSPaymentInterface;
+use Heystack\Payment\DPS\PaymentInterface as DPSPaymentInterface;
 
 /**
  * Defines methods that need to be implemented by PXPostPayments

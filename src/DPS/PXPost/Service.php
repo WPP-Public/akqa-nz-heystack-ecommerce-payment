@@ -8,12 +8,12 @@
 /**
  * DPS namespace
  */
-namespace Heystack\Subsystem\Payment\DPS\PXPost;
+namespace Heystack\Payment\DPS\PXPost;
 
-use Heystack\Subsystem\Core\Exception\ConfigurationException;
-use Heystack\Subsystem\Ecommerce\Currency\Interfaces\CurrencyServiceInterface;
-use Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface;
-use Heystack\Subsystem\Payment\DPS\Service as BaseService;
+use Heystack\Core\Exception\ConfigurationException;
+use Heystack\Ecommerce\Currency\Interfaces\CurrencyServiceInterface;
+use Heystack\Ecommerce\Transaction\Interfaces\TransactionInterface;
+use Heystack\Payment\DPS\Service as BaseService;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -93,13 +93,13 @@ class Service extends BaseService
 
     /**
      * Holds the currency service
-     * @var \Heystack\Subsystem\Ecommerce\Currency\CurrencyService
+     * @var \Heystack\Ecommerce\Currency\CurrencyService
      */
     protected $currencyService;
 
     /**
      * Holds the Transaction object
-     * @var \Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface
+     * @var \Heystack\Ecommerce\Transaction\Interfaces\TransactionInterface
      */
 
     /**
@@ -117,7 +117,7 @@ class Service extends BaseService
     /**
      * Creates the Service
      * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface               $eventService
-     * @param \Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface $transaction
+     * @param \Heystack\Ecommerce\Transaction\Interfaces\TransactionInterface $transaction
      */
     public function __construct(
         EventDispatcherInterface $eventService,
@@ -130,7 +130,7 @@ class Service extends BaseService
     }
 
     /**
-     * @return \Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface
+     * @return \Heystack\Ecommerce\Transaction\Interfaces\TransactionInterface
      */
     public function getTransaction()
     {
@@ -255,7 +255,7 @@ class Service extends BaseService
     /**
      * Returns a configuration array with different information based on what type of request is being made
      * @return array
-     * @throws \Heystack\Subsystem\Core\Exception\ConfigurationException
+     * @throws \Heystack\Core\Exception\ConfigurationException
      */
     protected function config()
     {
@@ -420,7 +420,7 @@ class Service extends BaseService
 
     /**
      * @param $gatewayUrl
-     * @throws \Heystack\Subsystem\Core\Exception\ConfigurationException
+     * @throws \Heystack\Core\Exception\ConfigurationException
      */
     public function setGatewayUrl($gatewayUrl)
     {
@@ -444,7 +444,7 @@ class Service extends BaseService
     /**
      *
      * @param  string                                                    $txnType
-     * @throws \Heystack\Subsystem\Core\Exception\ConfigurationException
+     * @throws \Heystack\Core\Exception\ConfigurationException
      * @return void
      */
     public function setTxnType($txnType)

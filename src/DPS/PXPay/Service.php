@@ -6,12 +6,12 @@
  * @package Ecommerce-Payment
  */
 /**
- * Heystack\Subsystem\Payment\DPS namespace
+ * Heystack\Payment\DPS namespace
  */
 
-namespace Heystack\Subsystem\Payment\DPS\PXPay;
+namespace Heystack\Payment\DPS\PXPay;
 
-use Heystack\Subsystem\Payment\Interfaces\PaymentServiceInterface;
+use Heystack\Payment\Interfaces\PaymentServiceInterface;
 
 /**
  * PXPayHandler allows for payments to be handled through the PXPay interface

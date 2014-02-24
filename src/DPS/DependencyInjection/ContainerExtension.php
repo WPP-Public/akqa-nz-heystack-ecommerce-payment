@@ -8,12 +8,12 @@
 /**
  * Payment namespace
  */
-namespace Heystack\Subsystem\Payment\DPS\DependencyInjection;
+namespace Heystack\Payment\DPS\DependencyInjection;
 
-use Heystack\Subsystem\Core\Exception\ConfigurationException;
-use Heystack\Subsystem\Payment\DPS\Config\ContainerConfig;
-use Heystack\Subsystem\Payment\DPS\PXFusion\Service as PXFusionService;
-use Heystack\Subsystem\Payment\DPS\Services;
+use Heystack\Core\Exception\ConfigurationException;
+use Heystack\Payment\DPS\Config\ContainerConfig;
+use Heystack\Payment\DPS\PXFusion\Service as PXFusionService;
+use Heystack\Payment\DPS\Services;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -61,7 +61,7 @@ class ContainerExtension extends Extension
     /**
      * @param  array                                                     $config
      * @param  \Symfony\Component\DependencyInjection\ContainerBuilder   $container
-     * @throws \Heystack\Subsystem\Core\Exception\ConfigurationException
+     * @throws \Heystack\Core\Exception\ConfigurationException
      */
     protected function processConfig(array $config, ContainerBuilder $container)
     {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Heystack\Subsystem\Payment\Test;
+namespace Heystack\Payment\Test;
 
-use Heystack\Subsystem\Payment\DPS\PXPost\Service;
+use Heystack\Payment\DPS\PXPost\Service;
 
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
@@ -15,12 +15,12 @@ class PXPostTest extends \PHPUnit_Framework_TestCase
     {
         $eventDispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcher');
 
-        $currencyService = $this->getMock('Heystack\Subsystem\Ecommerce\Currency\Interfaces\CurrencyServiceInterface');
+        $currencyService = $this->getMock('Heystack\Ecommerce\Currency\Interfaces\CurrencyServiceInterface');
         $currencyService->expects($this->any())
             ->method('getActiveCurrencyCode')
             ->will($this->returnValue('NZD'));
 
-        $transaction = $this->getMock('Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface');
+        $transaction = $this->getMock('Heystack\Ecommerce\Transaction\Interfaces\TransactionInterface');
         $transaction->expects($this->any())
             ->method('getTotal')
             ->will($this->returnValue(10));

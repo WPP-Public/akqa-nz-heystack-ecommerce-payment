@@ -8,7 +8,7 @@
 /**
  * Payment namespace
  */
-namespace Heystack\Subsystem\Payment;
+namespace Heystack\Payment;
 
 /**
  * Holds constants corresponding to the services defined in the services.yml file

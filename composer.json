@@ -16,7 +16,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Heystack\\Subsystem\\Payment\\": "src/"
+            "Heystack\\Payment\\": "src/"
         }
     },
     "extra": {

@@ -1,9 +1,9 @@
 <?php
 
-namespace Heystack\Subsystem\Payment\Test;
+namespace Heystack\Payment\Test;
 
-use Heystack\Subsystem\Payment\DPS\PXFusion\InputProcessor;
-use Heystack\Subsystem\Payment\DPS\PXFusion\Service;
+use Heystack\Payment\DPS\PXFusion\InputProcessor;
+use Heystack\Payment\DPS\PXFusion\Service;
 
 class PXFusionTest extends \PHPUnit_Framework_TestCase
 {
@@ -14,12 +14,12 @@ class PXFusionTest extends \PHPUnit_Framework_TestCase
     {
         $eventDispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcher');
 
-        $currencyService = $this->getMock('Heystack\Subsystem\Ecommerce\Currency\Interfaces\CurrencyServiceInterface');
+        $currencyService = $this->getMock('Heystack\Ecommerce\Currency\Interfaces\CurrencyServiceInterface');
         $currencyService->expects($this->any())
             ->method('getActiveCurrencyCode')
             ->will($this->returnValue('NZD'));
 
-        $transaction = $this->getMock('Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface');
+        $transaction = $this->getMock('Heystack\Ecommerce\Transaction\Interfaces\TransactionInterface');
         $transaction->expects($this->any())
             ->method('getTotal')
             ->will($this->returnValue(10));
@@ -106,7 +106,7 @@ class PXFusionTest extends \PHPUnit_Framework_TestCase
 
             $this->paymentService->setStage('Complete');
 
-        } catch (\Heystack\Subsystem\Core\Exception\ConfigurationException $e) {
+        } catch (\Heystack\Core\Exception\ConfigurationException $e) {
 
             $test = $e->getMessage();
 

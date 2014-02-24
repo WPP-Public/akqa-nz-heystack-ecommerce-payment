@@ -1,6 +1,6 @@
 <?php
 
-namespace Heystack\Subsystem\Payment\DPS\Config;
+namespace Heystack\Payment\DPS\Config;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -16,7 +16,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  *     Username: HeydayDev
  *     Password: post1234
  * Class ContainerConfig
- * @package Heystack\Subsystem\Payment\DPS\Config
+ * @package Heystack\Payment\DPS\Config
  */
 class ContainerConfig implements ConfigurationInterface
 {

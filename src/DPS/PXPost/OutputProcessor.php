@@ -8,10 +8,10 @@
 /**
  * Output namespace
  */
-namespace Heystack\Subsystem\Payment\DPS\PXPost;
+namespace Heystack\Payment\DPS\PXPost;
 
-use Heystack\Subsystem\Core\Identifier\Identifier;
-use Heystack\Subsystem\Core\Output\ProcessorInterface;
+use Heystack\Core\Identifier\Identifier;
+use Heystack\Core\Output\ProcessorInterface;
 
 /**
  * Output Processor for DPS Payment
@@ -27,7 +27,7 @@ class OutputProcessor implements ProcessorInterface
 {
     /**
      * Returns the identifier for this object
-     * @return \Heystack\Subsystem\Core\Identifier\Identifier
+     * @return \Heystack\Core\Identifier\Identifier
      */
     public function getIdentifier()
     {

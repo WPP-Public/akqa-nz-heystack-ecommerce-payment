@@ -1,10 +1,10 @@
 <?php
 
-namespace Heystack\Subsystem\Payment\DPS;
+namespace Heystack\Payment\DPS;
 
-use Heystack\Subsystem\Payment\Traits\PaymentConfigTrait;
+use Heystack\Payment\Traits\PaymentConfigTrait;
 
-use Heystack\Subsystem\Core\Exception\ConfigurationException;
+use Heystack\Core\Exception\ConfigurationException;
 
 abstract class Service
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Heystack\Subsystem\Payment\DPS;
+namespace Heystack\Payment\DPS;
 
 /**
  * Holds constants corresponding to the services defined in the dps_services.yml file

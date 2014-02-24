@@ -8,9 +8,9 @@
 /**
  * Traits namespace
  */
-namespace Heystack\Subsystem\Payment\Traits;
+namespace Heystack\Payment\Traits;
 
-use Heystack\Subsystem\Core\Exception\ConfigurationException;
+use Heystack\Core\Exception\ConfigurationException;
 
 /**
  * Provides an implementation of setting and getting the configuration for use on a PaymentHandler class

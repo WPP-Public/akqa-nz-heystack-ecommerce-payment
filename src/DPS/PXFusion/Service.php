@@ -8,13 +8,13 @@
 /**
  * DPS namespace
  */
-namespace Heystack\Subsystem\Payment\DPS\PXFusion;
+namespace Heystack\Payment\DPS\PXFusion;
 
-use Heystack\Subsystem\Core\Exception\ConfigurationException;
-use Heystack\Subsystem\Ecommerce\Currency\Interfaces\CurrencyServiceInterface;
-use Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface;
-use Heystack\Subsystem\Payment\DPS\PXPost\Service as PXPostService;
-use Heystack\Subsystem\Payment\DPS\Service as BaseService;
+use Heystack\Core\Exception\ConfigurationException;
+use Heystack\Ecommerce\Currency\Interfaces\CurrencyServiceInterface;
+use Heystack\Ecommerce\Transaction\Interfaces\TransactionInterface;
+use Heystack\Payment\DPS\PXPost\Service as PXPostService;
+use Heystack\Payment\DPS\Service as BaseService;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -80,19 +80,19 @@ class Service extends BaseService
 
     /**
      * Holds the Transaction object
-     * @var \Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface
+     * @var \Heystack\Ecommerce\Transaction\Interfaces\TransactionInterface
      */
     protected $transaction;
 
     /**
      * Holds the currency service
-     * @var \Heystack\Subsystem\Ecommerce\Currency\CurrencyService
+     * @var \Heystack\Ecommerce\Currency\CurrencyService
      */
     protected $currencyService;
 
     /**
      * Holds the px post service for when using the auth complete cycle
-     * @var \Heystack\Subsystem\Payment\DPS\PXPost\Service
+     * @var \Heystack\Payment\DPS\PXPost\Service
      */
     protected $pxPostService;
 
@@ -153,8 +153,8 @@ class Service extends BaseService
     /**
      * Creates the Service object
      * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface               $eventService
-     * @param \Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface $transaction
-     * @param \Heystack\Subsystem\Payment\DPS\PXPost\Service                            $pxPostService
+     * @param \Heystack\Ecommerce\Transaction\Interfaces\TransactionInterface $transaction
+     * @param \Heystack\Payment\DPS\PXPost\Service                            $pxPostService
      */
     public function __construct(
         EventDispatcherInterface $eventService,
@@ -446,7 +446,7 @@ class Service extends BaseService
 
     /**
      * @param $dpsTxnRef
-     * @return array|bool|\Heystack\Subsystem\Payment\DPS\PXPost\PaymentResponse
+     * @return array|bool|\Heystack\Payment\DPS\PXPost\PaymentResponse
      */
     public function completeTransaction($dpsTxnRef)
     {

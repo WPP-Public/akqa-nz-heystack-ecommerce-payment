@@ -8,7 +8,7 @@
 /**
  * Interfaces namespace
  */
-namespace Heystack\Subsystem\Payment\Interfaces;
+namespace Heystack\Payment\Interfaces;
 
 /**
  * Defines the methods the need to be implemented by the Payment class

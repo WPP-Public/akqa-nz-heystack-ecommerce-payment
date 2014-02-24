@@ -1,23 +1,23 @@
 <?php
 
-namespace Heystack\Subsystem\Payment\DPS\PXFusion;
+namespace Heystack\Payment\DPS\PXFusion;
 
-use Heystack\Subsystem\Core\DataObjectHandler\DataObjectHandlerInterface;
-use Heystack\Subsystem\Core\Identifier\Identifier;
-use Heystack\Subsystem\Core\Input\ProcessorInterface;
+use Heystack\Core\DataObjectHandler\DataObjectHandlerInterface;
+use Heystack\Core\Identifier\Identifier;
+use Heystack\Core\Input\ProcessorInterface;
 
-use Heystack\Subsystem\Core\Storage\Storage;
-use Heystack\Subsystem\Core\Storage\Backends\SilverStripeOrm\Backend;
+use Heystack\Core\Storage\Storage;
+use Heystack\Core\Storage\Backends\SilverStripeOrm\Backend;
 
-use Heystack\Subsystem\Core\State\State;
+use Heystack\Core\State\State;
 
-use Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface;
+use Heystack\Ecommerce\Transaction\Interfaces\TransactionInterface;
 
-use Heystack\Subsystem\Payment\DPS\PXPost\PaymentResponse as PXPostPaymentResponse;
+use Heystack\Payment\DPS\PXPost\PaymentResponse as PXPostPaymentResponse;
 
 /**
  * Class InputProcessor
- * @package Heystack\Subsystem\Payment\DPS\PXFusion
+ * @package Heystack\Payment\DPS\PXFusion
  */
 class InputProcessor implements ProcessorInterface
 {
@@ -29,28 +29,28 @@ class InputProcessor implements ProcessorInterface
 
     /**
      * Holds the payment handler
-     * @var \Heystack\Subsystem\Payment\Interfaces\PaymentServiceInterface
+     * @var \Heystack\Payment\Interfaces\PaymentServiceInterface
      */
     protected $paymentService;
 
     /**
-     * @var \Heystack\Subsystem\Core\State\State
+     * @var \Heystack\Core\State\State
      */
     protected $state;
 
     /**
-     * @var \Heystack\Subsystem\Core\Storage\Storage
+     * @var \Heystack\Core\Storage\Storage
      */
     protected $storage;
 
     /**
      * Holds the transaction
-     * @var Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface
+     * @var Heystack\Ecommerce\Transaction\Interfaces\TransactionInterface
      */
     protected $transaction;
 
     /**
-     * @var \Heystack\Subsystem\Core\DataObjectHandler\DataObjectHandlerInterface
+     * @var \Heystack\Core\DataObjectHandler\DataObjectHandlerInterface
      */
     protected $dataObjectHandler;
 
@@ -75,7 +75,7 @@ class InputProcessor implements ProcessorInterface
         $this->dataObjectHandler = $dataObjectHandler;
     }
     /**
-     * @return \Heystack\Subsystem\Core\Identifier\Identifier
+     * @return \Heystack\Core\Identifier\Identifier
      */
     public function getIdentifier()
     {

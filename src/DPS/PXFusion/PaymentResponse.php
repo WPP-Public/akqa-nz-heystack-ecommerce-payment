@@ -8,11 +8,11 @@
 /**
  * DPS namespace
  */
-namespace Heystack\Subsystem\Payment\DPS\PXFusion;
+namespace Heystack\Payment\DPS\PXFusion;
 
-use Heystack\Subsystem\Core\Storage\Backends\SilverStripeOrm\Backend;
-use Heystack\Subsystem\Core\Storage\StorableInterface;
-use Heystack\Subsystem\Core\ViewableData\ViewableDataInterface;
+use Heystack\Core\Storage\Backends\SilverStripeOrm\Backend;
+use Heystack\Core\Storage\StorableInterface;
+use Heystack\Core\ViewableData\ViewableDataInterface;
 
 class PaymentResponse implements StorableInterface, ViewableDataInterface
 {

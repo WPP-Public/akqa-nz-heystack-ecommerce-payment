@@ -8,7 +8,7 @@
 /**
  * Payment namespace
  */
-namespace Heystack\Subsystem\Payment;
+namespace Heystack\Payment;
 
 /**
  * Events holds constant references to triggerable dispatch events.

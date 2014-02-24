@@ -8,7 +8,7 @@
 /**
  * Traits namespace
  */
-namespace Heystack\Subsystem\Payment\Traits;
+namespace Heystack\Payment\Traits;
 
 /**
  * Provides an implementation for the PaymentInterface for use on a Payment object
