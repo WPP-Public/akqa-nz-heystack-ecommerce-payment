@@ -2,7 +2,6 @@
 
 namespace Heystack\Payment\DPS\PXFusion;
 
-use Heystack\Core\DataObjectHandler\DataObjectHandlerInterface;
 use Heystack\Core\Identifier\Identifier;
 use Heystack\Core\Input\ProcessorInterface;
 
@@ -50,29 +49,21 @@ class InputProcessor implements ProcessorInterface
     protected $transaction;
 
     /**
-     * @var \Heystack\Core\DataObjectHandler\DataObjectHandlerInterface
-     */
-    protected $dataObjectHandler;
-
-    /**
      * @param PaymentServiceInterface $paymentService
      * @param Storage $storage
      * @param State $state
      * @param TransactionInterface $transaction
-     * @param DataObjectHandlerInterface $dataObjectHandler
      */
     public function __construct(
         PaymentServiceInterface $paymentService,
         Storage $storage,
         State $state,
-        TransactionInterface $transaction,
-        DataObjectHandlerInterface $dataObjectHandler
+        TransactionInterface $transaction
     ) {
         $this->paymentService = $paymentService;
         $this->storage = $storage;
         $this->state = $state;
         $this->transaction = $transaction;
-        $this->dataObjectHandler = $dataObjectHandler;
     }
     /**
      * @return \Heystack\Core\Identifier\Identifier
@@ -106,7 +97,7 @@ class InputProcessor implements ProcessorInterface
 
                 // get the PXFusion payment associated with this sessionid
 
-                $payment = $this->dataObjectHandler->getDataObject('StoredPXFusionPayment', "SessionId = '{$sessionId}'");
+                $payment = \DataList::create('StoredPXFusionPayment')->filter("SessionId", $sessionId)->first();
 
                 if ($payment instanceof \StoredPXFusionPayment && $payment->DpsTxnRef) {
 
