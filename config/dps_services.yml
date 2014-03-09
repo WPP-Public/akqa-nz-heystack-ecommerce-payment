@@ -59,24 +59,28 @@ services:
 
   transaction_pxfusion_payment_schema:
     class: %yaml_data_object_schema.class%
-    arguments: [ ecommerce-payment/config/storage/transaction_pxfusionpayment.yml, @state_global ]
+    arguments: [ ecommerce-payment/config/storage/transaction_pxfusionpayment.yml ]
     tags:
-      - { name: dataobject_generator.schema }
+      - { name: schema }
+      - { name: autoinject, arguments: true }
 
   pxfusion_payment_schema:
     class: %yaml_data_object_schema.class%
-    arguments: [ ecommerce-payment/config/storage/pxfusionpayment.yml, @state_global ]
+    arguments: [ ecommerce-payment/config/storage/pxfusionpayment.yml ]
     tags:
-      - { name: dataobject_generator.schema }
+      - { name: schema }
+      - { name: autoinject, arguments: true }
 
   pxpost_payment_schema:
     class: %yaml_data_object_schema.class%
-    arguments: [ ecommerce-payment/config/storage/pxpostpayment.yml, @state_global ]
+    arguments: [ ecommerce-payment/config/storage/pxpostpayment.yml ]
     tags:
-      - { name: dataobject_generator.schema }
+      - { name: schema }
+      - { name: autoinject, arguments: true }
 
   transaction_pxpost_payment_schema:
     class: %yaml_data_object_schema.class%
-    arguments: [ ecommerce-payment/config/storage/transaction_pxpostpayment.yml, @state_global ]
+    arguments: [ ecommerce-payment/config/storage/transaction_pxpostpayment.yml ]
     tags:
-      - { name: dataobject_generator.schema }
+      - { name: schema }
+      - { name: autoinject, arguments: true }
