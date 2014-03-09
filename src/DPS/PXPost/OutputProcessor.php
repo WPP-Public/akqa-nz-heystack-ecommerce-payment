@@ -38,11 +38,11 @@ class OutputProcessor implements ProcessorInterface
      * Method used to determine how to handle the output based on the InputProcessor's result
      * @param  \Controller     $controller
      * @param  type            $result
-     * @return SS_HTTPResponse
+     * @return \SS_HTTPResponse
      */
     public function process(\Controller $controller, $result = null)
     {
-        if ($controller->isAjax()) {
+        if ($controller->getRequest()->isAjax()) {
 
             $response = $controller->getResponse();
             $response->setStatusCode(200);

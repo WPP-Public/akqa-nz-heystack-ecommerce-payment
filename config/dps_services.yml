@@ -37,8 +37,6 @@ services:
   pxfusion_payment_response:
     class: %pxfusion_payment_response.class%
     arguments: [ [] ]
-    tags:
-      - { name: ss_orm_backend.data_provider }
 
   pxpost_service:
     class: %pxpost_service.class%
@@ -58,8 +56,6 @@ services:
   pxpost_payment_response:
     class: %pxpost_payment_response.class%
     arguments: [ [] ]
-    tags:
-      - { name: ss_orm_backend.data_provider }
 
   transaction_pxfusion_payment_schema:
     class: %yaml_data_object_schema.class%

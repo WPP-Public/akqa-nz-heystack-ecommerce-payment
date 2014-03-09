@@ -2,13 +2,14 @@
 
 namespace Heystack\Payment\DPS;
 
+use Heystack\Ecommerce\Currency\Traits\HasCurrencyServiceTrait;
 use Heystack\Payment\Traits\PaymentConfigTrait;
-
 use Heystack\Core\Exception\ConfigurationException;
+use SebastianBergmann\Money\Money;
 
 abstract class Service
 {
-
+    use HasCurrencyServiceTrait;
     use PaymentConfigTrait;
 
     /**
@@ -37,8 +38,6 @@ abstract class Service
      * @var bool
      */
     protected $testingMode = false;
-
-    abstract public function getTransaction();
 
     /**
      * Set the testing mode
@@ -69,7 +68,9 @@ abstract class Service
 
         if (!in_array($currencyCode, $this->supportedCurrencies)) {
 
-            throw new ConfigurationException("The currency $currencyCode is not supported by DPS");
+            throw new ConfigurationException(
+                sprintf("The currency '%s' is not supported by DPS", $currencyCode)
+            );
 
         }
 
@@ -79,23 +80,19 @@ abstract class Service
     protected function responseFromErrors($errors = null)
     {
         die();
-
     }
 
-   /**
-    * Returns the formatted payment amount
-    * @return string Amount
-    */
-    protected function formatAmount($amount)
+    /**
+     * Returns the formatted payment amount
+     * @param \SebastianBergmann\Money\Money
+     * @return string
+     */
+    protected function formatAmount(Money $amount)
     {
-        $currencyCode = $this->currencyService->getActiveCurrencyCode();
+        $currency = $amount->getCurrency();
+        $subunit = $currency->getSubUnit();
+        $fractionDigits = $currency->getDefaultFractionDigits();
 
-        if (!in_array($currencyCode, $this->currenciesWithoutCents)) {
-            return number_format($amount, 2, '.', '');
-        }
-
-        return $amount;
-
+        return number_format($amount->getAmount() / $subunit, $fractionDigits, '.', '');
     }
-
 }

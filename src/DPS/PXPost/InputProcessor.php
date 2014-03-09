@@ -12,7 +12,6 @@ namespace Heystack\Payment\DPS\PXPost;
 
 use Heystack\Core\Identifier\Identifier;
 use Heystack\Core\Input\ProcessorInterface;
-use Heystack\Payment\Interfaces\PaymentServiceInterface;
 
 /**
  * Handles DPS specific input
@@ -25,17 +24,17 @@ class InputProcessor implements ProcessorInterface
 {
     /**
      * Holds the payment handler
-     * @var \Heystack\Payment\Interfaces\PaymentServiceInterface
+     * @var \Heystack\Payment\DPS\PXPost\Service
      */
-    protected $paymentHandler;
+    protected $paymentService;
 
     /**
      * Creates the processor object
-     * @param \Heystack\Payment\Interfaces\PaymentServiceInterface $paymentHandler
+     * @param \Heystack\Payment\DPS\PXPost\Service $paymentHandler
      */
-    public function __construct(PaymentServiceInterface $paymentHandler)
+    public function __construct(Service $paymentHandler)
     {
-        $this->paymentHandler = $paymentHandler;
+        $this->paymentService = $paymentHandler;
     }
 
     /**

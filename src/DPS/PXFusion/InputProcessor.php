@@ -28,7 +28,7 @@ class InputProcessor implements ProcessorInterface
 
     /**
      * Holds the payment handler
-     * @var \Heystack\Payment\Interfaces\PaymentServiceInterface
+     * @var \Heystack\Payment\DPS\PXFusion\Service
      */
     protected $paymentService;
 
@@ -44,18 +44,18 @@ class InputProcessor implements ProcessorInterface
 
     /**
      * Holds the transaction
-     * @var Heystack\Ecommerce\Transaction\Interfaces\TransactionInterface
+     * @var \Heystack\Ecommerce\Transaction\Interfaces\TransactionInterface
      */
     protected $transaction;
 
     /**
-     * @param PaymentServiceInterface $paymentService
+     * @param \Heystack\Payment\DPS\PXFusion\Service $paymentService
      * @param Storage $storage
      * @param State $state
      * @param TransactionInterface $transaction
      */
     public function __construct(
-        PaymentServiceInterface $paymentService,
+        Service $paymentService,
         Storage $storage,
         State $state,
         TransactionInterface $transaction

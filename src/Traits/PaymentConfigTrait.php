@@ -22,7 +22,6 @@ use Heystack\Core\Exception\ConfigurationException;
  */
 trait PaymentConfigTrait
 {
-
     /**
      * Stores config for payment services
      * @var array
@@ -55,6 +54,8 @@ trait PaymentConfigTrait
 
     /**
      * Validates config
+     * @param array $config
+     * @return array
      */
     abstract protected function validateConfig(array $config);
 
@@ -72,6 +73,8 @@ trait PaymentConfigTrait
 
     /**
      * Validates additional config
+     * @param array $config
+     * @return array
      */
     abstract protected function validateAdditionalConfig(array $config);
 
@@ -89,9 +92,15 @@ trait PaymentConfigTrait
 
     /**
      * Validates config
+     * @param array $config
+     * @return array
      */
     abstract protected function validateUserConfig(array $config);
 
+    /**
+     * @param bool $exceptionOnError
+     * @return array
+     */
     public function checkAll($exceptionOnError = false)
     {
         return array_merge(
@@ -101,6 +110,11 @@ trait PaymentConfigTrait
         );
     }
 
+    /**
+     * @param $config
+     * @param bool $exceptionOnError
+     * @return array
+     */
     public function checkConfig($config, $exceptionOnError = false)
     {
         return $this->checkConfigHelper(
@@ -112,6 +126,11 @@ trait PaymentConfigTrait
         );
     }
 
+    /**
+     * @param $config
+     * @param bool $exceptionOnError
+     * @return array
+     */
     public function checkAdditionalConfig($config, $exceptionOnError = false)
     {
         return $this->checkConfigHelper(
@@ -123,6 +142,11 @@ trait PaymentConfigTrait
         );
     }
 
+    /**
+     * @param $config
+     * @param bool $exceptionOnError
+     * @return array
+     */
     public function checkUserConfig($config, $exceptionOnError = false)
     {
         return $this->checkConfigHelper(
@@ -134,6 +158,15 @@ trait PaymentConfigTrait
         );
     }
 
+    /**
+     * @param array $config
+     * @param array $required
+     * @param array $allowed
+     * @param callable $extraValidation
+     * @param bool $exceptionOnError
+     * @return array
+     * @throws \Heystack\Core\Exception\ConfigurationException
+     */
     protected function checkConfigHelper(
         array $config,
         array $required,
@@ -166,16 +199,28 @@ trait PaymentConfigTrait
         return $errors;
     }
 
+    /**
+     * @param $notAllowed
+     * @return string
+     */
     protected function errorNotAllowed($notAllowed)
     {
         return "The config option '$notAllowed' is not allowed";
     }
 
+    /**
+     * @param $isRequired
+     * @return string
+     */
     protected function errorRequired($isRequired)
     {
         return "The config option '$isRequired' is required";
     }
 
+    /**
+     * @param $errors
+     * @return bool
+     */
     protected function hasErrors($errors)
     {
         return count($errors) !== 0;
@@ -184,8 +229,9 @@ trait PaymentConfigTrait
     /**
      * Sets an array of config parameters onto the data array.
      * Checks to see if all the required parameters are present.
-     * @param  array                  $config
-     * @throws ConfigurationException
+     * @param array $config
+     * @param bool $exceptionOnError
+     * @return array|bool
      */
     public function setConfig(array $config, $exceptionOnError = false)
     {
@@ -202,7 +248,9 @@ trait PaymentConfigTrait
 
     /**
      * Set the additional configuration
-     * @param array $additionalConfig
+     * @param array $config
+     * @param bool $exceptionOnError
+     * @return array|bool
      */
     public function setAdditionalConfig(array $config, $exceptionOnError = false)
     {
@@ -217,6 +265,11 @@ trait PaymentConfigTrait
         return true;
     }
 
+    /**
+     * @param array $config
+     * @param bool $exceptionOnError
+     * @return array|bool
+     */
     public function setUserConfig(array $config, $exceptionOnError = false)
     {
         $errors = $this->checkUserConfig($config, $exceptionOnError);
@@ -230,6 +283,12 @@ trait PaymentConfigTrait
         return true;
     }
 
+    /**
+     * @param $key
+     * @param $value
+     * @param bool $exceptionOnError
+     * @return array|bool
+     */
     public function setConfigByKey($key, $value, $exceptionOnError = false)
     {
         return $this->setConfig(array_merge($this->config, [
@@ -237,6 +296,12 @@ trait PaymentConfigTrait
         ]), $exceptionOnError);
     }
 
+    /**
+     * @param $key
+     * @param $value
+     * @param bool $exceptionOnError
+     * @return array|bool
+     */
     public function setAdditionalConfigByKey($key, $value, $exceptionOnError = false)
     {
         return $this->setAdditionalConfig(array_merge($this->additionalConfig, [
@@ -244,6 +309,12 @@ trait PaymentConfigTrait
         ]), $exceptionOnError);
     }
 
+    /**
+     * @param $key
+     * @param $value
+     * @param bool $exceptionOnError
+     * @return array|bool
+     */
     public function setUserConfigByKey($key, $value, $exceptionOnError = false)
     {
         return $this->setUserConfig(array_merge($this->userConfig, [
@@ -276,16 +347,28 @@ trait PaymentConfigTrait
         return $this->userConfig;
     }
 
+    /**
+     * @param $key
+     * @return bool
+     */
     public function getConfigByKey($key)
     {
         return isset($this->config[$key]) ? $this->config[$key] : false;
     }
 
+    /**
+     * @param $key
+     * @return bool
+     */
     public function getAdditionalConfigByKey($key)
     {
         return isset($this->additionalConfig[$key]) ? $this->additionalConfig[$key] : false;
     }
 
+    /**
+     * @param $key
+     * @return bool
+     */
     public function getUserConfigByKey($key)
     {
         return isset($this->userConfig[$key]) ? $this->userConfig[$key] : false;

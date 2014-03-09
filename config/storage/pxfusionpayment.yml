@@ -1,4 +1,3 @@
-data_provider_id: pxfusionpayment
 id: PXFusionPayment
 flat:
   Amount: "Decimal(10,2)"
@@ -28,7 +27,6 @@ flat:
   TxnMac: Varchar(255)
   TxnRef: Varchar(255)
   TransactionType: "Enum('Purchase,Auth', 'Purchase')"
-related:
 parent:
   Parent: +Transaction
   PXPostPayment: +PXPostPayment

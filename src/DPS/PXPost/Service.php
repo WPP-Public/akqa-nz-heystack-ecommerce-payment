@@ -11,8 +11,11 @@
 namespace Heystack\Payment\DPS\PXPost;
 
 use Heystack\Core\Exception\ConfigurationException;
+use Heystack\Core\Traits\HasEventServiceTrait;
 use Heystack\Ecommerce\Currency\Interfaces\CurrencyServiceInterface;
+use Heystack\Ecommerce\Transaction\Interfaces\HasTransactionInterface;
 use Heystack\Ecommerce\Transaction\Interfaces\TransactionInterface;
+use Heystack\Ecommerce\Transaction\Traits\HasTransactionTrait;
 use Heystack\Payment\DPS\Service as BaseService;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -27,9 +30,11 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  * @author Cam Spiers <cameron@heyday.co.nz>
  * @package Ecommerce-Payment
  */
-class Service extends BaseService
+class Service extends BaseService implements HasTransactionInterface
 {
-
+    use HasTransactionTrait;
+    use HasEventServiceTrait;
+    
     /**
      * Holds the key for storing Post Username on the config second level array on the data array
      */
@@ -86,18 +91,6 @@ class Service extends BaseService
     const TXN_TYPE_VALIDATE = 'Validate';
 
     /**
-     * Holds the Event Dispatcher service
-     * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
-     */
-    protected $eventService;
-
-    /**
-     * Holds the currency service
-     * @var \Heystack\Ecommerce\Currency\CurrencyService
-     */
-    protected $currencyService;
-
-    /**
      * Holds the Transaction object
      * @var \Heystack\Ecommerce\Transaction\Interfaces\TransactionInterface
      */
@@ -116,8 +109,9 @@ class Service extends BaseService
 
     /**
      * Creates the Service
-     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface               $eventService
+     * @param EventDispatcherInterface $eventService
      * @param \Heystack\Ecommerce\Transaction\Interfaces\TransactionInterface $transaction
+     * @param CurrencyServiceInterface $currencyService
      */
     public function __construct(
         EventDispatcherInterface $eventService,
@@ -127,14 +121,6 @@ class Service extends BaseService
         $this->eventService = $eventService;
         $this->transaction = $transaction;
         $this->currencyService = $currencyService;
-    }
-
-    /**
-     * @return \Heystack\Ecommerce\Transaction\Interfaces\TransactionInterface
-     */
-    public function getTransaction()
-    {
-        return $this->transaction;
     }
 
     /**
@@ -160,6 +146,9 @@ class Service extends BaseService
         ];
     }
 
+    /**
+     * @return array
+     */
     protected function getAllowedUserConfig()
     {
         return [
@@ -229,6 +218,7 @@ class Service extends BaseService
     }
 
     /**
+     * @param array $config
      * @return array
      */
     protected function validateConfig(array $config)
@@ -237,6 +227,7 @@ class Service extends BaseService
     }
 
     /**
+     * @param array $config
      * @return array
      */
     protected function validateAdditionalConfig(array $config)
@@ -245,6 +236,7 @@ class Service extends BaseService
     }
 
     /**
+     * @param array $config
      * @return array
      */
     protected function validateUserConfig(array $config)

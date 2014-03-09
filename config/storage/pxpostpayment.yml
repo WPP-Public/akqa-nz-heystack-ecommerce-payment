@@ -1,4 +1,3 @@
-data_provider_id: pxpostpayment
 id: PXPostPayment
 flat:
   ReCo: Varchar(2)
@@ -60,6 +59,5 @@ flat:
   TransactionId: Varchar(255)
   PxHostId: Varchar(255)
 
-related:
 parent:
   Parent: +Transaction
