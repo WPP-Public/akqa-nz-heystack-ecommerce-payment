@@ -2,9 +2,9 @@
 
 namespace Heystack\Payment\DPS;
 
+use Heystack\Core\Exception\ConfigurationException;
 use Heystack\Ecommerce\Currency\Traits\HasCurrencyServiceTrait;
 use Heystack\Payment\Traits\PaymentConfigTrait;
-use Heystack\Core\Exception\ConfigurationException;
 use SebastianBergmann\Money\Money;
 
 abstract class Service
@@ -23,14 +23,6 @@ abstract class Service
         'ZAR', 'AUD', 'WST', 'VUV',
         'TOP', 'SBD', 'PGK', 'MYR',
         'KWD', 'FJD'
-    ];
-
-    /**
-     * List of currencies which don't have cents
-     * @var array
-     */
-    protected $currenciesWithoutCents = [
-        'JPY'
     ];
 
     /**

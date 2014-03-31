@@ -4,8 +4,6 @@ namespace Heystack\Payment\Test;
 
 use Heystack\Payment\DPS\PXPost\Service;
 
-use Symfony\Component\EventDispatcher\EventDispatcher;
-
 class PXPostTest extends \PHPUnit_Framework_TestCase
 {
 

@@ -203,6 +203,9 @@ class Service extends BaseService implements HasTransactionInterface
         ];
     }
 
+    /**
+     * @return array
+     */
     public function getRequiredAdditionalConfig()
     {
         if (in_array($this->getTxnType(), [
@@ -298,6 +301,10 @@ class Service extends BaseService implements HasTransactionInterface
         return $xml->asXML();
     }
 
+    /**
+     * @param $result
+     * @return mixed
+     */
     protected function prepareResponse($result)
     {
         unset($result['Transaction']);

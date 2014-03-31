@@ -117,6 +117,7 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
 
     /**
      * @param array $data
+     * @throws \Exception
      */
     public function __construct(array $data)
     {
@@ -154,17 +155,11 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
      */
     public function updateTransaction(TransactionInterface $transaction)
     {
-
         if ($this->Success) {
-
             $transaction->setStatus('Successful');
-
         } else {
-
             $transaction->setStatus('Failed');
-
         }
-
     }
 
     /**

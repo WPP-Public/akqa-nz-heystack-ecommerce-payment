@@ -433,15 +433,12 @@ class Service extends BaseService implements HasTransactionInterface
         if ($this->pxPostService instanceof PXPostService) {
 
             try {
-
                 $this->pxPostService->setTxnType(PXPostService::TXN_TYPE_COMPLETE);
                 $this->pxPostService->setAdditionalConfigByKey('DpsTxnRef', $dpsTxnRef);
 
                 return $this->pxPostService->processComplete();
-
             } catch (\Exception $e) {
                 return false;
-
             }
 
         }

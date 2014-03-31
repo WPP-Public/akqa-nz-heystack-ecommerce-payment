@@ -14,14 +14,29 @@ use Heystack\Core\Storage\Backends\SilverStripeOrm\Backend;
 use Heystack\Core\Storage\StorableInterface;
 use Heystack\Core\ViewableData\ViewableDataInterface;
 
+/**
+ * Class PaymentResponse
+ * @package Heystack\Payment\DPS\PXFusion
+ */
 class PaymentResponse implements StorableInterface, ViewableDataInterface
 {
-
+    /**
+     *
+     */
     const IDENTIFIER = 'pxfusionpayment';
+    /**
+     *
+     */
     const SCHEMA_NAME = 'PXFusionPayment';
 
+    /**
+     * @var array
+     */
     protected $data = [];
 
+    /**
+     * @var array
+     */
     protected $mapping = [
         'merchantReference' => 'MerchantReference',
         'amount' => 'Amount',
@@ -52,6 +67,9 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
         'txnType' => 'TransactionType'
     ];
 
+    /**
+     * @param $data
+     */
     public function __construct($data)
     {
         foreach ($data as $key => $value) {
@@ -61,21 +79,35 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
         }
     }
 
+    /**
+     * @param $name
+     * @return bool
+     */
     public function __get($name)
     {
         return array_key_exists($name, $this->data) ? $this->data[$name] : false;
     }
 
+    /**
+     * @param $name
+     * @param $value
+     */
     public function __set($name, $value)
     {
         $this->data[$name] = $value;
     }
 
+    /**
+     * @return string
+     */
     public function getStorableIdentifier()
     {
         return self::IDENTIFIER;
     }
 
+    /**
+     * @return array
+     */
     public function getStorableData()
     {
         return [
@@ -84,6 +116,9 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
         ];
     }
 
+    /**
+     * @return array
+     */
     public function getStorableBackendIdentifiers()
     {
         return [
@@ -91,6 +126,9 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
         ];
     }
 
+    /**
+     * @return string
+     */
     public function getSchemaName()
     {
         return self::SCHEMA_NAME;

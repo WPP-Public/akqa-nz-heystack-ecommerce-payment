@@ -1,23 +1,16 @@
 parameters:
-
   pxfusion_service.class: Heystack\Payment\DPS\PXFusion\Service
   pxfusion_input_processor.class: Heystack\Payment\DPS\PXFusion\InputProcessor
   pxfusion_output_processor.class: Heystack\Payment\DPS\PXFusion\OutputProcessor
-  pxfusion_output_processor.completeURL: checkout/thankyou
+  pxfusion_output_processor.completeURL: 'checkout/thankyou'
   pxfusion_output_processor.confirmationURL: 'checkout/confirm'
-  pxfusion_output_processor.failureURL: checkout/failure
+  pxfusion_output_processor.failureURL: 'checkout/failure'
   pxfusion_payment_response.class: Heystack\Payment\DPS\PXFusion\PaymentResponse
 
   pxpost_service.class: Heystack\Payment\DPS\PXPost\Service
-  pxpost_input_processor.class: Heystack\Payment\DPS\PXPost\InputProcessor
-  pxpost_output_processor.class: Heystack\Payment\DPS\PXPost\OutputProcessor
   pxpost_payment_response.class: Heystack\Payment\DPS\PXPost\PaymentResponse
 
 services:
-
-  dataobject_generator:
-    class: %dataobject_generator.class%
-
   pxfusion_service:
     class: %pxfusion_service.class%
     arguments: [ @event_dispatcher, @transaction, @currency_service ]
@@ -42,31 +35,20 @@ services:
     class: %pxpost_service.class%
     arguments: [ @event_dispatcher, @transaction, @currency_service ]
 
-  pxpost_input_processor:
-    class: %pxpost_input_processor.class%
-    arguments: [ @pxpost_service ]
-    tags:
-      - { name: input_processor_handler.processor }
-
-  pxpost_output_processor:
-    class: %pxpost_output_processor.class%
-    tags:
-      - { name: output_processor_handler.processor }
-
   pxpost_payment_response:
     class: %pxpost_payment_response.class%
     arguments: [ [] ]
 
-  transaction_pxfusion_payment_schema:
+  pxfusion_payment_schema:
     class: %yaml_data_object_schema.class%
-    arguments: [ ecommerce-payment/config/storage/transaction_pxfusionpayment.yml ]
+    arguments: [ ecommerce-payment/config/storage/pxfusionpayment.yml ]
     tags:
       - { name: schema }
       - { name: autoinject, arguments: true }
 
-  pxfusion_payment_schema:
+  transaction_pxfusion_payment_schema:
     class: %yaml_data_object_schema.class%
-    arguments: [ ecommerce-payment/config/storage/pxfusionpayment.yml ]
+    arguments: [ ecommerce-payment/config/storage/transaction_pxfusionpayment.yml ]
     tags:
       - { name: schema }
       - { name: autoinject, arguments: true }
