@@ -81,10 +81,11 @@ abstract class Service
      */
     protected function formatAmount(Money $amount)
     {
-        $currency = $amount->getCurrency();
-        $subunit = $currency->getSubUnit();
-        $fractionDigits = $currency->getDefaultFractionDigits();
-
-        return number_format($amount->getAmount() / $subunit, $fractionDigits, '.', '');
+        return number_format(
+            \Heystack\Ecommerce\convertMoneyToString($amount),
+            $amount->getCurrency()->getDefaultFractionDigits(),
+            '.',
+            ''
+        );
     }
 }
