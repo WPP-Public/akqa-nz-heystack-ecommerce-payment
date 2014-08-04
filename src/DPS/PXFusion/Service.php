@@ -10,6 +10,7 @@
  */
 namespace Heystack\Payment\DPS\PXFusion;
 
+use Heystack\Core\EventDispatcher;
 use Heystack\Core\Exception\ConfigurationException;
 use Heystack\Core\Traits\HasEventServiceTrait;
 use Heystack\Ecommerce\Currency\Interfaces\CurrencyServiceInterface;
@@ -19,7 +20,6 @@ use Heystack\Ecommerce\Transaction\Traits\HasTransactionTrait;
 use Heystack\Payment\DPS\PXPost\Service as PXPostService;
 use Heystack\Payment\DPS\Service as BaseService;
 use SebastianBergmann\Money\Money;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  *
@@ -142,13 +142,13 @@ class Service extends BaseService implements HasTransactionInterface
 
     /**
      * Creates the Service object
-     * @param EventDispatcherInterface $eventService
-     * @param TransactionInterface $transaction
-     * @param CurrencyServiceInterface $currencyService
-     * @param PXPostService $pxPostService
+     * @param \Heystack\Core\EventDispatcher $eventService
+     * @param \Heystack\Ecommerce\Transaction\Interfaces\TransactionInterface $transaction
+     * @param \Heystack\Ecommerce\Currency\Interfaces\CurrencyServiceInterface $currencyService
+     * @param \Heystack\Payment\DPS\PXPost\Service $pxPostService
      */
     public function __construct(
-        EventDispatcherInterface $eventService,
+        EventDispatcher $eventService,
         TransactionInterface $transaction,
         CurrencyServiceInterface $currencyService,
         PXPostService $pxPostService = null
@@ -266,6 +266,8 @@ class Service extends BaseService implements HasTransactionInterface
 
     /**
      * Validates config
+     * @param array $config
+     * @return array
      */
     protected function validateUserConfig(array $config)
     {
@@ -282,7 +284,7 @@ class Service extends BaseService implements HasTransactionInterface
     }
 
     /**
-     * @return bool
+     * @return string|bool
      */
     public function getType()
     {
@@ -290,7 +292,8 @@ class Service extends BaseService implements HasTransactionInterface
     }
 
     /**
-     * @param $type
+     * @param string $type
+     * @return void
      */
     public function setType($type)
     {
@@ -381,9 +384,9 @@ class Service extends BaseService implements HasTransactionInterface
     }
 
     /**
-     * @param $transactionID
-     * @return PaymentResponse
-     * @throws Exception
+     * @param string $transactionID
+     * @return \Heystack\Payment\DPS\PXFusion\PaymentResponse
+     * @throws \Heystack\Payment\DPS\PXFusion\Exception
      */
     public function checkTransaction($transactionID)
     {
@@ -423,7 +426,7 @@ class Service extends BaseService implements HasTransactionInterface
     }
 
     /**
-     * @param $dpsTxnRef
+     * @param string $dpsTxnRef
      * @return array|bool|\Heystack\Payment\DPS\PXPost\PaymentResponse
      */
     public function completeTransaction($dpsTxnRef)
@@ -450,6 +453,7 @@ class Service extends BaseService implements HasTransactionInterface
      * Sets the stage of the Auth-Complete cycle
      * @param  string                 $stage
      * @throws ConfigurationException
+     * @return void
      */
     public function setStage($stage)
     {
@@ -470,7 +474,6 @@ class Service extends BaseService implements HasTransactionInterface
     }
 
     /**
-     *
      * @return string
      */
     public function getStage()
@@ -496,6 +499,7 @@ class Service extends BaseService implements HasTransactionInterface
     /**
      * Set the amount to authorise when using Auth-Complete
      * @param int $authAmount an amount in cents.
+     * @return void
      */
     public function setAuthAmount($authAmount)
     {
@@ -514,6 +518,7 @@ class Service extends BaseService implements HasTransactionInterface
     /**
      * Set all status messages
      * @param array $statusMessages
+     * @return void
      */
     public function setStatusMessages($statusMessages)
     {
@@ -531,8 +536,9 @@ class Service extends BaseService implements HasTransactionInterface
 
     /**
      * Set a particular status message by code
-     * @param $code
-     * @param $message
+     * @param int $code
+     * @param string $message
+     * @return void
      */
     public function setStatusMessage($code, $message)
     {
@@ -541,7 +547,7 @@ class Service extends BaseService implements HasTransactionInterface
 
     /**
      * Get a particular status message by code
-     * @param $code
+     * @param int $code
      * @return bool
      */
     public function getStatusMessage($code)

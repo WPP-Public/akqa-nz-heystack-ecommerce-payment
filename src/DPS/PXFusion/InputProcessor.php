@@ -3,13 +3,10 @@
 namespace Heystack\Payment\DPS\PXFusion;
 
 use Heystack\Core\Identifier\Identifier;
-
 use Heystack\Core\Input\ProcessorInterface;
 use Heystack\Core\State\State;
 use Heystack\Core\Storage\Backends\SilverStripeOrm\Backend;
-
 use Heystack\Core\Storage\Storage;
-
 use Heystack\Ecommerce\Transaction\Interfaces\TransactionInterface;
 use Heystack\Payment\DPS\PXPost\PaymentResponse as PXPostPaymentResponse;
 
@@ -49,9 +46,9 @@ class InputProcessor implements ProcessorInterface
 
     /**
      * @param \Heystack\Payment\DPS\PXFusion\Service $paymentService
-     * @param Storage $storage
-     * @param State $state
-     * @param TransactionInterface $transaction
+     * @param \Heystack\Core\Storage\Storage $storage
+     * @param \Heystack\Core\State\State $state
+     * @param \Heystack\Ecommerce\Transaction\Interfaces\TransactionInterface $transaction
      */
     public function __construct(
         Service $paymentService,

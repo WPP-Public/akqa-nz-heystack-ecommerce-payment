@@ -37,8 +37,8 @@ class ContainerExtension extends Extension
      * back into the main container
      *
      * @param  array            $configs
-     * @param  ContainerBuilder $container
-     * @return null
+     * @param  \Symfony\Component\DependencyInjection\ContainerBuilder $container
+     * @return void
      */
     public function load(array $configs, ContainerBuilder $container)
     {
@@ -62,6 +62,7 @@ class ContainerExtension extends Extension
      * @param  array                                                     $config
      * @param  \Symfony\Component\DependencyInjection\ContainerBuilder   $container
      * @throws \Heystack\Core\Exception\ConfigurationException
+     * @return void
      */
     protected function processConfig(array $config, ContainerBuilder $container)
     {

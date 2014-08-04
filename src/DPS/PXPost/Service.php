@@ -10,6 +10,7 @@
  */
 namespace Heystack\Payment\DPS\PXPost;
 
+use Heystack\Core\EventDispatcher;
 use Heystack\Core\Exception\ConfigurationException;
 use Heystack\Core\Traits\HasEventServiceTrait;
 use Heystack\Ecommerce\Currency\Interfaces\CurrencyServiceInterface;
@@ -17,7 +18,6 @@ use Heystack\Ecommerce\Transaction\Interfaces\HasTransactionInterface;
 use Heystack\Ecommerce\Transaction\Interfaces\TransactionInterface;
 use Heystack\Ecommerce\Transaction\Traits\HasTransactionTrait;
 use Heystack\Payment\DPS\Service as BaseService;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Contains the main logic for creating Payment objects as well as interfacing
@@ -109,12 +109,12 @@ class Service extends BaseService implements HasTransactionInterface
 
     /**
      * Creates the Service
-     * @param EventDispatcherInterface $eventService
+     * @param \Heystack\Core\EventDispatcher $eventService
      * @param \Heystack\Ecommerce\Transaction\Interfaces\TransactionInterface $transaction
-     * @param CurrencyServiceInterface $currencyService
+     * @param \Heystack\Ecommerce\Currency\Interfaces\CurrencyServiceInterface $currencyService
      */
     public function __construct(
-        EventDispatcherInterface $eventService,
+        EventDispatcher $eventService,
         TransactionInterface $transaction,
         CurrencyServiceInterface $currencyService
     ) {
@@ -287,8 +287,8 @@ class Service extends BaseService implements HasTransactionInterface
 
     /**
      * Builds xml string for use in payment request
-     * @param $config
-     * @return mixed
+     * @param array $config
+     * @return string|bool
      */
     private function buildXml($config)
     {
@@ -302,8 +302,8 @@ class Service extends BaseService implements HasTransactionInterface
     }
 
     /**
-     * @param $result
-     * @return mixed
+     * @param array $result
+     * @return array
      */
     protected function prepareResponse($result)
     {
@@ -321,6 +321,7 @@ class Service extends BaseService implements HasTransactionInterface
 
     /**
      * Processes and authorization transaction
+     * @return array|\Heystack\Payment\DPS\PXPost\PaymentResponse
      */
     public function processAuthorize()
     {
@@ -337,6 +338,7 @@ class Service extends BaseService implements HasTransactionInterface
 
     /**
      * Completes a transaction
+     * @return array|\Heystack\Payment\DPS\PXPost\PaymentResponse
      */
     public function processComplete()
     {
@@ -353,7 +355,7 @@ class Service extends BaseService implements HasTransactionInterface
     }
 
     /**
-     *
+     * @return array|\Heystack\Payment\DPS\PXPost\PaymentResponse
      */
     public function processPurchase()
     {
@@ -370,7 +372,7 @@ class Service extends BaseService implements HasTransactionInterface
     }
 
     /**
-     *
+     * @return array|\Heystack\Payment\DPS\PXPost\PaymentResponse
      */
     public function processRefund()
     {
@@ -386,7 +388,7 @@ class Service extends BaseService implements HasTransactionInterface
     }
 
     /**
-     *
+     * @return mixed
      */
     public function process()
     {
@@ -402,6 +404,7 @@ class Service extends BaseService implements HasTransactionInterface
         curl_close($curl);
 
         try {
+            // TODO: This should be rethought. It isn't the best solution
             $response = new \SimpleXMLElement($resultXml);
             $result = $this->prepareResponse(
                 array_merge(
@@ -418,8 +421,9 @@ class Service extends BaseService implements HasTransactionInterface
     }
 
     /**
-     * @param $gatewayUrl
+     * @param string $gatewayUrl
      * @throws \Heystack\Core\Exception\ConfigurationException
+     * @return void
      */
     public function setGatewayUrl($gatewayUrl)
     {
@@ -441,8 +445,7 @@ class Service extends BaseService implements HasTransactionInterface
     }
 
     /**
-     *
-     * @param  string                                                    $txnType
+     * @param  string $txnType
      * @throws \Heystack\Core\Exception\ConfigurationException
      * @return void
      */

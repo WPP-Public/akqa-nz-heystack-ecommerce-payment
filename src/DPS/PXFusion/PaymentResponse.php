@@ -68,7 +68,7 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
     ];
 
     /**
-     * @param $data
+     * @param array $data
      */
     public function __construct($data)
     {
@@ -80,8 +80,8 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
     }
 
     /**
-     * @param $name
-     * @return bool
+     * @param string $name
+     * @return mixed|null|bool
      */
     public function __get($name)
     {
@@ -89,8 +89,9 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
     }
 
     /**
-     * @param $name
-     * @param $value
+     * @param string $name
+     * @param mixed|null $value
+     * @return void
      */
     public function __set($name, $value)
     {
@@ -136,6 +137,7 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
 
     /**
      * Defines what methods the implementing class implements dynamically through __get and __set
+     * @return array
      */
     public function getDynamicMethods()
     {
@@ -144,6 +146,7 @@ class PaymentResponse implements StorableInterface, ViewableDataInterface
 
     /**
      * Returns an array of SilverStripe DBField castings keyed by field name
+     * @return array
      */
     public function getCastings()
     {

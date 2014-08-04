@@ -33,18 +33,17 @@ class OutputProcessor implements ProcessorInterface
     protected $failureURL;
 
     /**
-     * @param $completeURL
-     * @param $confirmationURL
-     * @param $failureURL
+     * @param string $completeURL
+     * @param string $confirmationURL
+     * @param string $failureURL
      */
     public function __construct($completeURL, $confirmationURL, $failureURL)
     {
         $this->completeURL = $completeURL;
-
         $this->confirmationURL = $confirmationURL;
-
         $this->failureURL = $failureURL;
     }
+
     /**
      * @return \Heystack\Core\Identifier\Identifier
      */
@@ -55,7 +54,8 @@ class OutputProcessor implements ProcessorInterface
 
     /**
      * @param \Controller $controller
-     * @param null        $result
+     * @param mixed|void        $result
+     * @return void
      */
     public function process(\Controller $controller, $result = null)
     {

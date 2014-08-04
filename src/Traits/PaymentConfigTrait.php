@@ -98,7 +98,7 @@ trait PaymentConfigTrait
     abstract protected function validateUserConfig(array $config);
 
     /**
-     * @param bool $exceptionOnError
+     * @param bool|void $exceptionOnError
      * @return array
      */
     public function checkAll($exceptionOnError = false)
@@ -111,8 +111,8 @@ trait PaymentConfigTrait
     }
 
     /**
-     * @param $config
-     * @param bool $exceptionOnError
+     * @param array $config
+     * @param bool|void $exceptionOnError
      * @return array
      */
     public function checkConfig($config, $exceptionOnError = false)
@@ -127,8 +127,8 @@ trait PaymentConfigTrait
     }
 
     /**
-     * @param $config
-     * @param bool $exceptionOnError
+     * @param array $config
+     * @param bool|void $exceptionOnError
      * @return array
      */
     public function checkAdditionalConfig($config, $exceptionOnError = false)
@@ -143,8 +143,8 @@ trait PaymentConfigTrait
     }
 
     /**
-     * @param $config
-     * @param bool $exceptionOnError
+     * @param array $config
+     * @param bool|void $exceptionOnError
      * @return array
      */
     public function checkUserConfig($config, $exceptionOnError = false)
@@ -200,7 +200,7 @@ trait PaymentConfigTrait
     }
 
     /**
-     * @param $notAllowed
+     * @param string $notAllowed
      * @return string
      */
     protected function errorNotAllowed($notAllowed)
@@ -209,7 +209,7 @@ trait PaymentConfigTrait
     }
 
     /**
-     * @param $isRequired
+     * @param string $isRequired
      * @return string
      */
     protected function errorRequired($isRequired)
@@ -218,7 +218,7 @@ trait PaymentConfigTrait
     }
 
     /**
-     * @param $errors
+     * @param array $errors
      * @return bool
      */
     protected function hasErrors($errors)
@@ -230,7 +230,7 @@ trait PaymentConfigTrait
      * Sets an array of config parameters onto the data array.
      * Checks to see if all the required parameters are present.
      * @param array $config
-     * @param bool $exceptionOnError
+     * @param bool|void $exceptionOnError
      * @return array|bool
      */
     public function setConfig(array $config, $exceptionOnError = false)
@@ -249,7 +249,7 @@ trait PaymentConfigTrait
     /**
      * Set the additional configuration
      * @param array $config
-     * @param bool $exceptionOnError
+     * @param bool|void $exceptionOnError
      * @return array|bool
      */
     public function setAdditionalConfig(array $config, $exceptionOnError = false)
@@ -267,7 +267,7 @@ trait PaymentConfigTrait
 
     /**
      * @param array $config
-     * @param bool $exceptionOnError
+     * @param bool|void $exceptionOnError
      * @return array|bool
      */
     public function setUserConfig(array $config, $exceptionOnError = false)
@@ -284,9 +284,9 @@ trait PaymentConfigTrait
     }
 
     /**
-     * @param $key
-     * @param $value
-     * @param bool $exceptionOnError
+     * @param string $key
+     * @param mixed $value
+     * @param bool|void $exceptionOnError
      * @return array|bool
      */
     public function setConfigByKey($key, $value, $exceptionOnError = false)
@@ -297,9 +297,9 @@ trait PaymentConfigTrait
     }
 
     /**
-     * @param $key
-     * @param $value
-     * @param bool $exceptionOnError
+     * @param string $key
+     * @param mixed $value
+     * @param bool|void $exceptionOnError
      * @return array|bool
      */
     public function setAdditionalConfigByKey($key, $value, $exceptionOnError = false)
@@ -310,9 +310,9 @@ trait PaymentConfigTrait
     }
 
     /**
-     * @param $key
-     * @param $value
-     * @param bool $exceptionOnError
+     * @param string $key
+     * @param mixed $value
+     * @param bool|void $exceptionOnError
      * @return array|bool
      */
     public function setUserConfigByKey($key, $value, $exceptionOnError = false)
@@ -348,8 +348,8 @@ trait PaymentConfigTrait
     }
 
     /**
-     * @param $key
-     * @return bool
+     * @param string $key
+     * @return mixed
      */
     public function getConfigByKey($key)
     {
@@ -357,8 +357,8 @@ trait PaymentConfigTrait
     }
 
     /**
-     * @param $key
-     * @return bool
+     * @param string $key
+     * @return mixed
      */
     public function getAdditionalConfigByKey($key)
     {
@@ -366,8 +366,8 @@ trait PaymentConfigTrait
     }
 
     /**
-     * @param $key
-     * @return bool
+     * @param stirng $key
+     * @return mixed
      */
     public function getUserConfigByKey($key)
     {

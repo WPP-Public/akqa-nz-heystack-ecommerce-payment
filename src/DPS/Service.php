@@ -34,6 +34,7 @@ abstract class Service
     /**
      * Set the testing mode
      * @param boolean $testingMode
+     * @return void
      */
     public function setTestingMode($testingMode)
     {
@@ -42,7 +43,7 @@ abstract class Service
 
     /**
      * Get the testing mode
-     * @return boolean
+     * @return bool
      */
     public function getTestingMode()
     {
@@ -51,7 +52,7 @@ abstract class Service
 
     /**
      * Returns the currency code.
-     * @return mixed
+     * @return string
      * @throws ConfigurationException
      */
     protected function getCurrencyCode()
@@ -67,11 +68,6 @@ abstract class Service
         }
 
         return $currencyCode;
-    }
-
-    protected function responseFromErrors($errors = null)
-    {
-        die();
     }
 
     /**
