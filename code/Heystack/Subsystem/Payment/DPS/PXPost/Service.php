@@ -397,7 +397,7 @@ class Service extends BaseService
         curl_setopt($curl, CURLOPT_POST, 1);
         curl_setopt($curl, CURLOPT_POSTFIELDS, $this->buildXml($this->config()));
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl, CURLOPT_SSLVERSION, 3);
+        curl_setopt($curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1);
 
         $resultXml = curl_exec($curl);
         curl_close($curl);
