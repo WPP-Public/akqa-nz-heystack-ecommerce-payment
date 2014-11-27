@@ -34,7 +34,7 @@ class Service extends BaseService implements HasTransactionInterface
 {
     use HasTransactionTrait;
     use HasEventServiceTrait;
-    
+
     /**
      * Holds the key for storing Post Username on the config second level array on the data array
      */
@@ -91,15 +91,22 @@ class Service extends BaseService implements HasTransactionInterface
     const TXN_TYPE_VALIDATE = 'Validate';
 
     /**
-     * Holds the Transaction object
-     * @var \Heystack\Ecommerce\Transaction\Interfaces\TransactionInterface
+     * Holds the testing server URL
+     * @var string
      */
+    private $testingServerUrl = 'https://qa4.paymentexpress.com';
+
+    /**
+     * Holds the production server URL
+     * @var string
+     */
+    private $liveServerUrl = 'https://sec.paymentexpress.com';
 
     /**
      * Holds the default gateway url
      * @var string
      */
-    protected $gatewayUrl = 'https://sec.paymentexpress.com/pxpost.aspx';
+    protected $gatewayUrl = '/pxpost.aspx';
 
     /**
      * Holds the txn type to be used in the request
@@ -394,11 +401,13 @@ class Service extends BaseService implements HasTransactionInterface
     {
         $curl = curl_init();
 
+        $gateway = $this->getGatewayUrl();
+        $xml = $this->buildXml($this->config());
+
         curl_setopt($curl, CURLOPT_URL, $this->getGatewayUrl());
         curl_setopt($curl, CURLOPT_POST, 1);
         curl_setopt($curl, CURLOPT_POSTFIELDS, $this->buildXml($this->config()));
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1);
 
         $resultXml = curl_exec($curl);
         curl_close($curl);
@@ -441,7 +450,7 @@ class Service extends BaseService implements HasTransactionInterface
      */
     public function getGatewayUrl()
     {
-        return $this->gatewayUrl;
+        return ($this->getTestingMode() ? $this->testingServerUrl : $this->liveServerUrl) . $this->gatewayUrl;
     }
 
     /**
@@ -480,7 +489,7 @@ class Service extends BaseService implements HasTransactionInterface
      */
     public function getAmount()
     {
-         return $this->formatAmount($this->transaction->getTotal());
+        return $this->formatAmount($this->transaction->getTotal());
     }
 
 }

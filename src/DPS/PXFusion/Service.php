@@ -103,17 +103,29 @@ class Service extends BaseService implements HasTransactionInterface
 
     /**
      * This is the amount of money authorised in the Auth-Complete payment type
-     * 
+     *
      * This amount is in the smallest currency unit, i.e. $1 = 100
      * @var int
      */
     protected $authAmount = 100;
 
     /**
+     * Holds the testing server URL
+     * @var string
+     */
+    protected $testingServerUrl = 'https://qa4.paymentexpress.com';
+
+    /**
+     * Holds the production server URL
+     * @var string
+     */
+    protected $liveServerUrl = 'https://sec.paymentexpress.com';
+
+    /**
      * Default wsdl for Soap client
      * @var string
      */
-    protected $wsdl = 'https://sec.paymentexpress.com/pxf/pxf.svc?wsdl';
+    protected $wsdl = '/pxf/pxf.svc?wsdl';
 
     /**
      * List of messages for each status code
@@ -233,12 +245,12 @@ class Service extends BaseService implements HasTransactionInterface
         $errors = [];
 
         if (isset($config[self::CONFIG_TYPE]) && !in_array(
-            $config[self::CONFIG_TYPE],
-            [
-                self::TYPE_AUTH_COMPLETE,
-                self::TYPE_PURCHASE
-            ]
-        )
+                $config[self::CONFIG_TYPE],
+                [
+                    self::TYPE_AUTH_COMPLETE,
+                    self::TYPE_PURCHASE
+                ]
+            )
         ) {
             $errors[] = "{$config[self::CONFIG_TYPE]} is not a valid 'Type' for this payment handler";
         }
@@ -485,12 +497,12 @@ class Service extends BaseService implements HasTransactionInterface
      * Get the amount for the transaction
      * @return string Amount
      */
-   public function getAmount()
+    public function getAmount()
     {
         if ($this->getTxnType() == self::TXN_TYPE_AUTH) {
 
             return $this->formatAmount(new Money($this->authAmount, $this->currencyService->getActiveCurrency()));
-            
+
         }
 
         return $this->formatAmount($this->transaction->getTotal());
@@ -577,6 +589,15 @@ class Service extends BaseService implements HasTransactionInterface
      */
     public function getWsdl()
     {
-        return $this->wsdl;
+        return ($this->getTestingMode() ? $this->testingServerUrl : $this->liveServerUrl) . $this->wsdl;
+    }
+
+    /**
+     * Get the form action to be used on the form that accepts the credit card details
+     * @return string
+     */
+    public function getFormAction()
+    {
+        return ($this->getTestingMode() ? $this->testingServerUrl : $this->liveServerUrl) . '/pxmi3/pxfusionauth';
     }
 }
