@@ -98,15 +98,22 @@ class Service extends BaseService
     protected $currencyService;
 
     /**
-     * Holds the Transaction object
-     * @var \Heystack\Subsystem\Ecommerce\Transaction\Interfaces\TransactionInterface
+     * Holds the testing server URL
+     * @var string
      */
+    private $testingServerUrl = 'https://qa4.paymentexpress.com';
+
+    /**
+     * Holds the production server URL
+     * @var string
+     */
+    private $liveServerUrl = 'https://sec.paymentexpress.com';
 
     /**
      * Holds the default gateway url
      * @var string
      */
-    protected $gatewayUrl = 'https://sec.paymentexpress.com/pxpost.aspx';
+    protected $gatewayUrl = '/pxpost.aspx';
 
     /**
      * Holds the txn type to be used in the request
@@ -420,16 +427,9 @@ class Service extends BaseService
 
     /**
      * @param $gatewayUrl
-     * @throws \Heystack\Subsystem\Core\Exception\ConfigurationException
      */
     public function setGatewayUrl($gatewayUrl)
     {
-        if (!\Director::is_absolute_url($gatewayUrl)) {
-
-            throw new ConfigurationException("Gateway url needs to be an absolute url");
-
-        }
-
         $this->gatewayUrl = $gatewayUrl;
     }
 
@@ -438,7 +438,7 @@ class Service extends BaseService
      */
     public function getGatewayUrl()
     {
-        return $this->gatewayUrl;
+        return ($this->getTestingMode() ? $this->testingServerUrl : $this->liveServerUrl) . $this->gatewayUrl;
     }
 
     /**

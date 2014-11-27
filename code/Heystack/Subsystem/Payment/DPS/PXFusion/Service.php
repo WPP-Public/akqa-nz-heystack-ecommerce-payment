@@ -120,10 +120,22 @@ class Service extends BaseService
     protected $authAmount = 1;
 
     /**
+     * Holds the testing server URL
+     * @var string
+     */
+    protected $testingServerUrl = 'https://qa4.paymentexpress.com';
+
+    /**
+     * Holds the production server URL
+     * @var string
+     */
+    protected $liveServerUrl = 'https://sec.paymentexpress.com';
+
+    /**
      * Default wsdl for Soap client
      * @var string
      */
-    protected $wsdl = 'https://sec.paymentexpress.com/pxf/pxf.svc?wsdl';
+    protected $wsdl = '/pxf/pxf.svc?wsdl';
 
     /**
      * List of messages for each status code
@@ -576,17 +588,10 @@ class Service extends BaseService
 
     /**
      * @param  string                 $wsdl
-     * @throws ConfigurationException
      * @return void
      */
     public function setWsdl($wsdl)
     {
-        if (!\Director::is_absolute_url($wsdl)) {
-
-            throw new ConfigurationException("Wsdl needs to be an absolute url");
-
-        }
-
         $this->wsdl = $wsdl;
     }
 
@@ -596,7 +601,16 @@ class Service extends BaseService
      */
     public function getWsdl()
     {
-        return $this->wsdl;
+        return ($this->getTestingMode() ? $this->testingServerUrl : $this->liveServerUrl) . $this->wsdl;
+    }
+
+    /**
+     * Get the form action to be used on the form that accepts the credit card details
+     * @return string
+     */
+    public function getFormAction()
+    {
+        return ($this->getTestingMode() ? $this->testingServerUrl : $this->liveServerUrl) . '/pxmi3/pxfusionauth';
     }
 
 }
